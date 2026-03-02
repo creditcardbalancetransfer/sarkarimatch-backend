@@ -36,6 +36,13 @@ India's smartest government job finder. No accounts, no tracking, 100% free. You
 - [x] **Browse by Sector** — 9 sector cards (Banking, Railway, SSC, UPSC, Defence, Teaching, State PSC, Police, PSU) with unique color-coded icons, hover border color change, arrow indicators, links to /jobs?sector=
 - [x] **Browse by Education** — horizontal scrollable pill row (11 qualifications from 10th Pass to PhD with counts), hidden scrollbar, fade edge indicators that respond to scroll position, hover fill animation
 
+### Phase 3 — Job Data & Interactive Sections
+- [x] **Placeholder Data** — 10 realistic Indian government jobs (SBI Clerk, RRB NTPC, SSC CHSL, UPSC CDS, IBPS PO, Army Agniveer, UP Police, KRCL Apprentice, NTA UGC NET, BPSC 70th) with full `Job` interface, 2-4 posts each, realistic dates/salaries/vacancies
+- [x] **Job Helpers Library** — sector metadata, date formatting, Indian number formatting, salary formatting, days-remaining calculator, progress-bar calculator
+- [x] **Latest Notifications** (Section 6) — 6 job cards grid with sector badge, bookmark toggle (localStorage), info pills (vacancies/education/salary), location + last-date row, days-remaining with color coding (green/orange/red+pulse), elapsed progress bar, "View Details" CTA
+- [x] **Closing Soon** (Section 7) — horizontal snap-scroll carousel, filters jobs closing within 20 days, live countdown timers (dd:hh:mm:ss updated every second), urgency color coding, drag-to-scroll on desktop, "Apply Now" external links
+- [x] **CTA Banner** (Section 8) — full-width saffron gradient background with dot pattern, lightning bolt icon, centered heading + subtext, large white pill CTA button with hover:scale-105, trust line
+
 ## Homepage Sections (in order)
 
 | # | Section | Description |
@@ -45,12 +52,15 @@ India's smartest government job finder. No accounts, no tracking, 100% free. You
 | 3 | How It Works | 3 step cards with connecting line |
 | 4 | Browse by Sector | 9 colored sector cards in 3-col grid |
 | 5 | Browse by Education | Scrollable qualification pill chips |
+| 6 | Latest Notifications | 6 job cards with bookmarks, progress bars |
+| 7 | Closing Soon | Horizontal carousel with live countdown timers |
+| 8 | CTA Banner | Full-width saffron call-to-action |
 
 ## Pages & Routes
 
 | Route | Description | Status |
 |-------|-------------|--------|
-| `/` | Full homepage with 5 content sections | Done |
+| `/` | Full homepage with 8 content sections | Done |
 | `/about` | Mission, values, privacy-first philosophy | Done |
 | `/privacy` | Comprehensive privacy policy (DPDP Act) | Done |
 | `/disclaimer` | Legal disclaimer, no government affiliation | Done |
@@ -74,9 +84,14 @@ webapp/
 │   │       ├── StatsBar.tsx         # Animated count-up statistics
 │   │       ├── HowItWorks.tsx       # 3-step process cards
 │   │       ├── BrowseBySector.tsx   # 9 sector cards grid
-│   │       └── BrowseByEducation.tsx # Scrollable education pills
+│   │       ├── BrowseByEducation.tsx # Scrollable education pills
+│   │       ├── LatestNotifications.tsx # 6 job cards with bookmarks
+│   │       ├── ClosingSoon.tsx       # Carousel with countdown timers
+│   │       └── CtaBanner.tsx         # Saffron CTA section
 │   ├── lib/
-│   │   └── tokens.ts          # Design tokens and types
+│   │   ├── tokens.ts          # Design tokens and types
+│   │   ├── placeholder-data.ts # 10 realistic job notifications
+│   │   └── job-helpers.ts     # Sector meta, formatters, calculators
 │   └── pages/
 │       ├── Home.tsx           # Homepage (composes all home sections)
 │       ├── About.tsx          # About page
@@ -84,7 +99,7 @@ webapp/
 │       └── Disclaimer.tsx     # Disclaimer
 ├── public/
 │   └── static/
-│       ├── app.js             # Client-side JS (theme, lang, menu, countup, scroll)
+│       ├── app.js             # Client-side JS (theme, lang, menu, countup, scroll, bookmarks, countdown)
 │       ├── styles.css         # Global CSS (animations, hero, scrollbar, print)
 │       ├── favicon.svg        # SVG favicon
 │       └── og-default.png     # OG image placeholder
@@ -120,6 +135,8 @@ webapp/
 | Count-up | Scroll into view | Numbers animate 0 → target over 2s with easeOutCubic |
 | Scroll reveal | Scroll into view | Sections fade up from 32px below with 0.6s transition |
 | Education fades | Scroll position | Left/right gradient masks appear based on scroll state |
+| Live countdown | Every second | dd:hh:mm:ss countdown to application deadlines |
+| Bookmark toggle | Click | Icon switches outline→filled, persists to localStorage |
 
 ## Development
 
@@ -136,15 +153,27 @@ pm2 logs sarkarimatch --nostream  # Check logs
 npm run deploy:prod   # Build + deploy to Cloudflare Pages
 ```
 
+## Data Architecture
+
+- **Storage**: Browser localStorage only (zero server-side storage)
+- **localStorage Keys**:
+  - `sarkarimatch_theme` — `"light"` or `"dark"`
+  - `sarkarimatch_lang` — `"EN"` or `"HI"`
+  - `sarkarimatch_bookmarks` — JSON array of job slugs
+- **Placeholder Data**: 10 jobs in `src/lib/placeholder-data.ts` (will move to D1/API later)
+- **No databases, no cookies, no analytics, no trackers**
+
 ## Planned Next Steps
 
-- [ ] Job listings page with card grid UI
+- [ ] Job detail page (`/jobs/:slug`) with full notification breakdown
+- [ ] Job listings page with filters + search
 - [ ] Profile wizard (set education, age, category, sector preferences)
 - [ ] Client-side job filtering and matching engine
 - [ ] Exam calendar page
 - [ ] Blog/preparation hub
 - [ ] Actual Hindi language translations
 - [ ] PWA support (offline caching)
+- [ ] Move placeholder data to Cloudflare D1 database
 
 ## Platform
 

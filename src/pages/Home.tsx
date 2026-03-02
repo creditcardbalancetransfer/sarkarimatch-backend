@@ -5,6 +5,9 @@ import { StatsBar } from '../components/home/StatsBar'
 import { HowItWorks } from '../components/home/HowItWorks'
 import { BrowseBySector } from '../components/home/BrowseBySector'
 import { BrowseByEducation } from '../components/home/BrowseByEducation'
+import { LatestNotifications } from '../components/home/LatestNotifications'
+import { ClosingSoon } from '../components/home/ClosingSoon'
+import { CtaBanner } from '../components/home/CtaBanner'
 
 export const HomePage: FC = () => {
   return (
@@ -24,6 +27,9 @@ export const HomePage: FC = () => {
       <HowItWorks />
       <BrowseBySector />
       <BrowseByEducation />
+      <LatestNotifications />
+      <ClosingSoon />
+      <CtaBanner />
     </Layout>
   )
 }

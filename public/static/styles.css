@@ -180,6 +180,49 @@ main {
 
 
 /* ═══════════════════════════════════════════════════
+   JOB CARDS
+   ═══════════════════════════════════════════════════ */
+
+/* 2-line clamp for job titles */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Bookmark active state: hide outline, show filled */
+.bookmark-btn.bookmarked .bookmark-outline {
+  display: none;
+}
+.bookmark-btn.bookmarked .bookmark-filled {
+  display: block;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   CLOSING SOON CAROUSEL
+   ═══════════════════════════════════════════════════ */
+.closing-carousel {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.closing-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+/* Scroll snap for cards */
+.closing-card {
+  scroll-snap-align: start;
+}
+
+/* Countdown mono display */
+.countdown-display {
+  letter-spacing: 0.02em;
+}
+
+
+/* ═══════════════════════════════════════════════════
    GENERIC HELPERS
    ═══════════════════════════════════════════════════ */
 .hover-lift {
