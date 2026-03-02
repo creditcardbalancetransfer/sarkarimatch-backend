@@ -1,0 +1,117 @@
+/* SarkariMatch — Global Styles */
+
+/* Smooth scroll for accessibility */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Base body transition for theme switching */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Focus ring style for accessibility */
+*:focus-visible {
+  outline: 2px solid #1E40AF;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.dark *:focus-visible {
+  outline-color: #3B82F6;
+}
+
+/* Skip to content — visible on focus */
+.skip-link:focus {
+  position: fixed !important;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  background: #1E40AF;
+  color: white;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Mobile menu animation */
+#mobile-menu.open {
+  transform: translateX(0) !important;
+}
+
+/* Glassmorphism navbar enhancement */
+header {
+  transition: background-color 0.2s ease;
+}
+
+/* Card hover effect */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Smooth page load */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+main {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Custom scrollbar (Webkit) */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Pulse animation for status dot */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Selection color */
+::selection {
+  background: #BFDBFE;
+  color: #1E293B;
+}
+.dark ::selection {
+  background: #1E3A8A;
+  color: #E2E8F0;
+}
+
+/* Print styles */
+@media print {
+  header, footer, #mobile-menu, #mobile-overlay {
+    display: none !important;
+  }
+  main {
+    animation: none;
+  }
+  body {
+    background: white !important;
+    color: black !important;
+  }
+}
