@@ -43,6 +43,15 @@ India's smartest government job finder. No accounts, no tracking, 100% free. You
 - [x] **Closing Soon** (Section 7) — horizontal snap-scroll carousel, filters jobs closing within 20 days, live countdown timers (dd:hh:mm:ss updated every second), urgency color coding, drag-to-scroll on desktop, "Apply Now" external links
 - [x] **CTA Banner** (Section 8) — full-width saffron gradient background with dot pattern, lightning bolt icon, centered heading + subtext, large white pill CTA button with hover:scale-105, trust line
 
+### Phase 4 — Polish & Performance
+- [x] **Scroll-Reveal Animations** — IntersectionObserver-driven fade-up (20px) with cubic-bezier easing, section-level + staggered child-level delays (8 levels at 80ms intervals) on all sections
+- [x] **Scroll-to-Top Button** — fixed bottom-right circular button, primary blue, white arrow-up, appears at 500px scroll, rAF-throttled, dark mode variant, keyboard accessible
+- [x] **Skeleton Shimmer Loading** — grey animated shimmer placeholders for Latest Notifications (6 cards) and Closing Soon (3 cards), 500ms reveal delay, fade transition, dark mode variant
+- [x] **Updated Meta Tags** — new title ("Personalized Government Job Finder for India 2026"), description (500+ notifications detail), og:title ("Never Miss an Eligible Govt Job"), og:url
+- [x] **Schema.org JSON-LD** — WebSite structured data with SearchAction targeting /jobs?q={search_term_string}
+- [x] **Core Web Vitals** — CLS: explicit dimensions on all placeholders/timers; LCP: SSR hero heading + font preconnect; FID: rAF-throttled scroll, no heavy JS; `prefers-reduced-motion` media query
+- [x] **Animated Gradient Border** — rotating conic-gradient (6-color rainbow) on hero "Set Your Profile" button via CSS @property Houdini, 3s rotation, blur glow, hover intensification
+
 ## Homepage Sections (in order)
 
 | # | Section | Description |
@@ -132,11 +141,15 @@ webapp/
 | Hero fade-up | Page load | Staggered 4-step entrance (0s → 0.5s delays) |
 | Shield orbit | Page load | Two concentric dashed circles rotating opposite directions |
 | Floating cards | Page load | 3 mini cards bob up/down with different timings |
+| Gradient border | Page load | Rotating conic-gradient on CTA button (3s loop) |
 | Count-up | Scroll into view | Numbers animate 0 → target over 2s with easeOutCubic |
-| Scroll reveal | Scroll into view | Sections fade up from 32px below with 0.6s transition |
+| Scroll reveal (section) | Scroll into view | Sections fade up 20px with 0.7s cubic-bezier easing |
+| Scroll reveal (children) | Scroll into view | Staggered 0.5s child reveals with 80ms interval delays |
+| Skeleton shimmer | Page load → 500ms | Shimmer bars animate, then fade out to reveal content |
 | Education fades | Scroll position | Left/right gradient masks appear based on scroll state |
 | Live countdown | Every second | dd:hh:mm:ss countdown to application deadlines |
 | Bookmark toggle | Click | Icon switches outline→filled, persists to localStorage |
+| Scroll-to-top | Scroll past 500px | Button fades in from below with scale transform |
 
 ## Development
 
@@ -181,3 +194,4 @@ npm run deploy:prod   # Build + deploy to Cloudflare Pages
 - **Status**: Active (Development)
 - **Tech Stack**: Hono 4.x + TypeScript + Tailwind CSS (CDN)
 - **Last Updated**: March 2, 2026
+- **Performance**: Skeleton loading, scroll-reveal animations, prefers-reduced-motion support, Schema.org structured data
