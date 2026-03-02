@@ -6,14 +6,16 @@ import { Footer } from '../components/Footer'
 type LayoutProps = PropsWithChildren<{
   meta: MetaData
   currentPath?: string
+  structuredData?: object
 }>
 
-export const Layout: FC<LayoutProps> = ({ meta, currentPath = '/', children }) => {
+export const Layout: FC<LayoutProps> = ({ meta, currentPath = '/', children, structuredData }) => {
   const title = meta.title
   const description = meta.description
   const ogTitle = meta.ogTitle || title
   const ogDescription = meta.ogDescription || description
   const ogImage = meta.ogImage || '/static/og-default.png'
+  const ogUrl = meta.ogUrl || 'https://sarkarimatch.com'
 
   return (
     <html lang="en" dir="ltr" class="">
@@ -28,6 +30,7 @@ export const Layout: FC<LayoutProps> = ({ meta, currentPath = '/', children }) =
         <meta property="og:title" content={ogTitle} />
         <meta property="og:description" content={ogDescription} />
         <meta property="og:image" content={ogImage} />
+        <meta property="og:url" content={ogUrl} />
         <meta property="og:site_name" content="SarkariMatch" />
         {meta.canonical && <link rel="canonical" href={meta.canonical} />}
 
@@ -39,7 +42,17 @@ export const Layout: FC<LayoutProps> = ({ meta, currentPath = '/', children }) =
         <meta name="twitter:title" content={ogTitle} />
         <meta name="twitter:description" content={ogDescription} />
 
-        {/* Fonts */}
+        {/* Schema.org JSON-LD Structured Data */}
+        {structuredData && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(structuredData),
+            }}
+          />
+        )}
+
+        {/* Fonts — preconnect for LCP optimization */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
         <link
@@ -101,7 +114,7 @@ export const Layout: FC<LayoutProps> = ({ meta, currentPath = '/', children }) =
           }}
         />
 
-        {/* Dark mode initialization - runs BEFORE render to prevent flash */}
+        {/* Dark mode initialization - runs BEFORE render to prevent flash (CLS fix) */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -133,6 +146,18 @@ export const Layout: FC<LayoutProps> = ({ meta, currentPath = '/', children }) =
         </main>
 
         <Footer />
+
+        {/* Scroll-to-Top Button */}
+        <button
+          id="scroll-to-top"
+          type="button"
+          aria-label="Scroll to top"
+          title="Back to top"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 15l-6-6-6 6" />
+          </svg>
+        </button>
 
         <script src="/static/app.js" defer></script>
       </body>

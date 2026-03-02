@@ -1,7 +1,8 @@
 /**
  * SarkariMatch — Client-side interactions
  * Dark mode, language toggle, mobile menu, count-up stats,
- * scroll reveal, bookmarks, countdown timers, carousel scroll
+ * scroll reveal (sections + staggered children), bookmarks,
+ * countdown timers, carousel scroll, scroll-to-top, skeleton loading
  */
 
 (function () {
@@ -169,19 +170,34 @@
   }
 
 
-  // ─── Scroll Reveal ───────────────────────────────────────────
+  // ─── Scroll Reveal (Sections + Staggered Children) ───────────
   if ('IntersectionObserver' in window) {
-    var revealObs = new IntersectionObserver(function (entries) {
+    // Section-level reveal
+    var sectionObs = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
           entry.target.classList.add('revealed');
-          revealObs.unobserve(entry.target);
+          sectionObs.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
 
     document.querySelectorAll('.reveal-section').forEach(function (s) {
-      revealObs.observe(s);
+      sectionObs.observe(s);
+    });
+
+    // Child-level staggered reveal
+    var childObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+          childObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
+
+    document.querySelectorAll('.reveal-child').forEach(function (c) {
+      childObs.observe(c);
     });
   }
 
@@ -348,6 +364,55 @@
 
     // Set grab cursor
     carousel.style.cursor = 'grab';
+  }
+
+
+  // ─── Scroll-to-Top Button ───────────────────────────────────
+  var scrollBtn = document.getElementById('scroll-to-top');
+
+  if (scrollBtn) {
+    var scrollThreshold = 500;
+    var ticking = false;
+
+    function checkScroll() {
+      if (window.scrollY > scrollThreshold) {
+        scrollBtn.classList.add('visible');
+      } else {
+        scrollBtn.classList.remove('visible');
+      }
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', function () {
+      if (!ticking) {
+        requestAnimationFrame(checkScroll);
+        ticking = true;
+      }
+    }, { passive: true });
+
+    scrollBtn.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Initial check
+    checkScroll();
+  }
+
+
+  // ─── Skeleton Loading Reveal ─────────────────────────────────
+  // Show skeletons for 500ms then reveal actual content
+  var skeletonContainers = document.querySelectorAll('.skeleton-container');
+  var contentContainers = document.querySelectorAll('.content-container');
+
+  if (skeletonContainers.length > 0) {
+    setTimeout(function () {
+      skeletonContainers.forEach(function (sk) {
+        sk.classList.add('hidden');
+      });
+      contentContainers.forEach(function (ct) {
+        ct.classList.add('loaded');
+      });
+    }, 500);
   }
 
 })();

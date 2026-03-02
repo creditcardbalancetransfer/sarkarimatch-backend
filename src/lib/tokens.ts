@@ -39,5 +39,6 @@ export type MetaData = {
   ogTitle?: string
   ogDescription?: string
   ogImage?: string
+  ogUrl?: string
   canonical?: string
 }

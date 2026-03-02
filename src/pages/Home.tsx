@@ -9,18 +9,33 @@ import { LatestNotifications } from '../components/home/LatestNotifications'
 import { ClosingSoon } from '../components/home/ClosingSoon'
 import { CtaBanner } from '../components/home/CtaBanner'
 
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  'name': 'SarkariMatch',
+  'url': 'https://sarkarimatch.com',
+  'description': 'Personalized government job finder for India',
+  'potentialAction': {
+    '@type': 'SearchAction',
+    'target': 'https://sarkarimatch.com/jobs?q={search_term_string}',
+    'query-input': 'required name=search_term_string',
+  },
+}
+
 export const HomePage: FC = () => {
   return (
     <Layout
       meta={{
-        title: 'SarkariMatch — Your Jobs. Your Eligibility. Zero Noise.',
+        title: 'SarkariMatch — Personalized Government Job Finder for India 2026',
         description:
-          'Find government jobs matched to your eligibility. No accounts, no tracking, 100% free. Filter by education, age, category and more.',
-        ogTitle: "SarkariMatch — India's Smartest Government Job Finder",
+          'Find government jobs matching YOUR eligibility. Set your age, education & category — see only the jobs you can apply for. 500+ active notifications across Railway, Banking, SSC, UPSC, Defence. No signup. 100% free.',
+        ogTitle: 'SarkariMatch — Never Miss an Eligible Govt Job',
         ogDescription:
-          'Personalized government job matching. Filter sarkari jobs by your education, age, and category. All data stays in your browser.',
+          "India's smartest government job finder. Personalized eligibility matching. No accounts required.",
+        ogUrl: 'https://sarkarimatch.com',
       }}
       currentPath="/"
+      structuredData={websiteSchema}
     >
       <HeroSection />
       <StatsBar />

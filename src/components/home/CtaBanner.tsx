@@ -2,7 +2,7 @@ import type { FC } from 'hono/jsx'
 
 export const CtaBanner: FC = () => {
   return (
-    <section class="relative overflow-hidden" id="cta-banner">
+    <section class="relative overflow-hidden reveal-section" id="cta-banner">
       {/* Background */}
       <div class="absolute inset-0 bg-gradient-to-br from-brand-secondary via-[#F59E0B] to-[#D97706] dark:from-[#92400E] dark:via-[#B45309] dark:to-[#78350F] -z-10" />
 

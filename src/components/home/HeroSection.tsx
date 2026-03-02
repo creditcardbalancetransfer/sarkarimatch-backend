@@ -42,7 +42,7 @@ export const HeroSection: FC = () => {
             <div class="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 justify-center lg:justify-start hero-fade-up hero-delay-3">
               <a
                 href="#"
-                class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-brand-secondary hover:bg-brand-secondary-dark text-white font-semibold text-base rounded-full transition-all duration-200 shadow-card hover:shadow-card-hover hover:scale-105 active:scale-100"
+                class="cta-gradient-border w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 text-white font-semibold text-base rounded-full transition-all duration-200 hover:scale-105 active:scale-100"
                 role="button"
               >
                 Set Your Profile

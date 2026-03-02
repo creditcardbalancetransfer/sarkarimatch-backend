@@ -89,10 +89,10 @@ export const HowItWorks: FC = () => {
             </div>
           </div>
 
-          {steps.map((step) => (
+          {steps.map((step, index) => (
             <div
               key={step.number}
-              class="group relative z-10"
+              class={`group relative z-10 reveal-child reveal-stagger-${index + 1}`}
             >
               <div class="bg-white dark:bg-surface-card-dark rounded-card p-6 md:p-8 shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 text-center h-full">
                 {/* Step icon */}

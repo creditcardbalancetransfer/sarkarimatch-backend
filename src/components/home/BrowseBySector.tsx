@@ -100,11 +100,11 @@ export const BrowseBySector: FC = () => {
 
         {/* Sector grid */}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {sectors.map((sector) => (
+          {sectors.map((sector, index) => (
             <a
               key={sector.slug}
               href={`/jobs?sector=${sector.slug}`}
-              class={`group flex items-center gap-4 p-4 bg-white dark:bg-surface-dark rounded-card border border-gray-100 dark:border-gray-800 ${sector.borderHover} dark:${sector.borderHover} transition-all duration-200 hover:shadow-card-hover hover:-translate-y-0.5`}
+              class={`group flex items-center gap-4 p-4 bg-white dark:bg-surface-dark rounded-card border border-gray-100 dark:border-gray-800 ${sector.borderHover} dark:${sector.borderHover} transition-all duration-200 hover:shadow-card-hover hover:-translate-y-0.5 reveal-child reveal-stagger-${index + 1}`}
             >
               {/* Icon circle */}
               <div

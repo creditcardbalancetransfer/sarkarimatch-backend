@@ -146,6 +146,74 @@ main {
 
 
 /* ═══════════════════════════════════════════════════
+   ANIMATED GRADIENT BORDER — Hero "Set Your Profile"
+   ═══════════════════════════════════════════════════ */
+@keyframes gradientRotate {
+  0%   { --gradient-angle: 0deg;   }
+  100% { --gradient-angle: 360deg; }
+}
+
+@property --gradient-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.cta-gradient-border {
+  position: relative;
+  z-index: 0;
+  isolation: isolate;
+}
+
+.cta-gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 9999px;
+  background: conic-gradient(
+    from var(--gradient-angle, 0deg),
+    #F59E0B,
+    #EF4444,
+    #8B5CF6,
+    #3B82F6,
+    #10B981,
+    #F59E0B
+  );
+  z-index: -2;
+  animation: gradientRotate 3s linear infinite;
+}
+
+.cta-gradient-border::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  z-index: -1;
+}
+
+/* Light mode inner bg */
+.cta-gradient-border::after {
+  background: #F59E0B;
+}
+
+.cta-gradient-border:hover::after {
+  background: #D97706;
+}
+
+/* Glow effect */
+.cta-gradient-border::before {
+  filter: blur(4px);
+  opacity: 0.75;
+  transition: opacity 0.3s ease, filter 0.3s ease;
+}
+
+.cta-gradient-border:hover::before {
+  filter: blur(6px);
+  opacity: 1;
+}
+
+
+/* ═══════════════════════════════════════════════════
    STATS BAR — Count-Up Animation
    ═══════════════════════════════════════════════════ */
 .stat-number {
@@ -154,17 +222,41 @@ main {
 
 
 /* ═══════════════════════════════════════════════════
-   SCROLL-REVEAL — used for sections entering viewport
+   SCROLL-REVEAL — Intersection Observer driven
    ═══════════════════════════════════════════════════ */
 .reveal-section {
   opacity: 0;
-  transform: translateY(32px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  transform: translateY(20px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .reveal-section.revealed {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* Staggered child reveals inside sections */
+.reveal-child {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-child.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger delays for children (set via data-reveal-delay or class) */
+.reveal-stagger-1 { transition-delay: 0.08s; }
+.reveal-stagger-2 { transition-delay: 0.16s; }
+.reveal-stagger-3 { transition-delay: 0.24s; }
+.reveal-stagger-4 { transition-delay: 0.32s; }
+.reveal-stagger-5 { transition-delay: 0.40s; }
+.reveal-stagger-6 { transition-delay: 0.48s; }
+.reveal-stagger-7 { transition-delay: 0.56s; }
+.reveal-stagger-8 { transition-delay: 0.64s; }
+.reveal-stagger-9 { transition-delay: 0.72s; }
 
 
 /* ═══════════════════════════════════════════════════
@@ -201,6 +293,63 @@ main {
 
 
 /* ═══════════════════════════════════════════════════
+   SKELETON SHIMMER — Loading Placeholders
+   ═══════════════════════════════════════════════════ */
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.skeleton-card {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.skeleton-bar {
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    #E2E8F0 0%,
+    #F1F5F9 40%,
+    #E2E8F0 80%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.dark .skeleton-bar {
+  background: linear-gradient(
+    90deg,
+    #334155 0%,
+    #475569 40%,
+    #334155 80%
+  );
+  background-size: 800px 100%;
+}
+
+/* Skeleton container hides when content is loaded */
+.skeleton-container {
+  transition: opacity 0.3s ease;
+}
+
+.skeleton-container.hidden {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+/* Real content container — hidden until loaded */
+.content-container {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.content-container.loaded {
+  opacity: 1;
+}
+
+
+/* ═══════════════════════════════════════════════════
    CLOSING SOON CAROUSEL
    ═══════════════════════════════════════════════════ */
 .closing-carousel {
@@ -219,6 +368,67 @@ main {
 /* Countdown mono display */
 .countdown-display {
   letter-spacing: 0.02em;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   SCROLL-TO-TOP BUTTON
+   ═══════════════════════════════════════════════════ */
+#scroll-to-top {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 90;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #1E40AF;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.35);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(16px) scale(0.9);
+  transition: opacity 0.3s ease,
+              visibility 0.3s ease,
+              transform 0.3s ease,
+              background-color 0.2s ease,
+              box-shadow 0.2s ease;
+}
+
+#scroll-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+#scroll-to-top:hover {
+  background: #1D4ED8;
+  box-shadow: 0 6px 20px rgba(30, 64, 175, 0.5);
+  transform: translateY(-2px) scale(1.05);
+}
+
+#scroll-to-top:active {
+  transform: translateY(0) scale(1);
+}
+
+#scroll-to-top:focus-visible {
+  outline: 2px solid #F59E0B;
+  outline-offset: 3px;
+}
+
+.dark #scroll-to-top {
+  background: #3B82F6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+}
+
+.dark #scroll-to-top:hover {
+  background: #2563EB;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
 }
 
 
@@ -266,19 +476,52 @@ main {
    PRINT
    ═══════════════════════════════════════════════════ */
 @media print {
-  header, footer, #mobile-menu, #mobile-overlay {
+  header, footer, #mobile-menu, #mobile-overlay, #scroll-to-top {
     display: none !important;
   }
   main {
     animation: none;
   }
-  .hero-fade-up, .reveal-section {
+  .hero-fade-up, .reveal-section, .reveal-child {
     opacity: 1 !important;
     transform: none !important;
     animation: none !important;
+    transition: none !important;
+  }
+  .skeleton-container {
+    display: none !important;
+  }
+  .content-container {
+    opacity: 1 !important;
   }
   body {
     background: white !important;
     color: black !important;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════
+   REDUCED MOTION — Respect user preferences
+   ═══════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal-section,
+  .reveal-child {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .skeleton-bar {
+    animation: none;
+  }
+  #scroll-to-top {
+    transition-duration: 0.01ms !important;
+  }
+  html {
+    scroll-behavior: auto;
   }
 }

@@ -11,7 +11,7 @@ export const StatsBar: FC = () => {
   return (
     <section
       id="stats-bar"
-      class="relative bg-brand-primary dark:bg-[#1E3A8A] overflow-hidden"
+      class="relative bg-brand-primary dark:bg-[#1E3A8A] overflow-hidden reveal-section"
       aria-label="Platform statistics"
     >
       {/* Subtle pattern overlay */}
@@ -21,8 +21,8 @@ export const StatsBar: FC = () => {
 
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14 relative">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-          {stats.map((stat) => (
-            <div key={stat.id} class="text-center group">
+          {stats.map((stat, index) => (
+            <div key={stat.id} class={`text-center group reveal-child reveal-stagger-${index + 1}`}>
               <div class="mb-1.5">
                 <span
                   id={stat.id}
