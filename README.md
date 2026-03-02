@@ -11,13 +11,13 @@ India's smartest government job finder. No accounts, no tracking, 100% free. You
 - **Privacy**: Zero data collection — all preferences stored in browser localStorage only
 - **Stack**: Hono + TypeScript + Tailwind CSS on Cloudflare Pages
 
-## Features (Phase 1 — Foundation)
+## Features
 
+### Phase 1 — Foundation
 - [x] Responsive navbar with glassmorphism effect (sticky, backdrop-blur)
 - [x] Dark mode toggle (persists to localStorage, respects system preference)
 - [x] Language toggle (EN/Hindi visual switch, saved to localStorage)
 - [x] Mobile hamburger menu with slide-in panel + overlay
-- [x] Homepage with hero section, CTAs, and trust badges
 - [x] About page with mission statement and value cards
 - [x] Privacy Policy page (DPDP Act 2023 compliant — we collect nothing)
 - [x] Disclaimer page (comprehensive legal disclaimer)
@@ -27,15 +27,30 @@ India's smartest government job finder. No accounts, no tracking, 100% free. You
 - [x] Skip-to-content link for accessibility
 - [x] Semantic HTML5 throughout (header, nav, main, footer, section)
 - [x] Keyboard-accessible interactive elements
-- [x] Smooth page load animation
-- [x] Print-friendly styles
-- [x] Custom scrollbar styling
+- [x] Print-friendly styles, custom scrollbar styling
+
+### Phase 2 — Homepage Content Sections
+- [x] **Hero Section** — full viewport height with gradient background, decorative dot pattern, split layout (60/40), staggered fade-in animations, SVG shield illustration with floating mini-cards, dual CTAs (Set Your Profile + Browse All Jobs), trust indicators
+- [x] **Live Stats Bar** — 4 stats (500+ notifications, 1,50,000+ vacancies, 28+ states, 100% free) with Intersection Observer-triggered count-up animation, easeOutCubic easing, Indian number formatting
+- [x] **How It Works** — 3-step process cards (Set Profile → Get Matched → Apply) with connecting gradient line on desktop, hover lift animation, step icons with colored backgrounds
+- [x] **Browse by Sector** — 9 sector cards (Banking, Railway, SSC, UPSC, Defence, Teaching, State PSC, Police, PSU) with unique color-coded icons, hover border color change, arrow indicators, links to /jobs?sector=
+- [x] **Browse by Education** — horizontal scrollable pill row (11 qualifications from 10th Pass to PhD with counts), hidden scrollbar, fade edge indicators that respond to scroll position, hover fill animation
+
+## Homepage Sections (in order)
+
+| # | Section | Description |
+|---|---------|-------------|
+| 1 | Hero | Full-viewport split layout with CTA buttons, animated illustration |
+| 2 | Stats Bar | Blue bar with 4 animated count-up stats |
+| 3 | How It Works | 3 step cards with connecting line |
+| 4 | Browse by Sector | 9 colored sector cards in 3-col grid |
+| 5 | Browse by Education | Scrollable qualification pill chips |
 
 ## Pages & Routes
 
 | Route | Description | Status |
 |-------|-------------|--------|
-| `/` | Homepage with hero, CTAs, trust badges | Done |
+| `/` | Full homepage with 5 content sections | Done |
 | `/about` | Mission, values, privacy-first philosophy | Done |
 | `/privacy` | Comprehensive privacy policy (DPDP Act) | Done |
 | `/disclaimer` | Legal disclaimer, no government affiliation | Done |
@@ -43,6 +58,42 @@ India's smartest government job finder. No accounts, no tracking, 100% free. You
 | `/calendar` | Exam calendar (planned) | Planned |
 | `/blog` | Preparation hub (planned) | Planned |
 | `/api/health` | Health check endpoint | Done |
+
+## Project Structure
+
+```
+webapp/
+├── src/
+│   ├── index.tsx              # Main Hono app — all routes
+│   ├── components/
+│   │   ├── Layout.tsx         # Shared HTML layout (head, meta, fonts, scripts)
+│   │   ├── Navbar.tsx         # Sticky glassmorphism navbar
+│   │   ├── Footer.tsx         # 4-column footer
+│   │   └── home/
+│   │       ├── HeroSection.tsx      # Hero with gradient, illustration, CTAs
+│   │       ├── StatsBar.tsx         # Animated count-up statistics
+│   │       ├── HowItWorks.tsx       # 3-step process cards
+│   │       ├── BrowseBySector.tsx   # 9 sector cards grid
+│   │       └── BrowseByEducation.tsx # Scrollable education pills
+│   ├── lib/
+│   │   └── tokens.ts          # Design tokens and types
+│   └── pages/
+│       ├── Home.tsx           # Homepage (composes all home sections)
+│       ├── About.tsx          # About page
+│       ├── Privacy.tsx        # Privacy Policy
+│       └── Disclaimer.tsx     # Disclaimer
+├── public/
+│   └── static/
+│       ├── app.js             # Client-side JS (theme, lang, menu, countup, scroll)
+│       ├── styles.css         # Global CSS (animations, hero, scrollbar, print)
+│       ├── favicon.svg        # SVG favicon
+│       └── og-default.png     # OG image placeholder
+├── ecosystem.config.cjs       # PM2 configuration
+├── wrangler.jsonc             # Cloudflare Pages config
+├── vite.config.ts             # Vite build config
+├── tsconfig.json              # TypeScript config
+└── package.json               # Dependencies and scripts
+```
 
 ## Design Tokens
 
@@ -59,81 +110,31 @@ India's smartest government job finder. No accounts, no tracking, 100% free. You
 | Button Radius | 8px |
 | Pill Radius | 9999px |
 
-## Project Structure
+## Animations
 
-```
-webapp/
-├── src/
-│   ├── index.tsx          # Main Hono app — all routes
-│   ├── components/
-│   │   ├── Layout.tsx     # Shared HTML layout (head, meta, fonts, scripts)
-│   │   ├── Navbar.tsx     # Sticky glassmorphism navbar
-│   │   └── Footer.tsx     # 4-column footer
-│   ├── lib/
-│   │   └── tokens.ts      # Design tokens and types
-│   └── pages/
-│       ├── Home.tsx       # Homepage
-│       ├── About.tsx      # About page
-│       ├── Privacy.tsx    # Privacy Policy
-│       └── Disclaimer.tsx # Disclaimer
-├── public/
-│   └── static/
-│       ├── app.js         # Client-side JS (dark mode, lang toggle, menu)
-│       ├── styles.css     # Global CSS
-│       ├── favicon.svg    # SVG favicon
-│       └── og-default.png # OG image placeholder
-├── ecosystem.config.cjs   # PM2 configuration
-├── wrangler.jsonc         # Cloudflare Pages config
-├── vite.config.ts         # Vite build config
-├── tsconfig.json          # TypeScript config
-└── package.json           # Dependencies and scripts
-```
+| Animation | Trigger | Description |
+|-----------|---------|-------------|
+| Hero fade-up | Page load | Staggered 4-step entrance (0s → 0.5s delays) |
+| Shield orbit | Page load | Two concentric dashed circles rotating opposite directions |
+| Floating cards | Page load | 3 mini cards bob up/down with different timings |
+| Count-up | Scroll into view | Numbers animate 0 → target over 2s with easeOutCubic |
+| Scroll reveal | Scroll into view | Sections fade up from 32px below with 0.6s transition |
+| Education fades | Scroll position | Left/right gradient masks appear based on scroll state |
 
 ## Development
 
 ```bash
-# Install dependencies
-npm install
-
-# Build
-npm run build
-
-# Start local dev server (sandbox)
-pm2 start ecosystem.config.cjs
-
-# Or start manually
-npx wrangler pages dev dist --ip 0.0.0.0 --port 3000
-
-# Check logs
-pm2 logs sarkarimatch --nostream
+npm install           # Install deps
+npm run build         # Build
+pm2 start ecosystem.config.cjs  # Start dev server
+pm2 logs sarkarimatch --nostream  # Check logs
 ```
 
 ## Deployment
 
 ```bash
-# Build and deploy to Cloudflare Pages
-npm run deploy:prod
-
-# Or manually
-npm run build
-npx wrangler pages deploy dist --project-name sarkarimatch
+npm run deploy:prod   # Build + deploy to Cloudflare Pages
 ```
-
-## Data Architecture
-
-- **Storage**: Browser localStorage only (zero server-side storage)
-- **Keys**:
-  - `sarkarimatch_theme` — `"light"` or `"dark"`
-  - `sarkarimatch_lang` — `"EN"` or `"HI"`
-- **No databases, no cookies, no analytics, no trackers**
-
-## User Guide
-
-1. Visit the homepage
-2. Toggle dark/light mode using the moon/sun icon in the navbar
-3. Toggle language (visual only for now) using the EN/HI button
-4. Navigate to About, Privacy, or Disclaimer pages via navbar or footer links
-5. On mobile: tap the hamburger menu for navigation
 
 ## Planned Next Steps
 

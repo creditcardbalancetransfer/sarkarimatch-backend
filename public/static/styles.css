@@ -1,28 +1,28 @@
 /* SarkariMatch — Global Styles */
 
-/* Smooth scroll for accessibility */
+/* ═══════════════════════════════════════════════════
+   BASE
+   ═══════════════════════════════════════════════════ */
 html {
   scroll-behavior: smooth;
 }
 
-/* Base body transition for theme switching */
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Focus ring style for accessibility */
+/* Focus ring for accessibility */
 *:focus-visible {
   outline: 2px solid #1E40AF;
   outline-offset: 2px;
   border-radius: 4px;
 }
-
 .dark *:focus-visible {
   outline-color: #3B82F6;
 }
 
-/* Skip to content — visible on focus */
+/* Skip to content */
 .skip-link:focus {
   position: fixed !important;
   top: 0.5rem;
@@ -36,26 +36,32 @@ body {
   text-decoration: none;
 }
 
-/* Mobile menu animation */
-#mobile-menu.open {
-  transform: translateX(0) !important;
+/* Selection */
+::selection {
+  background: #BFDBFE;
+  color: #1E293B;
+}
+.dark ::selection {
+  background: #1E3A8A;
+  color: #E2E8F0;
 }
 
-/* Glassmorphism navbar enhancement */
+
+/* ═══════════════════════════════════════════════════
+   NAVBAR
+   ═══════════════════════════════════════════════════ */
 header {
   transition: background-color 0.2s ease;
 }
 
-/* Card hover effect */
-.hover-lift {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.hover-lift:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+#mobile-menu.open {
+  transform: translateX(0) !important;
 }
 
-/* Smooth page load */
+
+/* ═══════════════════════════════════════════════════
+   PAGE TRANSITIONS
+   ═══════════════════════════════════════════════════ */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
@@ -65,7 +71,133 @@ main {
   animation: fadeIn 0.3s ease-out;
 }
 
-/* Custom scrollbar (Webkit) */
+
+/* ═══════════════════════════════════════════════════
+   HERO SECTION
+   ═══════════════════════════════════════════════════ */
+
+/* Dot pattern background */
+.hero-dots {
+  background-image: radial-gradient(circle at 1px 1px, #94A3B8 0.8px, transparent 0);
+  background-size: 28px 28px;
+}
+
+/* Hero staggered fade-in */
+@keyframes heroFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-fade-up {
+  animation: heroFadeUp 0.7s ease-out forwards;
+  opacity: 0;
+}
+.hero-delay-1 { animation-delay: 0.1s; }
+.hero-delay-2 { animation-delay: 0.2s; }
+.hero-delay-3 { animation-delay: 0.35s; }
+.hero-delay-4 { animation-delay: 0.5s; }
+
+/* Spinning orbit rings */
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes spinReverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+.animate-spin-slow {
+  animation: spinSlow 30s linear infinite;
+}
+.animate-spin-reverse {
+  animation: spinReverse 24s linear infinite;
+}
+
+/* Floating mini cards */
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes floatDelayed {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes floatDelayed2 {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+
+.animate-float-slow {
+  animation: floatSlow 4s ease-in-out infinite;
+}
+.animate-float-delayed {
+  animation: floatDelayed 4.5s ease-in-out 0.5s infinite;
+}
+.animate-float-delayed-2 {
+  animation: floatDelayed2 5s ease-in-out 1s infinite;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   STATS BAR — Count-Up Animation
+   ═══════════════════════════════════════════════════ */
+.stat-number {
+  transition: opacity 0.3s ease;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   SCROLL-REVEAL — used for sections entering viewport
+   ═══════════════════════════════════════════════════ */
+.reveal-section {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.reveal-section.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* ═══════════════════════════════════════════════════
+   EDUCATION PILLS SCROLL
+   ═══════════════════════════════════════════════════ */
+.edu-scroll {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE */
+}
+.edu-scroll::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+
+/* ═══════════════════════════════════════════════════
+   GENERIC HELPERS
+   ═══════════════════════════════════════════════════ */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   SCROLLBAR (Webkit)
+   ═══════════════════════════════════════════════════ */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -86,29 +218,21 @@ main {
   background: #475569;
 }
 
-/* Pulse animation for status dot */
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
 
-/* Selection color */
-::selection {
-  background: #BFDBFE;
-  color: #1E293B;
-}
-.dark ::selection {
-  background: #1E3A8A;
-  color: #E2E8F0;
-}
-
-/* Print styles */
+/* ═══════════════════════════════════════════════════
+   PRINT
+   ═══════════════════════════════════════════════════ */
 @media print {
   header, footer, #mobile-menu, #mobile-overlay {
     display: none !important;
   }
   main {
     animation: none;
+  }
+  .hero-fade-up, .reveal-section {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
   }
   body {
     background: white !important;
