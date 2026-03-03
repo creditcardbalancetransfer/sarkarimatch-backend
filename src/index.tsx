@@ -6,6 +6,8 @@ import { AboutPage } from './pages/About'
 import { PrivacyPage } from './pages/Privacy'
 import { DisclaimerPage } from './pages/Disclaimer'
 import { placeholderJobs } from './lib/placeholder-data'
+import { AdminLoginPage } from './pages/admin/AdminLogin'
+import { AdminDashboardPage } from './pages/admin/AdminDashboard'
 
 const app = new Hono()
 
@@ -50,5 +52,16 @@ app.get('/disclaimer', (c) => {
 app.get('/api/health', (c) => {
   return c.json({ status: 'ok', service: 'SarkariMatch', timestamp: new Date().toISOString() })
 })
+
+// ═══ Admin Panel Routes ═══
+app.get('/admin', (c) => c.redirect('/admin/login'))
+app.get('/admin/login', (c) => c.html(<AdminLoginPage />))
+app.get('/admin/dashboard', (c) => c.html(<AdminDashboardPage />))
+
+// Placeholder admin pages (to be implemented)
+app.get('/admin/upload', (c) => c.html(<AdminDashboardPage />))
+app.get('/admin/jobs', (c) => c.html(<AdminDashboardPage />))
+app.get('/admin/jobs/new', (c) => c.html(<AdminDashboardPage />))
+app.get('/admin/settings', (c) => c.html(<AdminDashboardPage />))
 
 export default app
