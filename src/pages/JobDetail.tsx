@@ -75,6 +75,14 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
   const vacancies = formatVacancies(job.total_vacancies)
   const eduLabel = educationLabels[job.education_level] || job.education_level
   const isExpired = days < 0
+  const isDefence = job.sector === 'defence'
+  const isUPSCOrPSC = job.sector === 'upsc' || job.sector === 'state_psc'
+
+  // Compute vacancy totals for the stacked bar
+  const vbTotals = job.vacancy_breakdown.reduce(
+    (acc, r) => ({ ur: acc.ur + r.ur, obc: acc.obc + r.obc, sc: acc.sc + r.sc, st: acc.st + r.st, ews: acc.ews + r.ews, total: acc.total + r.total }),
+    { ur: 0, obc: 0, sc: 0, st: 0, ews: 0, total: 0 }
+  )
 
   /* Schema.org BreadcrumbList */
   const breadcrumbSchema = {
@@ -111,6 +119,14 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
     },
     'employmentType': 'FULL_TIME',
   }
+
+  // All dates array for timeline
+  const allDates = [
+    { label: 'Notification Date', date: job.important_dates.notification_date, icon: '\ud83d\udce2' },
+    { label: 'Application Start Date', date: job.important_dates.start_date, icon: '\ud83d\udcc4' },
+    { label: 'Application Last Date', date: job.important_dates.last_date, icon: '\u23f0' },
+    ...(job.important_dates.exam_date ? [{ label: 'Exam Date', date: job.important_dates.exam_date, icon: '\ud83d\udcdd' }] : []),
+  ]
 
   return (
     <Layout
@@ -324,7 +340,7 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
                 {/* Apply Now */}
                 {!isExpired && (
                   <a
-                    href={job.official_website}
+                    href={job.apply_link}
                     target="_blank"
                     rel="noopener noreferrer"
                     id="apply-now-btn"
@@ -426,7 +442,7 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
                       type="button"
                       class={`jd-tab-btn px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                         i === 0
-                          ? 'text-brand-secondary dark:text-amber-400 border-brand-secondary dark:border-amber-400 font-semibold'
+                          ? 'text-brand-secondary dark:text-amber-400 border-brand-secondary dark:border-amber-400 font-bold'
                           : 'text-content-secondary dark:text-content-dark-muted border-transparent hover:text-content-primary dark:hover:text-content-dark hover:border-gray-300 dark:hover:border-gray-600'
                       }`}
                       data-tab={tab}
@@ -438,61 +454,55 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
               </div>
             </div>
 
-            {/* ── Tab: Overview ─────────────────────────────── */}
+            {/* ═══════════════════════════════════════════════════
+               TAB 1: OVERVIEW
+               ═══════════════════════════════════════════════════ */}
             <div class="jd-tab-content" data-tab-content="overview">
-              {/* Summary */}
+              {/* Job Summary with Read More */}
               <div class="mb-6">
-                <h2 class="font-heading font-bold text-lg text-content-primary dark:text-content-dark mb-3">About This Notification</h2>
-                <p class="text-sm leading-relaxed text-content-secondary dark:text-content-dark-muted">{job.summary}</p>
+                <h2 class="jd-heading">About This Notification</h2>
+                <div id="overview-summary-wrap" class="relative">
+                  <p id="overview-summary-text" class="jd-body-text">{job.summary}</p>
+                  {job.summary.length > 300 && (
+                    <button id="overview-read-more" type="button" class="text-brand-primary dark:text-blue-400 text-sm font-semibold mt-1 hover:underline hidden">Read More</button>
+                  )}
+                </div>
               </div>
 
-              {/* Key highlights */}
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-                <div class="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-btn">
-                  <span class="shrink-0 w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 text-sm">\ud83c\udfeb</span>
-                  <div>
-                    <div class="text-xs text-content-secondary dark:text-content-dark-muted">Organization</div>
-                    <div class="text-sm font-medium text-content-primary dark:text-content-dark">{job.organization}</div>
-                  </div>
+              {/* Key Highlights Table */}
+              <div class="mb-6">
+                <h2 class="jd-heading">Key Highlights</h2>
+                <div class="jd-kv-table rounded-card border border-gray-200 dark:border-gray-700 overflow-hidden">
+                  <table class="w-full text-sm">
+                    <tbody>
+                      <tr class="jd-kv-row"><td class="jd-kv-key">Organization</td><td class="jd-kv-val">{job.organization}</td></tr>
+                      <tr class="jd-kv-row"><td class="jd-kv-key">Department</td><td class="jd-kv-val">{job.department}</td></tr>
+                      <tr class="jd-kv-row"><td class="jd-kv-key">Total Vacancies</td><td class="jd-kv-val font-semibold text-brand-primary dark:text-blue-400">{vacancies === 'Exam' ? 'Eligibility Test (No fixed vacancies)' : vacancies}</td></tr>
+                      <tr class="jd-kv-row"><td class="jd-kv-key">Qualification</td><td class="jd-kv-val">{eduLabel}</td></tr>
+                      <tr class="jd-kv-row"><td class="jd-kv-key">Age Limit</td><td class="jd-kv-val">{job.age_min === 0 && job.age_max === 0 ? 'No age limit' : `${job.age_min}\u2013${job.age_max} years`}</td></tr>
+                      <tr class="jd-kv-row"><td class="jd-kv-key">Salary Range</td><td class="jd-kv-val">{salary}</td></tr>
+                      <tr class="jd-kv-row"><td class="jd-kv-key">Application Fee</td><td class="jd-kv-val">{job.application_fee_general === 0 ? 'Free' : `Gen/OBC: \u20b9${job.application_fee_general} | SC/ST: ${job.application_fee_sc_st === 0 ? 'Free' : '\u20b9' + job.application_fee_sc_st}`}</td></tr>
+                      <tr class="jd-kv-row"><td class="jd-kv-key">Last Date</td><td class="jd-kv-val">{formatDateShort(job.important_dates.last_date)} {days >= 0 ? `(${days} days left)` : '(Closed)'}</td></tr>
+                      <tr class="jd-kv-row"><td class="jd-kv-key">Mode of Apply</td><td class="jd-kv-val">{job.application_mode}</td></tr>
+                      <tr class="jd-kv-row"><td class="jd-kv-key">Selection</td><td class="jd-kv-val">{job.selection_process.map(s => s.name).join(' \u2192 ')}</td></tr>
+                      <tr class="jd-kv-row"><td class="jd-kv-key">Job Location</td><td class="jd-kv-val">{job.locations.join(', ')}</td></tr>
+                    </tbody>
+                  </table>
                 </div>
-                <div class="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-btn">
-                  <span class="shrink-0 w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400 text-sm">\ud83d\udcbc</span>
-                  <div>
-                    <div class="text-xs text-content-secondary dark:text-content-dark-muted">Department</div>
-                    <div class="text-sm font-medium text-content-primary dark:text-content-dark">{job.department}</div>
-                  </div>
-                </div>
-                <div class="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-btn">
-                  <span class="shrink-0 w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400 text-sm">\ud83c\udf93</span>
-                  <div>
-                    <div class="text-xs text-content-secondary dark:text-content-dark-muted">Education Required</div>
-                    <div class="text-sm font-medium text-content-primary dark:text-content-dark">{eduLabel}</div>
-                  </div>
-                </div>
-                <div class="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-btn">
-                  <span class="shrink-0 w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400 text-sm">\ud83d\udccd</span>
-                  <div>
-                    <div class="text-xs text-content-secondary dark:text-content-dark-muted">Location</div>
-                    <div class="text-sm font-medium text-content-primary dark:text-content-dark">{job.locations.join(', ')}</div>
-                  </div>
-                </div>
-                <div class="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-btn">
-                  <span class="shrink-0 w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400 text-sm">\ud83d\udc64</span>
-                  <div>
-                    <div class="text-xs text-content-secondary dark:text-content-dark-muted">Age Limit</div>
-                    <div class="text-sm font-medium text-content-primary dark:text-content-dark">
-                      {job.age_min === 0 && job.age_max === 0 ? 'No age limit' : `${job.age_min}\u2013${job.age_max} years`}
+              </div>
+
+              {/* Important Notice */}
+              {job.important_notice && (
+                <div class="jd-notice-box mb-6">
+                  <div class="flex items-start gap-3">
+                    <span class="shrink-0 text-lg">\u26a0\ufe0f</span>
+                    <div>
+                      <h3 class="font-semibold text-sm text-amber-800 dark:text-amber-300 mb-1">Important Notice</h3>
+                      <p class="text-sm text-amber-700 dark:text-amber-400 leading-relaxed">{job.important_notice}</p>
                     </div>
                   </div>
                 </div>
-                <div class="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-btn">
-                  <span class="shrink-0 w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center text-teal-600 dark:text-teal-400 text-sm">\ud83d\udcb0</span>
-                  <div>
-                    <div class="text-xs text-content-secondary dark:text-content-dark-muted">Salary Range</div>
-                    <div class="text-sm font-medium text-content-primary dark:text-content-dark">{salary}</div>
-                  </div>
-                </div>
-              </div>
+              )}
 
               {/* Tags */}
               <div class="flex flex-wrap gap-2 mb-6">
@@ -504,7 +514,7 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
               </div>
 
               {/* Official website */}
-              <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-card border border-blue-200/50 dark:border-blue-800/30">
+              <div class="jd-info-box jd-info-box-blue mb-4">
                 <div class="flex items-center gap-2 text-sm">
                   <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
@@ -517,207 +527,498 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
               </div>
             </div>
 
-            {/* ── Tab: Posts & Vacancies ────────────────────── */}
+            {/* ═══════════════════════════════════════════════════
+               TAB 2: POSTS & VACANCIES
+               ═══════════════════════════════════════════════════ */}
             <div class="jd-tab-content hidden" data-tab-content="posts">
-              <h2 class="font-heading font-bold text-lg text-content-primary dark:text-content-dark mb-4">Posts & Vacancies</h2>
+              <h2 class="jd-heading">Posts &amp; Vacancies</h2>
+              <p class="jd-body-text mb-5">
+                {job.posts.length} {job.posts.length === 1 ? 'post' : 'posts'} with <strong class="text-content-primary dark:text-content-dark">{vacancies}</strong> total vacancies
+              </p>
 
-              {/* Post cards */}
-              <div class="space-y-4 mb-6">
-                {job.posts.map((post, i) => (
-                  <div key={i} class="bg-white dark:bg-surface-card-dark rounded-card border border-gray-200 dark:border-gray-700 p-4 sm:p-5">
-                    <h3 class="font-heading font-semibold text-base text-content-primary dark:text-content-dark mb-3">{post.post_name}</h3>
-                    <div class="grid grid-cols-2 gap-3 text-sm">
-                      <div><span class="text-content-secondary dark:text-content-dark-muted">Vacancies:</span> <strong class="text-content-primary dark:text-content-dark">{formatVacancies(post.vacancies_total)}</strong></div>
-                      <div><span class="text-content-secondary dark:text-content-dark-muted">Salary:</span> <strong class="text-content-primary dark:text-content-dark">{post.salary}</strong></div>
-                      <div class="col-span-2"><span class="text-content-secondary dark:text-content-dark-muted">Education:</span> <strong class="text-content-primary dark:text-content-dark">{post.education_required}</strong></div>
-                      <div class="col-span-2"><span class="text-content-secondary dark:text-content-dark-muted">Age:</span> <strong class="text-content-primary dark:text-content-dark">{post.age_limit}</strong></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Vacancy breakdown table */}
-              {job.vacancy_breakdown.length > 0 && job.vacancy_breakdown[0].total > 0 && (
-                <div>
-                  <h3 class="font-heading font-semibold text-base text-content-primary dark:text-content-dark mb-3">Category-wise Vacancy Breakdown</h3>
+              {/* Desktop: Full Vacancy Table */}
+              {job.vacancy_breakdown.length > 0 && vbTotals.total > 0 && (
+                <div class="jd-vacancy-table-wrap mb-6 hidden sm:block">
                   <div class="overflow-x-auto rounded-card border border-gray-200 dark:border-gray-700">
-                    <table class="w-full text-sm">
+                    <table class="w-full text-sm jd-table" id="vacancy-table">
                       <thead>
                         <tr class="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700">
-                          <th class="px-3 py-2.5 text-left font-semibold text-content-primary dark:text-content-dark">Post</th>
-                          <th class="px-3 py-2.5 text-center font-semibold text-content-primary dark:text-content-dark">UR</th>
-                          <th class="px-3 py-2.5 text-center font-semibold text-content-primary dark:text-content-dark">OBC</th>
-                          <th class="px-3 py-2.5 text-center font-semibold text-content-primary dark:text-content-dark">SC</th>
-                          <th class="px-3 py-2.5 text-center font-semibold text-content-primary dark:text-content-dark">ST</th>
-                          <th class="px-3 py-2.5 text-center font-semibold text-content-primary dark:text-content-dark">EWS</th>
-                          <th class="px-3 py-2.5 text-center font-semibold text-brand-primary dark:text-blue-400">Total</th>
+                          <th class="jd-th text-left sticky left-0 bg-gray-50 dark:bg-gray-800/50 z-10 min-w-[180px]">Post Name</th>
+                          <th class="jd-th text-center" data-cat="ur">UR</th>
+                          <th class="jd-th text-center" data-cat="obc">OBC</th>
+                          <th class="jd-th text-center" data-cat="sc">SC</th>
+                          <th class="jd-th text-center" data-cat="st">ST</th>
+                          <th class="jd-th text-center" data-cat="ews">EWS</th>
+                          <th class="jd-th text-center font-bold text-brand-primary dark:text-blue-400">Total</th>
+                          <th class="jd-th text-center jd-elig-col hidden">Your Eligibility</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {job.vacancy_breakdown.map((row, i) => (
-                          <tr key={i} class="border-b border-gray-100 dark:border-gray-700/50 last:border-0">
-                            <td class="px-3 py-2.5 font-medium text-content-primary dark:text-content-dark max-w-[200px] truncate">{row.post_name}</td>
-                            <td class="px-3 py-2.5 text-center text-content-secondary dark:text-content-dark-muted">{row.ur}</td>
-                            <td class="px-3 py-2.5 text-center text-content-secondary dark:text-content-dark-muted">{row.obc}</td>
-                            <td class="px-3 py-2.5 text-center text-content-secondary dark:text-content-dark-muted">{row.sc}</td>
-                            <td class="px-3 py-2.5 text-center text-content-secondary dark:text-content-dark-muted">{row.st}</td>
-                            <td class="px-3 py-2.5 text-center text-content-secondary dark:text-content-dark-muted">{row.ews}</td>
-                            <td class="px-3 py-2.5 text-center font-bold text-brand-primary dark:text-blue-400">{row.total}</td>
-                          </tr>
-                        ))}
+                        {job.vacancy_breakdown.map((row, i) => {
+                          const post = job.posts[i]
+                          return (
+                            <>
+                              <tr key={`row-${i}`} class="jd-table-row border-b border-gray-100 dark:border-gray-700/50 cursor-pointer" data-expand-row={i}>
+                                <td class="jd-td font-medium sticky left-0 bg-white dark:bg-surface-card-dark z-10">
+                                  <div class="flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5 text-content-secondary dark:text-content-dark-muted jd-expand-icon transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+                                    <span class="truncate max-w-[200px]">{row.post_name}</span>
+                                  </div>
+                                </td>
+                                <td class="jd-td text-center" data-cat="ur">{row.ur}</td>
+                                <td class="jd-td text-center" data-cat="obc">{row.obc}</td>
+                                <td class="jd-td text-center" data-cat="sc">{row.sc}</td>
+                                <td class="jd-td text-center" data-cat="st">{row.st}</td>
+                                <td class="jd-td text-center" data-cat="ews">{row.ews}</td>
+                                <td class="jd-td text-center font-bold text-brand-primary dark:text-blue-400">{row.total}</td>
+                                <td class="jd-td text-center jd-elig-col hidden" data-elig-cell={i}></td>
+                              </tr>
+                              {/* Expanded detail row (hidden by default) */}
+                              {post && (
+                                <tr key={`detail-${i}`} class="jd-expand-detail hidden" data-expand-detail={i}>
+                                  <td colspan={8} class="px-4 py-3 bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-700/50">
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                                      <div><span class="text-content-secondary dark:text-content-dark-muted">Education:</span> <span class="text-content-primary dark:text-content-dark">{post.education_required}</span></div>
+                                      <div><span class="text-content-secondary dark:text-content-dark-muted">Age:</span> <span class="text-content-primary dark:text-content-dark">{post.age_limit}</span></div>
+                                      <div><span class="text-content-secondary dark:text-content-dark-muted">Salary:</span> <span class="text-content-primary dark:text-content-dark">{post.salary}</span></div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              )}
+                            </>
+                          )
+                        })}
+                        {/* Totals row */}
+                        <tr class="bg-gray-50 dark:bg-gray-800/50 font-semibold border-t border-gray-200 dark:border-gray-700">
+                          <td class="jd-td sticky left-0 bg-gray-50 dark:bg-gray-800/50 z-10">Total</td>
+                          <td class="jd-td text-center">{vbTotals.ur}</td>
+                          <td class="jd-td text-center">{vbTotals.obc}</td>
+                          <td class="jd-td text-center">{vbTotals.sc}</td>
+                          <td class="jd-td text-center">{vbTotals.st}</td>
+                          <td class="jd-td text-center">{vbTotals.ews}</td>
+                          <td class="jd-td text-center text-brand-primary dark:text-blue-400">{vbTotals.total}</td>
+                          <td class="jd-td text-center jd-elig-col hidden"></td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>
                 </div>
               )}
+
+              {/* Mobile: Stacked Cards */}
+              <div class="sm:hidden space-y-3 mb-6" id="vacancy-mobile-cards">
+                {job.posts.map((post, i) => {
+                  const vb = job.vacancy_breakdown[i]
+                  return (
+                    <div key={i} class="jd-vacancy-card rounded-card border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-card-dark overflow-hidden" data-post-idx={i}>
+                      <div class="p-4">
+                        <h3 class="font-semibold text-sm text-content-primary dark:text-content-dark mb-2">{post.post_name}</h3>
+                        {vb && (
+                          <div class="flex flex-wrap gap-1.5 mb-3">
+                            <span class="jd-cat-pill">UR: {vb.ur}</span>
+                            <span class="jd-cat-pill">OBC: {vb.obc}</span>
+                            <span class="jd-cat-pill">SC: {vb.sc}</span>
+                            <span class="jd-cat-pill">ST: {vb.st}</span>
+                            <span class="jd-cat-pill">EWS: {vb.ews}</span>
+                            <span class="jd-cat-pill font-bold text-brand-primary dark:text-blue-400">Total: {vb.total}</span>
+                          </div>
+                        )}
+                        <div class="space-y-1 text-xs text-content-secondary dark:text-content-dark-muted">
+                          <div>\ud83c\udf93 {post.education_required}</div>
+                          <div>\ud83d\udcc5 {post.age_limit}</div>
+                          <div>\ud83d\udcb0 {post.salary}</div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+
+              {/* Vacancy Summary Chart - Horizontal stacked bar */}
+              {vbTotals.total > 0 && (
+                <div class="mb-6">
+                  <h3 class="font-heading font-semibold text-base text-content-primary dark:text-content-dark mb-3">Reservation Breakdown</h3>
+                  <div class="bg-white dark:bg-surface-card-dark rounded-card border border-gray-200 dark:border-gray-700 p-4">
+                    <div class="h-8 rounded-full overflow-hidden flex mb-3" role="img" aria-label="Vacancy distribution chart">
+                      <div class="bg-blue-500" style={`width:${(vbTotals.ur / vbTotals.total * 100).toFixed(1)}%`} title={`UR: ${vbTotals.ur}`}></div>
+                      <div class="bg-green-500" style={`width:${(vbTotals.obc / vbTotals.total * 100).toFixed(1)}%`} title={`OBC: ${vbTotals.obc}`}></div>
+                      <div class="bg-purple-500" style={`width:${(vbTotals.sc / vbTotals.total * 100).toFixed(1)}%`} title={`SC: ${vbTotals.sc}`}></div>
+                      <div class="bg-orange-500" style={`width:${(vbTotals.st / vbTotals.total * 100).toFixed(1)}%`} title={`ST: ${vbTotals.st}`}></div>
+                      <div class="bg-amber-400" style={`width:${(vbTotals.ews / vbTotals.total * 100).toFixed(1)}%`} title={`EWS: ${vbTotals.ews}`}></div>
+                    </div>
+                    <div class="flex flex-wrap gap-x-4 gap-y-1.5 text-xs">
+                      <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-blue-500"></span>UR: {vbTotals.ur} ({(vbTotals.ur / vbTotals.total * 100).toFixed(0)}%)</span>
+                      <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-green-500"></span>OBC: {vbTotals.obc} ({(vbTotals.obc / vbTotals.total * 100).toFixed(0)}%)</span>
+                      <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-purple-500"></span>SC: {vbTotals.sc} ({(vbTotals.sc / vbTotals.total * 100).toFixed(0)}%)</span>
+                      <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-orange-500"></span>ST: {vbTotals.st} ({(vbTotals.st / vbTotals.total * 100).toFixed(0)}%)</span>
+                      <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-amber-400"></span>EWS: {vbTotals.ews} ({(vbTotals.ews / vbTotals.total * 100).toFixed(0)}%)</span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* ── Tab: How to Apply ────────────────────────── */}
+            {/* ═══════════════════════════════════════════════════
+               TAB 3: HOW TO APPLY
+               ═══════════════════════════════════════════════════ */}
             <div class="jd-tab-content hidden" data-tab-content="how-to-apply">
-              <h2 class="font-heading font-bold text-lg text-content-primary dark:text-content-dark mb-4">How to Apply</h2>
-              <ol class="space-y-3">
+              <h2 class="jd-heading">How to Apply</h2>
+
+              {/* Application Mode Badge */}
+              <div class="flex items-center gap-2 mb-5">
+                <span class={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-xs font-bold ${
+                  job.application_mode === 'Online' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' :
+                  job.application_mode === 'Offline' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300' :
+                  'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                }`}>
+                  {job.application_mode === 'Online' ? '\ud83d\udcbb' : job.application_mode === 'Offline' ? '\ud83d\udce8' : '\ud83d\udcbb\ud83d\udce8'}
+                  {job.application_mode} Application
+                </span>
+              </div>
+
+              {/* Step-by-step guide */}
+              <div class="space-y-4 mb-6">
                 {job.how_to_apply.map((step, i) => (
-                  <li key={i} class="flex gap-3">
-                    <span class="shrink-0 w-7 h-7 rounded-full bg-brand-primary text-white text-xs font-bold flex items-center justify-center">{i + 1}</span>
-                    <p class="text-sm text-content-secondary dark:text-content-dark-muted leading-relaxed pt-0.5">{step}</p>
-                  </li>
+                  <div key={i} class="flex gap-4">
+                    <div class="shrink-0 w-8 h-8 rounded-full bg-brand-primary text-white text-xs font-bold flex items-center justify-center shadow-sm">{i + 1}</div>
+                    <div class="flex-1 pt-1">
+                      <p class="jd-body-text" dangerouslySetInnerHTML={{
+                        __html: step.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-brand-primary dark:text-blue-400 hover:underline font-medium">$1</a>')
+                      }}></p>
+                    </div>
+                  </div>
                 ))}
-              </ol>
+              </div>
+
+              {/* Tip info box */}
+              <div class="jd-info-box jd-info-box-green mb-6">
+                <div class="flex items-start gap-3">
+                  <span class="shrink-0 text-lg">\ud83d\udca1</span>
+                  <div>
+                    <h3 class="font-semibold text-sm text-green-800 dark:text-green-300 mb-1">Pro Tip</h3>
+                    <p class="text-sm text-green-700 dark:text-green-400 leading-relaxed">Keep a soft copy of all uploaded documents. Take a screenshot of the payment confirmation and application form before submitting. Note down your registration number immediately.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Important Documents Checklist */}
+              {job.documents_required && job.documents_required.length > 0 && (
+                <div class="mb-6">
+                  <h3 class="jd-heading">Important Documents Checklist</h3>
+                  <div class="bg-white dark:bg-surface-card-dark rounded-card border border-gray-200 dark:border-gray-700 p-4 sm:p-5">
+                    <div id="docs-progress" class="flex items-center justify-between text-xs text-content-secondary dark:text-content-dark-muted mb-3">
+                      <span>Progress</span>
+                      <span id="docs-progress-text">0 of {job.documents_required.length} documents ready</span>
+                    </div>
+                    <div class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden mb-4">
+                      <div id="docs-progress-bar" class="h-full rounded-full bg-green-500 transition-all duration-300" style="width:0%"></div>
+                    </div>
+                    <div class="space-y-2" id="docs-checklist">
+                      {job.documents_required.map((doc, i) => (
+                        <label key={i} class="flex items-center gap-3 p-2.5 rounded-btn hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer transition-colors group">
+                          <input type="checkbox" class="jd-doc-check w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-green-600 focus:ring-green-500 dark:focus:ring-green-400 dark:bg-gray-700" data-doc-idx={i} />
+                          <span class="text-sm text-content-primary dark:text-content-dark group-hover:text-brand-primary dark:group-hover:text-blue-400 transition-colors">{doc}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Apply Now Button */}
               {!isExpired && (
                 <a
-                  href={job.official_website}
+                  href={job.apply_link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-brand-secondary hover:bg-brand-secondary-dark text-white font-bold text-sm rounded-btn transition-colors"
+                  class="inline-flex items-center gap-2 px-8 py-3.5 bg-brand-secondary hover:bg-brand-secondary-dark text-white font-bold text-base rounded-btn transition-colors shadow-sm"
                 >
                   Apply Now on Official Website
-                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
                   </svg>
                 </a>
               )}
             </div>
 
-            {/* ── Tab: Selection Process ───────────────────── */}
+            {/* ═══════════════════════════════════════════════════
+               TAB 4: SELECTION PROCESS
+               ═══════════════════════════════════════════════════ */}
             <div class="jd-tab-content hidden" data-tab-content="selection">
-              <h2 class="font-heading font-bold text-lg text-content-primary dark:text-content-dark mb-4">Selection Process</h2>
-              <div class="relative">
-                {/* Timeline line */}
-                <div class="absolute left-[15px] top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700" aria-hidden="true"></div>
-                <div class="space-y-6">
-                  {job.selection_process.map((stage) => (
-                    <div key={stage.stage} class="relative flex gap-4 pl-1">
-                      <div class={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white z-10 ${stage.is_eliminatory ? 'bg-red-500' : 'bg-green-500'}`}>
-                        {stage.stage}
+              <h2 class="jd-heading">Selection Process</h2>
+
+              {/* Visual Pipeline */}
+              <div class="jd-pipeline space-y-0 mb-6">
+                {job.selection_process.map((stage, i) => (
+                  <div key={stage.stage} class="jd-pipeline-stage" data-stage-idx={i}>
+                    {/* Connector arrow */}
+                    {i > 0 && (
+                      <div class="flex justify-center py-1" aria-hidden="true">
+                        <svg class="w-5 h-5 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" /></svg>
                       </div>
-                      <div class="flex-1 pb-2">
-                        <div class="flex items-center gap-2 flex-wrap mb-1">
-                          <h3 class="font-semibold text-sm text-content-primary dark:text-content-dark">{stage.name}</h3>
-                          {stage.is_eliminatory && (
-                            <span class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-pill">Eliminatory</span>
-                          )}
+                    )}
+                    <div class={`jd-stage-card rounded-card border p-4 sm:p-5 cursor-pointer transition-all hover:shadow-card ${
+                      stage.is_eliminatory ? 'border-red-200 dark:border-red-800/40 bg-red-50/30 dark:bg-red-900/10' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-card-dark'
+                    }`}>
+                      <div class="flex items-center gap-3 mb-2">
+                        <div class={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white ${stage.is_eliminatory ? 'bg-red-500' : 'bg-blue-500'}`}>
+                          {stage.stage}
                         </div>
+                        <div class="flex-1 min-w-0">
+                          <div class="flex items-center gap-2 flex-wrap">
+                            <h3 class="font-semibold text-sm text-content-primary dark:text-content-dark">{stage.name}</h3>
+                            <span class={`px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-pill ${
+                              stage.is_eliminatory ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300' : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                            }`}>
+                              {stage.is_eliminatory ? 'Eliminatory' : 'Qualifying'}
+                            </span>
+                          </div>
+                        </div>
+                        <svg class="w-4 h-4 text-content-secondary dark:text-content-dark-muted jd-stage-chevron transition-transform shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+                      </div>
+                      <div class="jd-stage-desc hidden pl-12">
                         <p class="text-sm text-content-secondary dark:text-content-dark-muted leading-relaxed">{stage.description}</p>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* ── Tab: Important Dates ─────────────────────── */}
-            <div class="jd-tab-content hidden" data-tab-content="dates">
-              <h2 class="font-heading font-bold text-lg text-content-primary dark:text-content-dark mb-4">Important Dates</h2>
-              <div class="bg-white dark:bg-surface-card-dark rounded-card border border-gray-200 dark:border-gray-700 overflow-hidden">
-                {([
-                  { label: 'Notification Date', date: job.important_dates.notification_date, icon: '\ud83d\udce2' },
-                  { label: 'Application Start Date', date: job.important_dates.start_date, icon: '\ud83d\udcc4' },
-                  { label: 'Application Last Date', date: job.important_dates.last_date, icon: '\u23f0' },
-                  ...(job.important_dates.exam_date ? [{ label: 'Exam Date', date: job.important_dates.exam_date, icon: '\ud83d\udcdd' }] : []),
-                ] as Array<{label:string;date:string;icon:string}>).map((item, i) => {
-                  const dLeft = daysRemaining(item.date, '2026-03-03')
-                  const isPast = dLeft < 0
-                  const isToday = dLeft === 0
-                  return (
-                    <div key={i} class={`flex items-center gap-4 px-4 sm:px-5 py-3.5 ${i > 0 ? 'border-t border-gray-100 dark:border-gray-700/50' : ''}`}>
-                      <span class="text-xl" aria-hidden="true">{item.icon}</span>
-                      <div class="flex-1">
-                        <div class="text-xs text-content-secondary dark:text-content-dark-muted">{item.label}</div>
-                        <div class={`text-sm font-semibold ${isPast ? 'text-gray-400 dark:text-gray-500 line-through' : 'text-content-primary dark:text-content-dark'}`}>
-                          {formatDateShort(item.date)}
-                        </div>
-                      </div>
-                      <div class={`text-xs font-medium px-2.5 py-1 rounded-pill ${
-                        isPast ? 'bg-gray-100 dark:bg-gray-800 text-gray-500' :
-                        isToday ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300' :
-                        dLeft <= 7 ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300' :
-                        'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
-                      }`}>
-                        {isPast ? 'Passed' : isToday ? 'Today!' : `${dLeft} days left`}
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-
-            {/* ── Tab: Exam Pattern ────────────────────────── */}
-            <div class="jd-tab-content hidden" data-tab-content="exam-pattern">
-              <h2 class="font-heading font-bold text-lg text-content-primary dark:text-content-dark mb-4">Exam Pattern</h2>
-
-              {job.exam_pattern ? (
-                <div class="mb-6">
-                  <div class="overflow-x-auto rounded-card border border-gray-200 dark:border-gray-700">
-                    <table class="w-full text-sm">
-                      <thead>
-                        <tr class="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700">
-                          <th class="px-3 py-2.5 text-left font-semibold text-content-primary dark:text-content-dark">Section</th>
-                          <th class="px-3 py-2.5 text-center font-semibold text-content-primary dark:text-content-dark">Questions</th>
-                          <th class="px-3 py-2.5 text-center font-semibold text-content-primary dark:text-content-dark">Marks</th>
-                          <th class="px-3 py-2.5 text-center font-semibold text-content-primary dark:text-content-dark">Duration</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {job.exam_pattern.map((sec, i) => (
-                          <tr key={i} class="border-b border-gray-100 dark:border-gray-700/50 last:border-0">
-                            <td class="px-3 py-2.5 font-medium text-content-primary dark:text-content-dark">{sec.section}</td>
-                            <td class="px-3 py-2.5 text-center text-content-secondary dark:text-content-dark-muted">{sec.questions}</td>
-                            <td class="px-3 py-2.5 text-center text-content-secondary dark:text-content-dark-muted">{sec.marks}</td>
-                            <td class="px-3 py-2.5 text-center text-content-secondary dark:text-content-dark-muted">{sec.duration_minutes ? `${sec.duration_minutes} min` : 'Combined'}</td>
-                          </tr>
-                        ))}
-                        <tr class="bg-gray-50 dark:bg-gray-800/50 font-semibold">
-                          <td class="px-3 py-2.5 text-content-primary dark:text-content-dark">Total</td>
-                          <td class="px-3 py-2.5 text-center text-content-primary dark:text-content-dark">{job.exam_pattern.reduce((s, sec) => s + sec.questions, 0)}</td>
-                          <td class="px-3 py-2.5 text-center text-brand-primary dark:text-blue-400">{job.exam_pattern.reduce((s, sec) => s + sec.marks, 0)}</td>
-                          <td class="px-3 py-2.5 text-center text-content-primary dark:text-content-dark">
-                            {job.exam_pattern.some(s => s.duration_minutes)
-                              ? `${job.exam_pattern.reduce((s, sec) => s + (sec.duration_minutes || 0), 0)} min`
-                              : '\u2014'}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
                   </div>
-                </div>
-              ) : (
-                <div class="p-6 text-center bg-gray-50 dark:bg-gray-800/50 rounded-card border border-gray-200 dark:border-gray-700 mb-6">
-                  <p class="text-sm text-content-secondary dark:text-content-dark-muted">No written examination for this recruitment. Selection is based on physical tests, merit, and document verification.</p>
+                ))}
+              </div>
+
+              {/* Defence-specific: Physical Fitness & Medical */}
+              {isDefence && (
+                <div class="space-y-4 mb-6">
+                  <h3 class="jd-heading">Physical &amp; Medical Standards</h3>
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="jd-info-box jd-info-box-amber">
+                      <h4 class="font-semibold text-sm text-amber-800 dark:text-amber-300 mb-2">\ud83c\udfcb\ufe0f Physical Fitness</h4>
+                      <ul class="text-xs text-amber-700 dark:text-amber-400 space-y-1 leading-relaxed">
+                        <li>1.6 km run in prescribed time</li>
+                        <li>Pull-ups (6-10 reps)</li>
+                        <li>9-feet ditch jump</li>
+                        <li>Balancing beam walk</li>
+                      </ul>
+                    </div>
+                    <div class="jd-info-box jd-info-box-red">
+                      <h4 class="font-semibold text-sm text-red-800 dark:text-red-300 mb-2">\ud83c\udfe5 Medical Standards</h4>
+                      <ul class="text-xs text-red-700 dark:text-red-400 space-y-1 leading-relaxed">
+                        <li>Eyesight: 6/6 without glasses</li>
+                        <li>Color vision: Normal</li>
+                        <li>BMI within prescribed range</li>
+                        <li>No flat feet / knock knees</li>
+                      </ul>
+                    </div>
+                    <div class="jd-info-box jd-info-box-green">
+                      <h4 class="font-semibold text-sm text-green-800 dark:text-green-300 mb-2">\ud83c\udf96\ufe0f Training</h4>
+                      <ul class="text-xs text-green-700 dark:text-green-400 space-y-1 leading-relaxed">
+                        <li>Basic military training</li>
+                        <li>Weapon handling</li>
+                        <li>Field craft exercises</li>
+                        <li>Physical conditioning</li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               )}
 
-              {/* Syllabus Topics */}
-              {job.syllabus_topics && (
-                <div>
-                  <h3 class="font-heading font-semibold text-base text-content-primary dark:text-content-dark mb-3">Syllabus Topics</h3>
-                  <div class="space-y-3">
-                    {Object.entries(job.syllabus_topics).map(([subject, topics]) => (
-                      <div key={subject} class="bg-white dark:bg-surface-card-dark rounded-card border border-gray-200 dark:border-gray-700 p-4">
-                        <h4 class="font-semibold text-sm text-content-primary dark:text-content-dark mb-2">{subject}</h4>
-                        <div class="flex flex-wrap gap-1.5">
-                          {topics.map((topic: string) => (
-                            <span key={topic} class="px-2 py-0.5 text-xs bg-gray-100 dark:bg-gray-800 text-content-secondary dark:text-content-dark-muted rounded-pill">{topic}</span>
+              {/* UPSC/PSC-specific: Personality Test & DV */}
+              {isUPSCOrPSC && (
+                <div class="space-y-4 mb-6">
+                  <h3 class="jd-heading">Additional Selection Components</h3>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="jd-info-box jd-info-box-purple">
+                      <h4 class="font-semibold text-sm text-purple-800 dark:text-purple-300 mb-2">\ud83c\udf99\ufe0f Personality Test / Interview</h4>
+                      <ul class="text-xs text-purple-700 dark:text-purple-400 space-y-1 leading-relaxed">
+                        <li>Tests personality, communication skills</li>
+                        <li>Awareness of current affairs</li>
+                        <li>Logical and analytical thinking</li>
+                        <li>Suitability for administrative services</li>
+                      </ul>
+                    </div>
+                    <div class="jd-info-box jd-info-box-blue">
+                      <h4 class="font-semibold text-sm text-blue-800 dark:text-blue-300 mb-2">\ud83d\udcc4 Document Verification</h4>
+                      <ul class="text-xs text-blue-700 dark:text-blue-400 space-y-1 leading-relaxed">
+                        <li>Original certificates verification</li>
+                        <li>Caste / Category certificate</li>
+                        <li>Character and identity proof</li>
+                        <li>Medical fitness certificate</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* ═══════════════════════════════════════════════════
+               TAB 5: IMPORTANT DATES
+               ═══════════════════════════════════════════════════ */}
+            <div class="jd-tab-content hidden" data-tab-content="dates">
+              <h2 class="jd-heading">Important Dates</h2>
+
+              {/* Vertical Timeline */}
+              <div class="jd-timeline relative mb-6">
+                {/* Timeline line */}
+                <div class="absolute left-4 sm:left-5 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700" aria-hidden="true"></div>
+
+                <div class="space-y-0">
+                  {allDates.map((item, i) => {
+                    const dLeft = daysRemaining(item.date, '2026-03-03')
+                    const isPast = dLeft < 0
+                    const isToday = dLeft === 0
+                    const isUpcoming = dLeft > 0 && dLeft <= 7
+                    const isFuture = dLeft > 7
+                    return (
+                      <div key={i} class="relative flex gap-4 pl-1 py-3">
+                        {/* Timeline dot */}
+                        <div class={`shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-sm z-10 border-2 ${
+                          isPast ? 'bg-green-100 dark:bg-green-900/30 border-green-400 dark:border-green-600' :
+                          isToday || isUpcoming ? 'bg-red-100 dark:bg-red-900/30 border-red-400 dark:border-red-600' :
+                          'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600'
+                        }`}>
+                          {isPast ? (
+                            <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                          ) : (
+                            <span class="text-xs">{item.icon}</span>
+                          )}
+                        </div>
+                        {/* Content */}
+                        <div class="flex-1 min-w-0">
+                          <div class="flex items-center justify-between gap-2 flex-wrap">
+                            <div>
+                              <div class="text-xs font-medium text-content-secondary dark:text-content-dark-muted">{item.label}</div>
+                              <div class={`text-base font-semibold ${isPast ? 'text-gray-400 dark:text-gray-500' : 'text-content-primary dark:text-content-dark'}`}>
+                                {formatDateShort(item.date)}
+                              </div>
+                            </div>
+                            <div class={`text-xs font-semibold px-2.5 py-1 rounded-pill ${
+                              isPast ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' :
+                              isToday ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 animate-pulse' :
+                              isUpcoming ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300' :
+                              isFuture ? 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400' : ''
+                            }`}>
+                              {isPast ? '\u2705 Passed' : isToday ? '\ud83d\udd25 Today!' : `${dLeft} days left`}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Add to Calendar */}
+              <div class="flex flex-wrap gap-3 mb-6">
+                <button
+                  type="button"
+                  id="add-to-calendar-btn"
+                  class="inline-flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-surface-card-dark border border-gray-200 dark:border-gray-700 text-content-primary dark:text-content-dark font-semibold text-sm rounded-btn hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                  data-event-title={`Last Date: ${job.notification_title}`}
+                  data-event-date={job.important_dates.last_date}
+                  data-event-url={job.apply_link}
+                >
+                  <svg class="w-4 h-4 text-brand-primary dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                  </svg>
+                  Add Last Date to Calendar
+                </button>
+              </div>
+
+              {/* Clash Detector */}
+              <div id="clash-detector" class="hidden mb-6"></div>
+            </div>
+
+            {/* ═══════════════════════════════════════════════════
+               TAB 6: EXAM PATTERN & SYLLABUS
+               ═══════════════════════════════════════════════════ */}
+            <div class="jd-tab-content hidden" data-tab-content="exam-pattern">
+              <h2 class="jd-heading">Exam Pattern &amp; Syllabus</h2>
+
+              {job.exam_pattern ? (
+                <>
+                  {/* Exam Pattern Table */}
+                  <div class="mb-6">
+                    <div class="overflow-x-auto rounded-card border border-gray-200 dark:border-gray-700">
+                      <table class="w-full text-sm jd-table">
+                        <thead>
+                          <tr class="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700">
+                            <th class="jd-th text-left">Section</th>
+                            <th class="jd-th text-center">Questions</th>
+                            <th class="jd-th text-center">Marks</th>
+                            <th class="jd-th text-center">Duration</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {job.exam_pattern.map((sec, i) => (
+                            <tr key={i} class="jd-table-row border-b border-gray-100 dark:border-gray-700/50">
+                              <td class="jd-td font-medium">{sec.section}</td>
+                              <td class="jd-td text-center tabular-nums">{sec.questions}</td>
+                              <td class="jd-td text-center tabular-nums">{sec.marks}</td>
+                              <td class="jd-td text-center">{sec.duration_minutes ? `${sec.duration_minutes} min` : 'Combined'}</td>
+                            </tr>
                           ))}
+                          <tr class="bg-gray-50 dark:bg-gray-800/50 font-semibold border-t border-gray-200 dark:border-gray-700">
+                            <td class="jd-td">Total</td>
+                            <td class="jd-td text-center tabular-nums">{job.exam_pattern.reduce((s, sec) => s + sec.questions, 0)}</td>
+                            <td class="jd-td text-center text-brand-primary dark:text-blue-400 tabular-nums">{job.exam_pattern.reduce((s, sec) => s + sec.marks, 0)}</td>
+                            <td class="jd-td text-center">
+                              {job.exam_pattern.some(s => s.duration_minutes)
+                                ? `${job.exam_pattern.reduce((s, sec) => s + (sec.duration_minutes || 0), 0)} min`
+                                : '\u2014'}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* Marking Scheme Info Box */}
+                  {job.marking_scheme && (
+                    <div class="jd-info-box jd-info-box-amber mb-6">
+                      <div class="flex items-start gap-3">
+                        <span class="shrink-0 text-lg">\ud83d\udcdd</span>
+                        <div>
+                          <h3 class="font-semibold text-sm text-amber-800 dark:text-amber-300 mb-1">Marking Scheme</h3>
+                          <p class="text-sm text-amber-700 dark:text-amber-400 leading-relaxed">{job.marking_scheme}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div class="jd-info-box jd-info-box-blue mb-6">
+                  <div class="flex items-start gap-3">
+                    <span class="shrink-0 text-lg">\u2139\ufe0f</span>
+                    <div>
+                      <h3 class="font-semibold text-sm text-blue-800 dark:text-blue-300 mb-1">No Written Examination</h3>
+                      <p class="text-sm text-blue-700 dark:text-blue-400 leading-relaxed">
+                        This recruitment does not include a written examination. Selection is based on {isDefence ? 'physical fitness tests, medical examination, and merit' : 'merit, document verification, and other criteria as specified in the notification'}.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Syllabus Accordion */}
+              {job.syllabus_topics && (
+                <div class="mb-6">
+                  <h3 class="jd-heading">Syllabus Topics</h3>
+                  <div class="space-y-2" id="syllabus-accordion">
+                    {Object.entries(job.syllabus_topics).map(([subject, topics], i) => (
+                      <div key={subject} class="jd-accordion-item rounded-card border border-gray-200 dark:border-gray-700 overflow-hidden">
+                        <button
+                          type="button"
+                          class="jd-accordion-trigger w-full flex items-center justify-between px-4 py-3 bg-white dark:bg-surface-card-dark hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-left"
+                          data-accordion={i}
+                          aria-expanded={i === 0 ? 'true' : 'false'}
+                        >
+                          <span class="font-semibold text-sm text-content-primary dark:text-content-dark">{subject}</span>
+                          <svg class={`w-4 h-4 text-content-secondary dark:text-content-dark-muted jd-accordion-chevron transition-transform ${i === 0 ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+                        </button>
+                        <div class={`jd-accordion-body px-4 pb-3 ${i === 0 ? '' : 'hidden'}`} data-accordion-body={i}>
+                          <div class="flex flex-wrap gap-1.5 pt-1">
+                            {topics.map((topic: string) => (
+                              <span key={topic} class="px-2.5 py-1 text-xs bg-gray-100 dark:bg-gray-800 text-content-secondary dark:text-content-dark-muted rounded-pill">{topic}</span>
+                            ))}
+                          </div>
                         </div>
                       </div>
                     ))}

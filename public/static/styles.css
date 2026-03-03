@@ -702,17 +702,7 @@ kbd {
 
 /* Tab button */
 .jd-tab-btn {
-  transition: color 0.15s ease, border-color 0.15s ease;
-}
-
-/* Tab content animation */
-.jd-tab-content {
-  animation: fadeIn 0.3s ease-out;
-}
-
-/* Selection timeline dot glow */
-.jd-hero .rounded-full {
-  transition: transform 0.2s ease;
+  transition: color 0.15s ease, border-color 0.15s ease, font-weight 0.1s ease;
 }
 
 /* Share dropdown animation */
@@ -720,12 +710,271 @@ kbd {
   animation: tooltipSlideDown 0.15s ease-out;
 }
 
-/* Vacancy table hover rows */
-table tbody tr:hover {
+/* ── Tab Content Typography ─────────────────────── */
+.jd-heading {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 16px;
+  color: #1E293B;
+}
+.dark .jd-heading {
+  color: #E2E8F0;
+}
+
+.jd-body-text {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #64748B;
+}
+.dark .jd-body-text {
+  color: #94A3B8;
+}
+
+/* ── Key Highlights Table ───────────────────────── */
+.jd-kv-table table {
+  width: 100%;
+}
+.jd-kv-row {
+  border-bottom: 1px solid #F1F5F9;
+}
+.dark .jd-kv-row {
+  border-bottom-color: #334155;
+}
+.jd-kv-row:nth-child(odd) {
+  background: #F8FAFC;
+}
+.dark .jd-kv-row:nth-child(odd) {
+  background: rgba(30, 41, 59, 0.3);
+}
+.jd-kv-row:nth-child(even) {
+  background: white;
+}
+.dark .jd-kv-row:nth-child(even) {
+  background: transparent;
+}
+.jd-kv-row:last-child {
+  border-bottom: none;
+}
+.jd-kv-key {
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: 13px;
+  color: #64748B;
+  white-space: nowrap;
+  width: 40%;
+  vertical-align: top;
+}
+.dark .jd-kv-key {
+  color: #94A3B8;
+}
+.jd-kv-val {
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #1E293B;
+  line-height: 1.5;
+}
+.dark .jd-kv-val {
+  color: #E2E8F0;
+}
+
+/* ── Info Boxes (colored left border) ───────────── */
+.jd-info-box {
+  padding: 14px 16px;
+  border-radius: 12px;
+  border-left: 4px solid transparent;
+}
+.jd-info-box-blue {
+  background: #EFF6FF;
+  border-left-color: #3B82F6;
+}
+.dark .jd-info-box-blue {
+  background: rgba(59, 130, 246, 0.08);
+  border-left-color: #60A5FA;
+}
+.jd-info-box-green {
+  background: #F0FDF4;
+  border-left-color: #22C55E;
+}
+.dark .jd-info-box-green {
+  background: rgba(34, 197, 94, 0.08);
+  border-left-color: #4ADE80;
+}
+.jd-info-box-amber {
+  background: #FFFBEB;
+  border-left-color: #F59E0B;
+}
+.dark .jd-info-box-amber {
+  background: rgba(245, 158, 11, 0.08);
+  border-left-color: #FBBF24;
+}
+.jd-info-box-red {
+  background: #FEF2F2;
+  border-left-color: #EF4444;
+}
+.dark .jd-info-box-red {
+  background: rgba(239, 68, 68, 0.08);
+  border-left-color: #F87171;
+}
+.jd-info-box-purple {
+  background: #FAF5FF;
+  border-left-color: #A855F7;
+}
+.dark .jd-info-box-purple {
+  background: rgba(168, 85, 247, 0.08);
+  border-left-color: #C084FC;
+}
+
+/* Important Notice */
+.jd-notice-box {
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid #FDE68A;
+  border-left: 4px solid #F59E0B;
+  background: #FFFBEB;
+}
+.dark .jd-notice-box {
+  border-color: rgba(245, 158, 11, 0.3);
+  border-left-color: #FBBF24;
+  background: rgba(245, 158, 11, 0.06);
+}
+
+/* ── Vacancy Table Styles ───────────────────────── */
+.jd-table {
+  border-collapse: collapse;
+}
+.jd-th {
+  padding: 10px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #1E293B;
+  white-space: nowrap;
+}
+.dark .jd-th {
+  color: #E2E8F0;
+}
+.jd-td {
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #64748B;
+  white-space: nowrap;
+}
+.dark .jd-td {
+  color: #94A3B8;
+}
+.jd-table-row {
+  transition: background-color 0.15s ease;
+}
+.jd-table-row:hover {
   background-color: rgba(59, 130, 246, 0.04);
 }
-.dark table tbody tr:hover {
+.dark .jd-table-row:hover {
   background-color: rgba(59, 130, 246, 0.08);
+}
+/* Alternating rows */
+.jd-table tbody tr:nth-child(4n+1) {
+  background-color: transparent;
+}
+.jd-table tbody tr:nth-child(4n+3) {
+  background-color: rgba(248, 250, 252, 0.5);
+}
+.dark .jd-table tbody tr:nth-child(4n+3) {
+  background-color: rgba(30, 41, 59, 0.2);
+}
+
+/* Category highlight */
+.jd-cat-highlight {
+  background-color: rgba(245, 158, 11, 0.1) !important;
+  font-weight: 600;
+  color: #92400E !important;
+}
+.dark .jd-cat-highlight {
+  background-color: rgba(245, 158, 11, 0.15) !important;
+  color: #FCD34D !important;
+}
+
+/* Expand icon rotation */
+.jd-expand-icon {
+  transition: transform 0.2s ease;
+}
+
+/* Mobile vacancy cards with eligibility borders */
+.jd-vacancy-card {
+  transition: border-color 0.2s ease;
+}
+.jd-card-eligible {
+  border-left: 4px solid #22C55E;
+}
+.jd-card-partial {
+  border-left: 4px solid #F59E0B;
+}
+.jd-card-ineligible {
+  border-left: 4px solid #EF4444;
+}
+.jd-cat-pill {
+  padding: 2px 8px;
+  font-size: 11px;
+  background: #F1F5F9;
+  border-radius: 9999px;
+  color: #64748B;
+  white-space: nowrap;
+}
+.dark .jd-cat-pill {
+  background: #334155;
+  color: #94A3B8;
+}
+
+/* ── Selection Process Pipeline ─────────────────── */
+.jd-stage-card {
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
+}
+.jd-stage-card:hover {
+  transform: translateY(-1px);
+}
+.jd-stage-chevron {
+  transition: transform 0.2s ease;
+}
+.jd-stage-desc {
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+/* ── Important Dates Timeline ───────────────────── */
+.jd-timeline .animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ── Syllabus Accordion ─────────────────────────── */
+.jd-accordion-item {
+  transition: box-shadow 0.15s ease;
+}
+.jd-accordion-trigger:hover + .jd-accordion-body,
+.jd-accordion-item:hover {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+.jd-accordion-chevron {
+  transition: transform 0.2s ease;
+}
+
+/* ── Document Checklist ─────────────────────────── */
+.jd-doc-check {
+  cursor: pointer;
+  accent-color: #22C55E;
+}
+.jd-doc-check:checked + span {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+/* ── Stacked Bar Chart ──────────────────────────── */
+.jd-tab-content [role="img"] > div {
+  min-width: 2px;
+  transition: width 0.5s ease-out;
 }
 
 /* Mobile: sidebar not sticky */
@@ -734,6 +983,35 @@ table tbody tr:hover {
     position: static !important;
     max-height: none;
     overflow-y: visible;
+  }
+  .jd-kv-key {
+    width: 45%;
+    font-size: 12px;
+  }
+  .jd-kv-val {
+    font-size: 13px;
+  }
+}
+
+/* Small screens: table horizontal scroll */
+@media (max-width: 640px) {
+  .jd-vacancy-table-wrap {
+    display: block !important;
+  }
+}
+
+/* Print: show all tabs */
+@media print {
+  .jd-tab-content {
+    display: block !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .jd-tabs {
+    display: none;
+  }
+  .jd-sidebar {
+    display: none;
   }
 }
 

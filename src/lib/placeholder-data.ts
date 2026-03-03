@@ -77,6 +77,10 @@ export interface Job {
   official_website: string
   pdf_url: string
   vacancy_breakdown: VacancyBreakdownRow[]
+  application_mode: 'Online' | 'Offline' | 'Online & Offline'
+  documents_required: string[]
+  important_notice: string | null
+  marking_scheme: string | null
 }
 
 export const placeholderJobs: Job[] = [
@@ -164,6 +168,10 @@ export const placeholderJobs: Job[] = [
       { post_name: 'Junior Associate (Inter-branch Settlements)', ur: 600, obc: 405, sc: 225, st: 120, ews: 150, total: 1500 },
       { post_name: 'Junior Associate (Treasury Operations)', ur: 400, obc: 270, sc: 150, st: 80, ews: 100, total: 1000 },
     ],
+    application_mode: 'Online',
+    documents_required: ['Graduation Degree / Provisional Certificate', 'Mark Sheets (All Semesters)', 'Photo ID (Aadhaar / PAN / Passport)', 'Recent Passport-size Photograph (4.5x3.5 cm)', 'Scanned Signature', 'Category Certificate (if applicable)', 'PwBD Certificate (if applicable)', 'Income Certificate for EWS (if applicable)', 'NOC from Employer (if currently employed)'],
+    important_notice: 'Candidates must ensure they meet the eligibility criteria before applying. Application fee once paid is non-refundable. SBI reserves the right to modify vacancy count.',
+    marking_scheme: 'Each correct answer carries 1 mark. There is a penalty of 0.25 marks for each wrong answer in the Prelims.',
   },
   {
     id: 'rrb-ntpc-02-2026',
@@ -259,6 +267,10 @@ export const placeholderJobs: Job[] = [
       { post_name: 'Commercial Cum Ticket Clerk', ur: 1600, obc: 1080, sc: 600, st: 320, ews: 400, total: 4000 },
       { post_name: 'Accounts Clerk Cum Typist', ur: 800, obc: 540, sc: 300, st: 160, ews: 200, total: 2000 },
     ],
+    application_mode: 'Online',
+    documents_required: ['10th / 12th Marksheet & Certificate', 'Graduation Degree (for graduate-level posts)', 'Photo ID (Aadhaar / Voter ID)', 'Passport-size Photograph', 'Scanned Signature', 'Left Thumb Impression', 'Caste / Category Certificate', 'Income Certificate for EWS', 'Domicile Certificate'],
+    important_notice: 'Candidates can apply for multiple posts. Fee refund of \u20b9400 (Gen) / \u20b9250 (SC/ST) for those who appear in CBT Stage 1. Single registration for all RRB zones.',
+    marking_scheme: 'Each question carries 1 mark. Negative marking of 1/3 for each wrong answer in both CBT Stage 1 and Stage 2.',
   },
   {
     id: 'ssc-chsl-2026',
@@ -346,6 +358,10 @@ export const placeholderJobs: Job[] = [
       { post_name: 'Postal Assistant / Sorting Assistant', ur: 600, obc: 405, sc: 225, st: 120, ews: 150, total: 1500 },
       { post_name: 'Data Entry Operator (DEO)', ur: 400, obc: 270, sc: 150, st: 80, ews: 100, total: 1000 },
     ],
+    application_mode: 'Online',
+    documents_required: ['Class 12th Marksheet & Certificate', 'Photo ID Proof (Aadhaar / PAN)', 'Recent Passport-size Photograph', 'Scanned Signature', 'Category Certificate (SC/ST/OBC-NCL)', 'EWS Certificate (if applicable)', 'PwBD Certificate (if applicable)', 'Computer Proficiency Certificate (for DEO post)', 'Ex-Serviceman Certificate (if applicable)'],
+    important_notice: 'SSC One-Time Registration is mandatory before applying. Candidates can apply for multiple posts through a single application. Negative marking applies.',
+    marking_scheme: 'Each question carries 2 marks. Negative marking of 0.50 marks for each wrong answer. Total 200 marks, 60 minutes duration.',
   },
   {
     id: 'upsc-cds-01-2026',
@@ -441,6 +457,10 @@ export const placeholderJobs: Job[] = [
       { post_name: 'Indian Naval Academy', ur: 33, obc: 22, sc: 12, st: 7, ews: 8, total: 82 },
       { post_name: 'Air Force Academy', ur: 30, obc: 20, sc: 11, st: 6, ews: 8, total: 75 },
     ],
+    application_mode: 'Online',
+    documents_required: ['Graduation Degree / Final Year Certificate', 'Class 10th & 12th Marksheets', 'Date of Birth Proof', 'Photo ID (Aadhaar / Passport)', 'Recent Passport-size Photograph', 'Scanned Signature', 'Category Certificate (if applicable)', 'NCC Certificate (if applicable)', 'Engineering Degree (for Naval Academy applicants)'],
+    important_notice: 'Only unmarried male candidates are eligible for IMA and Indian Naval Academy. OTA accepts both men and women (separate vacancies). SSB dates will be communicated after written exam results.',
+    marking_scheme: 'Objective type questions. Each paper carries 100 marks with 2-hour duration. No negative marking in CDS written examination.',
   },
   {
     id: 'ibps-po-2026',
@@ -520,6 +540,10 @@ export const placeholderJobs: Job[] = [
       { post_name: 'Probationary Officer (PO)', ur: 820, obc: 553, sc: 307, st: 164, ews: 205, total: 2049 },
       { post_name: 'Management Trainee (MT)', ur: 400, obc: 270, sc: 150, st: 80, ews: 100, total: 1000 },
     ],
+    application_mode: 'Online',
+    documents_required: ['Graduation Degree / Provisional Certificate', 'All Semester Marksheets', 'Photo ID (Aadhaar / PAN / Passport)', 'Recent Passport-size Photograph', 'Scanned Signature', 'Left Thumb Impression', 'Hand-written Declaration', 'Category Certificate (SC/ST/OBC-NCL)', 'EWS Certificate (if applicable)', 'PwBD Certificate (if applicable)'],
+    important_notice: 'Candidates can select up to 6 bank preferences. Allocation depends on merit rank and availability. Management Trainee requires minimum 55% in graduation.',
+    marking_scheme: 'Each correct answer carries 1 mark. Penalty of 0.25 marks for each wrong answer in Prelims. Mains has sectional timing.',
   },
   {
     id: 'army-agniveer-2026',
@@ -614,6 +638,10 @@ export const placeholderJobs: Job[] = [
       { post_name: 'Agniveer (Clerk/Store Keeper Technical)', ur: 1200, obc: 810, sc: 450, st: 240, ews: 300, total: 3000 },
       { post_name: 'Agniveer (Tradesman)', ur: 800, obc: 540, sc: 300, st: 160, ews: 200, total: 2000 },
     ],
+    application_mode: 'Online',
+    documents_required: ['Class 10th Marksheet & Certificate', 'Class 12th Marksheet (for Tech/Clerk)', 'Aadhaar Card', 'Domicile / Residence Certificate', 'Caste Certificate (if applicable)', 'Character Certificate from School / Village Sarpanch', 'NCC Certificate (if available, bonus marks)', 'Sports Achievement Certificate (if applicable)', 'Passport-size Photographs (20 copies)', 'Relationship Certificate (if applying under sports/relation quota)'],
+    important_notice: 'Agniveer scheme is for a 4-year tenure. After completion, 25% Agniveers may be enrolled in regular cadre based on merit. Seva Nidhi of approx \u20b911.71 lakh is paid upon completion.',
+    marking_scheme: null,
   },
   {
     id: 'up-police-constable-2026',
@@ -704,6 +732,10 @@ export const placeholderJobs: Job[] = [
       { post_name: 'Constable (PAC)', ur: 3480, obc: 2349, sc: 1305, st: 696, ews: 869, total: 8699 },
       { post_name: 'Constable (Fireman)', ur: 1600, obc: 1080, sc: 600, st: 320, ews: 400, total: 4000 },
     ],
+    application_mode: 'Online',
+    documents_required: ['Class 12th Marksheet & Certificate', 'Date of Birth Certificate (10th)', 'Aadhaar Card', 'Domicile Certificate (UP)', 'Caste Certificate (if applicable)', 'Character Certificate (from District Magistrate)', 'Passport-size Photographs', 'Scanned Signature', 'UP Mool Niwas Praman Patra'],
+    important_notice: 'UP domicile is mandatory for all applicants. Physical Standard Test (PST) and Physical Efficiency Test (PET) are conducted after written exam. Final merit is based on written exam marks only.',
+    marking_scheme: 'Each question carries 2 marks. There is a negative marking of 0.50 marks for each wrong answer. Total 300 marks, 2 hours duration.',
   },
   {
     id: 'krcl-apprentice-2026',
@@ -790,6 +822,10 @@ export const placeholderJobs: Job[] = [
       { post_name: 'Technician Apprentice (Mechanical)', ur: 24, obc: 16, sc: 9, st: 5, ews: 6, total: 60 },
       { post_name: 'Technician Apprentice (S&T)', ur: 22, obc: 15, sc: 8, st: 4, ews: 6, total: 55 },
     ],
+    application_mode: 'Online & Offline',
+    documents_required: ['B.E./B.Tech Degree or Diploma Certificate', 'All Semester Marksheets', 'Photo ID (Aadhaar / PAN)', 'Passport-size Photograph', 'Resume / CV', 'Category Certificate (if applicable)', 'NAPS Registration (if available)'],
+    important_notice: 'Apprenticeship is for one year under the Apprentices Act, 1961. No employment guarantee after completion. Stipend as per government norms.',
+    marking_scheme: null,
   },
   {
     id: 'nta-ugc-net-2026',
@@ -864,6 +900,10 @@ export const placeholderJobs: Job[] = [
       { post_name: 'Junior Research Fellowship (JRF)', ur: 0, obc: 0, sc: 0, st: 0, ews: 0, total: 0 },
       { post_name: 'Assistant Professor Eligibility', ur: 0, obc: 0, sc: 0, st: 0, ews: 0, total: 0 },
     ],
+    application_mode: 'Online',
+    documents_required: ['Post-Graduation Degree / Provisional Certificate', 'PG Marksheet with percentage/CGPA', 'Graduation Degree & Marksheets', 'Photo ID (Aadhaar / Passport)', 'Recent Passport-size Photograph', 'Scanned Signature', 'Category Certificate (if applicable)', 'PwBD Certificate (if applicable)', 'Research Publications list (if applying for JRF)'],
+    important_notice: 'JRF eligibility requires age below 30 (with relaxation). NET certificate for Assistant Professor has lifetime validity. Candidates can appear in only one subject per session.',
+    marking_scheme: 'Paper I: 50 questions x 2 marks = 100 marks. Paper II: 100 questions x 2 marks = 200 marks. No negative marking in UGC NET.',
   },
   {
     id: 'bpsc-70th-2026',
@@ -948,5 +988,9 @@ export const placeholderJobs: Job[] = [
       { post_name: 'Block Development Officer (BDO)', ur: 212, obc: 143, sc: 79, st: 42, ews: 53, total: 529 },
       { post_name: 'Revenue Officer / Supply Inspector / Group B', ur: 400, obc: 270, sc: 150, st: 80, ews: 100, total: 1000 },
     ],
+    application_mode: 'Online',
+    documents_required: ['Graduation Degree from recognized university', 'All Marksheets (10th, 12th, Graduation)', 'Date of Birth Certificate', 'Photo ID (Aadhaar / Voter ID)', 'Domicile Certificate (Bihar)', 'Caste Certificate (if applicable)', 'EWS Certificate (if applicable)', 'PwBD Certificate (if applicable)', 'Passport-size Photographs', 'Character Certificate'],
+    important_notice: 'Bihar domicile is required for state quota seats. BPSC 70th CCE follows three-stage selection similar to UPSC CSE. Optional subject paper is of 100 marks only (unlike UPSC).',
+    marking_scheme: 'Prelims: 150 questions x 1 mark = 150 marks. Negative marking of 1/3 for wrong answers. Mains is descriptive type with a total of 800 marks.',
   },
 ]
