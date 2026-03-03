@@ -1,5 +1,6 @@
 import { Hono } from 'hono'
 import { HomePage } from './pages/Home'
+import { JobsPage } from './pages/Jobs'
 import { AboutPage } from './pages/About'
 import { PrivacyPage } from './pages/Privacy'
 import { DisclaimerPage } from './pages/Disclaimer'
@@ -9,6 +10,11 @@ const app = new Hono()
 // Homepage
 app.get('/', (c) => {
   return c.html(<HomePage />)
+})
+
+// Jobs listing page
+app.get('/jobs', (c) => {
+  return c.html(<JobsPage />)
 })
 
 // About page

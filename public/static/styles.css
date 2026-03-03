@@ -548,6 +548,57 @@ main {
 
 
 /* ═══════════════════════════════════════════════════
+   JOBS PAGE
+   ═══════════════════════════════════════════════════ */
+
+/* Job card hover lift */
+.job-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.job-card:hover {
+  transform: translateY(-2px);
+}
+
+/* Sticky filter bar shadow on scroll */
+#filter-bar {
+  transition: box-shadow 0.2s ease;
+}
+#filter-bar.scrolled {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.dark #filter-bar.scrolled {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile filter sheet */
+#mobile-filter-panel {
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Eligibility badge animation */
+.job-eligibility-badge > div {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Job card fade-in on load more */
+@keyframes jobCardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Toggle switch custom styling */
+.toggle-switch-active {
+  background-color: #059669;
+}
+
+
+/* ═══════════════════════════════════════════════════
    GENERIC HELPERS
    ═══════════════════════════════════════════════════ */
 .hover-lift {
