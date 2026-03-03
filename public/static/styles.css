@@ -597,6 +597,73 @@ main {
   background-color: #059669;
 }
 
+/* Eligibility Detail Tooltip */
+.eligibility-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: white;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  animation: tooltipSlideDown 0.2s ease-out;
+}
+
+.dark .eligibility-tooltip {
+  background: #1E293B;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.tooltip-scroll-body {
+  max-height: 240px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.tooltip-scroll-body::-webkit-scrollbar {
+  width: 4px;
+}
+.tooltip-scroll-body::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 2px;
+}
+.dark .tooltip-scroll-body::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
+@keyframes tooltipSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Quick Stats Bar */
+#quick-stats-bar {
+  transition: opacity 0.2s ease;
+}
+
+/* Tab buttons */
+.tab-btn {
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+/* Keyboard shortcut kbd */
+kbd {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+}
+
+/* Shortcuts modal */
+#shortcuts-modal > div:last-child {
+  animation: fadeIn 0.2s ease-out;
+}
+
 
 /* ═══════════════════════════════════════════════════
    GENERIC HELPERS

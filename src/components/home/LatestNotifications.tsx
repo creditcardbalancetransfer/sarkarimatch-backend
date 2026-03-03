@@ -58,14 +58,14 @@ export const LatestNotifications: FC = () => {
   return (
     <section class="py-16 md:py-24 bg-white dark:bg-surface-card-dark reveal-section" id="latest-jobs">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section header */}
+        {/* Section header -- dynamic heading & subtitle via JS when profile exists */}
         <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-10">
           <div>
-            <h2 class="font-heading font-extrabold text-2xl sm:text-3xl md:text-4xl text-content-primary dark:text-white mb-2">
+            <h2 id="latest-jobs-heading" class="font-heading font-extrabold text-2xl sm:text-3xl md:text-4xl text-content-primary dark:text-white mb-2">
               Latest Government Job Notifications
             </h2>
-            <p class="text-base text-content-secondary dark:text-content-dark-muted">
-              Freshly published — don't miss these opportunities
+            <p id="latest-jobs-subtitle" class="text-base text-content-secondary dark:text-content-dark-muted">
+              Freshly published &mdash; don't miss these opportunities
             </p>
           </div>
           <a
@@ -79,7 +79,15 @@ export const LatestNotifications: FC = () => {
           </a>
         </div>
 
-        {/* Skeleton placeholders — visible for 500ms */}
+        {/* "Try expanding" note -- hidden by default, shown by JS */}
+        <div id="latest-jobs-expand-note" class="hidden mb-6 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-btn text-sm text-amber-700 dark:text-amber-300 flex items-center gap-2">
+          <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+          </svg>
+          Try expanding your sector preferences to see more matches.
+        </div>
+
+        {/* Skeleton placeholders -- visible for 500ms */}
         <div class="skeleton-container" aria-hidden="true">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             <SkeletonCard />
@@ -91,9 +99,9 @@ export const LatestNotifications: FC = () => {
           </div>
         </div>
 
-        {/* Real job cards — hidden initially, revealed after 500ms */}
+        {/* Real job cards -- hidden initially, revealed after 500ms */}
         <div class="content-container">
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div id="latest-jobs-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {jobs.map((job, index) => {
               const sector = sectorMeta[job.sector]
               const days = daysRemaining(job.important_dates.last_date)
@@ -128,16 +136,27 @@ export const LatestNotifications: FC = () => {
                 <article
                   key={job.id}
                   class={`job-card group bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 rounded-xl overflow-hidden transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover flex flex-col reveal-child reveal-stagger-${index + 1}`}
+                  data-job-id={job.id}
+                  data-sector={job.sector}
+                  data-education={job.education_level}
+                  data-locations={JSON.stringify(job.locations)}
+                  data-last-date={job.important_dates.last_date}
+                  data-vacancies={job.total_vacancies}
+                  data-salary-max={job.salary_max}
                 >
                   <div class="p-5 flex-1 flex flex-col">
-                    {/* Top row: sector badge + bookmark */}
+                    {/* Top row: sector badge + eligibility badge (injected by JS) + bookmark */}
                     <div class="flex items-center justify-between mb-3">
-                      <span
-                        class={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-pill text-xs font-semibold ${sector.bgClass} ${sector.textClass}`}
-                      >
-                        <span aria-hidden="true">{sector.icon}</span>
-                        {sector.label}
-                      </span>
+                      <div class="flex items-center gap-2 flex-wrap">
+                        <span
+                          class={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-pill text-xs font-semibold ${sector.bgClass} ${sector.textClass}`}
+                        >
+                          <span aria-hidden="true">{sector.icon}</span>
+                          {sector.label}
+                        </span>
+                        {/* Eligibility mini-badge -- injected by JS */}
+                        <span class="home-eligibility-badge hidden" data-home-eligibility={job.id}></span>
+                      </div>
                       <button
                         type="button"
                         class="bookmark-btn w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
@@ -145,11 +164,9 @@ export const LatestNotifications: FC = () => {
                         aria-label={`Bookmark ${job.notification_title}`}
                         title="Bookmark this job"
                       >
-                        {/* Outline bookmark (default) */}
                         <svg class="bookmark-outline w-4.5 h-4.5 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                         </svg>
-                        {/* Filled bookmark (when active) */}
                         <svg class="bookmark-filled w-4.5 h-4.5 text-brand-secondary hidden" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                         </svg>
@@ -168,21 +185,18 @@ export const LatestNotifications: FC = () => {
 
                     {/* Info pills */}
                     <div class="flex flex-wrap gap-2 mb-4">
-                      {/* Vacancies */}
                       <span class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-blue-50 dark:bg-blue-900/20 text-xs font-medium text-blue-700 dark:text-blue-300">
                         <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                         {job.total_vacancies === 0 ? 'Exam' : formatVacancies(job.total_vacancies)} {job.total_vacancies > 0 ? 'Vacancies' : ''}
                       </span>
-                      {/* Education */}
                       <span class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-purple-50 dark:bg-purple-900/20 text-xs font-medium text-purple-700 dark:text-purple-300">
                         <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 0v6m3-9l6-3" />
                         </svg>
                         {educationLabels[job.education_level] || job.education_level}
                       </span>
-                      {/* Salary */}
                       <span class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-green-50 dark:bg-green-900/20 text-xs font-medium text-green-700 dark:text-green-300">
                         <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -221,7 +235,6 @@ export const LatestNotifications: FC = () => {
                           {progress}% elapsed
                         </span>
                       </div>
-                      {/* Progress bar — explicit height to prevent CLS */}
                       <div class="w-full h-1.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
                         <div
                           class={`h-full rounded-full transition-all duration-500 ${progressColor}`}
@@ -249,6 +262,20 @@ export const LatestNotifications: FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Inline job data for homepage eligibility (re-uses same key pattern) */}
+      <script
+        id="home-jobs-data"
+        type="application/json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            jobs.reduce((acc: Record<string, typeof jobs[0]>, job) => {
+              acc[job.id] = job
+              return acc
+            }, {})
+          ),
+        }}
+      />
     </section>
   )
 }

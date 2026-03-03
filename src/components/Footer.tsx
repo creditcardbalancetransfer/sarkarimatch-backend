@@ -2,18 +2,18 @@ import type { FC } from 'hono/jsx'
 
 const quickLinks = [
   { href: '/jobs', label: 'All Government Jobs' },
-  { href: '/jobs?filter=closing-soon', label: 'Closing This Week' },
-  { href: '/jobs?filter=latest', label: 'Latest Notifications' },
+  { href: '/jobs?closing=true', label: 'Closing This Week' },
+  { href: '/jobs?sort=newest', label: 'Latest Notifications' },
   { href: '/calendar', label: 'Exam Calendar' },
   { href: '/blog', label: 'Preparation Hub' },
 ]
 
 const byEducation = [
-  { href: '/jobs?edu=10th', label: '10th Pass Jobs' },
-  { href: '/jobs?edu=12th', label: '12th Pass Jobs' },
-  { href: '/jobs?edu=graduate', label: 'Graduate Jobs' },
-  { href: '/jobs?edu=btech', label: 'B.Tech Jobs' },
-  { href: '/jobs?edu=mba', label: 'MBA Jobs' },
+  { href: '/jobs?education=10th', label: '10th Pass Jobs' },
+  { href: '/jobs?education=12th', label: '12th Pass Jobs' },
+  { href: '/jobs?education=graduate', label: 'Graduate Jobs' },
+  { href: '/jobs?education=graduate', label: 'B.Tech Jobs' },
+  { href: '/jobs?education=pg', label: 'MBA Jobs' },
 ]
 
 const bySector = [
@@ -104,6 +104,14 @@ export const Footer: FC = () => {
                 class="text-gray-500 dark:text-gray-600 hover:text-gray-300 transition-colors duration-150"
               >
                 About
+              </a>
+              <span class="text-gray-700" aria-hidden="true">|</span>
+              <a
+                href="#"
+                id="shortcuts-link"
+                class="text-gray-500 dark:text-gray-600 hover:text-gray-300 transition-colors duration-150 inline-flex items-center gap-1"
+              >
+                &#x2328;&#xFE0F; Keyboard shortcuts
               </a>
               <span class="text-gray-700" aria-hidden="true">|</span>
               <a

@@ -5,19 +5,19 @@ import { ProfileWizard } from '../components/ProfileWizard'
 import { placeholderJobs, type Job } from '../lib/placeholder-data'
 import { sectorMeta, formatDateShort, daysRemaining, formatSalary, formatVacancies, educationLabels } from '../lib/job-helpers'
 
-/* ── Sector options for filter ───────────────────────────── */
+/* -- Sector options for filter ----------------------------- */
 const sectorOptions: { value: string; label: string; icon: string }[] = [
-  { value: '', label: 'All Sectors', icon: '📋' },
-  { value: 'banking', label: 'Banking', icon: '🏦' },
-  { value: 'railway', label: 'Railway', icon: '🚂' },
-  { value: 'ssc', label: 'SSC', icon: '📋' },
-  { value: 'upsc', label: 'UPSC', icon: '🏛️' },
-  { value: 'defence', label: 'Defence', icon: '🎖️' },
-  { value: 'teaching', label: 'Teaching', icon: '👨‍🏫' },
-  { value: 'state_psc', label: 'State PSC', icon: '🏢' },
-  { value: 'police', label: 'Police', icon: '👮' },
-  { value: 'psu', label: 'PSU', icon: '🏭' },
-  { value: 'other', label: 'Other', icon: '📌' },
+  { value: '', label: 'All Sectors', icon: '\ud83d\udccb' },
+  { value: 'banking', label: 'Banking', icon: '\ud83c\udfe6' },
+  { value: 'railway', label: 'Railway', icon: '\ud83d\ude82' },
+  { value: 'ssc', label: 'SSC', icon: '\ud83d\udccb' },
+  { value: 'upsc', label: 'UPSC', icon: '\ud83c\udfdb\ufe0f' },
+  { value: 'defence', label: 'Defence', icon: '\ud83c\udf96\ufe0f' },
+  { value: 'teaching', label: 'Teaching', icon: '\ud83d\udc68\u200d\ud83c\udfeb' },
+  { value: 'state_psc', label: 'State PSC', icon: '\ud83c\udfe2' },
+  { value: 'police', label: 'Police', icon: '\ud83d\udc6e' },
+  { value: 'psu', label: 'PSU', icon: '\ud83c\udfed' },
+  { value: 'other', label: 'Other', icon: '\ud83d\udccc' },
 ]
 
 const educationOptions: { value: string; label: string }[] = [
@@ -52,16 +52,16 @@ const sortOptions: { value: string; label: string }[] = [
   { value: 'highest_salary', label: 'Highest Salary' },
 ]
 
-/* ── Schema.org ──────────────────────────────────────────── */
+/* -- Schema.org -------------------------------------------- */
 const jobListSchema = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
-  'name': 'Government Jobs 2026 — SarkariMatch',
+  'name': 'Government Jobs 2026 \u2014 SarkariMatch',
   'description': 'Browse and filter all government job notifications across Banking, Railway, SSC, UPSC, Defence, Teaching, Police & more.',
   'url': 'https://sarkarimatch.com/jobs',
 }
 
-/* ── Helper: render one SSR job card ─────────────────────── */
+/* -- Helper: render one SSR job card ----------------------- */
 function JobCard({ job }: { job: Job }) {
   const sector = sectorMeta[job.sector] || sectorMeta.other
   const days = daysRemaining(job.important_dates.last_date)
@@ -70,7 +70,7 @@ function JobCard({ job }: { job: Job }) {
   const salary = formatSalary(job.salary_min, job.salary_max)
   const vacancies = formatVacancies(job.total_vacancies)
   const eduLabel = educationLabels[job.education_level] || job.education_level
-  const feeGeneral = job.application_fee_general === 0 ? 'Free' : `₹${job.application_fee_general}`
+  const feeGeneral = job.application_fee_general === 0 ? 'Free' : `\u20b9${job.application_fee_general}`
 
   return (
     <article
@@ -93,7 +93,7 @@ function JobCard({ job }: { job: Job }) {
       data-has-exam={job.important_dates.exam_date ? 'true' : 'false'}
       data-status={job.status}
     >
-      {/* Eligibility badge placeholder — filled by JS */}
+      {/* Eligibility badge placeholder -- filled by JS */}
       <div class="job-eligibility-badge hidden" data-job-eligibility></div>
 
       {/* Closing soon / expired banner */}
@@ -104,7 +104,7 @@ function JobCard({ job }: { job: Job }) {
             <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
           </span>
           <span class="text-xs font-semibold text-red-700 dark:text-red-300">
-            Closing in {days} day{days !== 1 ? 's' : ''} — Apply Now!
+            Closing in {days} day{days !== 1 ? 's' : ''} \u2014 Apply Now!
           </span>
         </div>
       )}
@@ -124,7 +124,7 @@ function JobCard({ job }: { job: Job }) {
             </span>
             {job.featured && (
               <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-pill text-xs font-semibold bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300">
-                ⭐ Featured
+                \u2b50 Featured
               </span>
             )}
           </div>
@@ -155,7 +155,7 @@ function JobCard({ job }: { job: Job }) {
           {job.organization}
         </p>
 
-        {/* Eligible posts bar — populated by JS */}
+        {/* Eligible posts bar -- populated by JS */}
         <div class="job-eligible-posts-bar hidden mb-3" data-eligible-bar></div>
 
         {/* Key info grid */}
@@ -207,7 +207,7 @@ function JobCard({ job }: { job: Job }) {
           <span class="text-content-primary dark:text-content-dark font-medium">
             {job.age_min === 0 && job.age_max === 0
               ? 'No limit'
-              : `${job.age_min}–${job.age_max} years`}
+              : `${job.age_min}\u2013${job.age_max} years`}
           </span>
         </div>
 
@@ -243,7 +243,7 @@ function JobCard({ job }: { job: Job }) {
           href={`/jobs/${job.slug}`}
           class="text-sm font-semibold text-brand-primary dark:text-blue-400 hover:underline"
         >
-          View Details →
+          View Details \u2192
         </a>
         {!isExpired && (
           <a
@@ -263,9 +263,8 @@ function JobCard({ job }: { job: Job }) {
   )
 }
 
-/* ── Main Jobs Page ──────────────────────────────────────── */
+/* -- Main Jobs Page ---------------------------------------- */
 export const JobsPage: FC = () => {
-  // Sort published jobs newest first for SSR
   const publishedJobs = placeholderJobs
     .filter((j) => j.status === 'published')
     .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
@@ -273,22 +272,22 @@ export const JobsPage: FC = () => {
   return (
     <Layout
       meta={{
-        title: 'Government Jobs 2026 — Find Jobs Matching Your Profile | SarkariMatch',
+        title: 'Government Jobs 2026 \u2014 Find Jobs Matching Your Profile | SarkariMatch',
         description:
           'Browse all government job notifications for 2026. Filter by sector, education, state. Set your profile to see personalized eligibility matches across Banking, Railway, SSC, UPSC, Defence, Teaching & more.',
-        ogTitle: 'Government Jobs 2026 — SarkariMatch',
+        ogTitle: 'Government Jobs 2026 \u2014 SarkariMatch',
         ogDescription: 'Find government jobs that match YOUR eligibility. Filter, compare, and apply.',
         ogUrl: 'https://sarkarimatch.com/jobs',
       }}
       currentPath="/jobs"
       structuredData={jobListSchema}
     >
-      {/* Profile Provider — makes profile available to client JS */}
+      {/* Profile Provider */}
       <ProfileProvider />
 
-      {/* ── Profile Summary Bar ──────────────────────────── */}
+      {/* -- Profile Summary Bar ------------------------------ */}
       <div id="jobs-profile-bar" class="border-b border-gray-200 dark:border-gray-700">
-        {/* No-profile banner (shown by default, hidden by JS if profile exists) */}
+        {/* No-profile banner */}
         <div id="no-profile-banner" class="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4 flex-wrap">
             <div class="flex items-center gap-3">
@@ -312,11 +311,11 @@ export const JobsPage: FC = () => {
           </div>
         </div>
 
-        {/* Profile summary (hidden by default, shown by JS when profile exists) */}
+        {/* Profile summary (shown by JS when profile exists) */}
         <div id="profile-summary-bar" class="hidden">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between gap-4 flex-wrap">
             <div class="flex items-center gap-3 text-sm flex-wrap">
-              <span class="flex items-center justify-center w-7 h-7 rounded-full bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400" aria-hidden="true">✓</span>
+              <span class="flex items-center justify-center w-7 h-7 rounded-full bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400" aria-hidden="true">\u2713</span>
               <span class="font-medium text-content-primary dark:text-content-dark" id="profile-summary-text">Profile loaded</span>
               <span class="text-content-secondary dark:text-content-dark-muted">|</span>
               <span class="text-content-secondary dark:text-content-dark-muted" id="profile-summary-details"></span>
@@ -334,12 +333,38 @@ export const JobsPage: FC = () => {
         </div>
       </div>
 
-      {/* ── Sticky Filter Bar ────────────────────────────── */}
+      {/* -- Tabs: All Jobs / My Bookmarks -------------------- */}
+      <div class="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-dark">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex items-center gap-0">
+            <button
+              type="button"
+              id="tab-all-jobs"
+              class="tab-btn px-4 py-2 text-sm font-semibold border-b-2 border-brand-primary text-brand-primary dark:text-blue-400 dark:border-blue-400 transition-colors"
+            >
+              All Jobs
+            </button>
+            <button
+              type="button"
+              id="tab-bookmarks"
+              class="tab-btn px-4 py-2 text-sm font-medium text-content-secondary dark:text-content-dark-muted border-b-2 border-transparent hover:text-content-primary dark:hover:text-content-dark transition-colors flex items-center gap-1.5"
+            >
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+              </svg>
+              My Bookmarks
+              <span id="bookmarks-count" class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-brand-primary text-white text-[10px] font-bold" style="display:none">0</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* -- Sticky Filter Bar -------------------------------- */}
       <div id="filter-bar" class="sticky top-14 md:top-16 z-40 bg-white/95 dark:bg-surface-dark/95 border-b border-gray-200 dark:border-gray-700" style="backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           {/* Desktop filters */}
           <div class="hidden md:flex items-center gap-3 flex-wrap">
-            {/* Search (future) */}
+            {/* Search */}
             <div class="relative flex-1 max-w-xs">
               <input
                 type="text"
@@ -354,33 +379,21 @@ export const JobsPage: FC = () => {
             </div>
 
             {/* Sector */}
-            <select
-              id="filter-sector"
-              class="px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-btn bg-white dark:bg-surface-card-dark text-content-primary dark:text-content-dark focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition pw-select"
-              aria-label="Filter by sector"
-            >
+            <select id="filter-sector" class="px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-btn bg-white dark:bg-surface-card-dark text-content-primary dark:text-content-dark focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition pw-select" aria-label="Filter by sector">
               {sectorOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
             </select>
 
             {/* Education */}
-            <select
-              id="filter-education"
-              class="px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-btn bg-white dark:bg-surface-card-dark text-content-primary dark:text-content-dark focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition pw-select"
-              aria-label="Filter by education"
-            >
+            <select id="filter-education" class="px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-btn bg-white dark:bg-surface-card-dark text-content-primary dark:text-content-dark focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition pw-select" aria-label="Filter by education">
               {educationOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
             </select>
 
             {/* State */}
-            <select
-              id="filter-state"
-              class="px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-btn bg-white dark:bg-surface-card-dark text-content-primary dark:text-content-dark focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition pw-select"
-              aria-label="Filter by state"
-            >
+            <select id="filter-state" class="px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-btn bg-white dark:bg-surface-card-dark text-content-primary dark:text-content-dark focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition pw-select" aria-label="Filter by state">
               <option value="">All States</option>
               {stateOptions.map((st) => (
                 <option key={st} value={st}>{st}</option>
@@ -419,11 +432,7 @@ export const JobsPage: FC = () => {
             </label>
 
             {/* Sort */}
-            <select
-              id="filter-sort"
-              class="ml-auto px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-btn bg-white dark:bg-surface-card-dark text-content-primary dark:text-content-dark focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition pw-select"
-              aria-label="Sort jobs"
-            >
+            <select id="filter-sort" class="ml-auto px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-btn bg-white dark:bg-surface-card-dark text-content-primary dark:text-content-dark focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition pw-select" aria-label="Sort jobs">
               {sortOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
@@ -460,11 +469,10 @@ export const JobsPage: FC = () => {
         </div>
       </div>
 
-      {/* ── Mobile Filter Bottom Sheet ───────────────────── */}
+      {/* -- Mobile Filter Bottom Sheet ----------------------- */}
       <div id="mobile-filter-sheet" class="fixed inset-0 z-[70] hidden" aria-modal="true" role="dialog" aria-label="Filters">
         <div id="mobile-filter-backdrop" class="absolute inset-0 bg-black/40" style="backdrop-filter: blur(4px);"></div>
         <div id="mobile-filter-panel" class="absolute bottom-0 left-0 right-0 bg-white dark:bg-surface-card-dark rounded-t-2xl max-h-[85vh] overflow-y-auto transform translate-y-full transition-transform duration-300">
-          {/* Handle bar */}
           <div class="flex justify-center pt-3 pb-1">
             <div class="w-10 h-1 bg-gray-300 dark:bg-gray-600 rounded-full" aria-hidden="true"></div>
           </div>
@@ -473,7 +481,6 @@ export const JobsPage: FC = () => {
             <button type="button" id="mobile-filter-close" class="text-sm font-medium text-brand-primary dark:text-blue-400" aria-label="Close filters">Done</button>
           </div>
           <div class="p-4 space-y-4">
-            {/* Sector */}
             <div>
               <label class="text-xs font-semibold text-content-secondary dark:text-content-dark-muted uppercase tracking-wider mb-1.5 block">Sector</label>
               <select id="mobile-filter-sector" class="w-full px-3 py-2.5 text-sm border border-gray-200 dark:border-gray-700 rounded-btn bg-white dark:bg-surface-card-dark text-content-primary dark:text-content-dark pw-select">
@@ -482,7 +489,6 @@ export const JobsPage: FC = () => {
                 ))}
               </select>
             </div>
-            {/* Education */}
             <div>
               <label class="text-xs font-semibold text-content-secondary dark:text-content-dark-muted uppercase tracking-wider mb-1.5 block">Education</label>
               <select id="mobile-filter-education" class="w-full px-3 py-2.5 text-sm border border-gray-200 dark:border-gray-700 rounded-btn bg-white dark:bg-surface-card-dark text-content-primary dark:text-content-dark pw-select">
@@ -491,7 +497,6 @@ export const JobsPage: FC = () => {
                 ))}
               </select>
             </div>
-            {/* State */}
             <div>
               <label class="text-xs font-semibold text-content-secondary dark:text-content-dark-muted uppercase tracking-wider mb-1.5 block">State</label>
               <select id="mobile-filter-state" class="w-full px-3 py-2.5 text-sm border border-gray-200 dark:border-gray-700 rounded-btn bg-white dark:bg-surface-card-dark text-content-primary dark:text-content-dark pw-select">
@@ -501,7 +506,6 @@ export const JobsPage: FC = () => {
                 ))}
               </select>
             </div>
-            {/* Toggles */}
             <div class="space-y-3 pt-2">
               <label class="flex items-center justify-between cursor-pointer">
                 <span class="text-sm text-content-primary dark:text-content-dark">Eligible Only</span>
@@ -524,7 +528,6 @@ export const JobsPage: FC = () => {
                 <span class="w-10 h-5 bg-gray-300 dark:bg-gray-600 peer-checked:bg-purple-500 rounded-full relative transition-colors duration-200 after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:w-[14px] after:h-[14px] after:bg-white after:rounded-full after:transition-transform after:duration-200 peer-checked:after:translate-x-5"></span>
               </label>
             </div>
-            {/* Sort */}
             <div>
               <label class="text-xs font-semibold text-content-secondary dark:text-content-dark-muted uppercase tracking-wider mb-1.5 block">Sort By</label>
               <select id="mobile-filter-sort" class="w-full px-3 py-2.5 text-sm border border-gray-200 dark:border-gray-700 rounded-btn bg-white dark:bg-surface-card-dark text-content-primary dark:text-content-dark pw-select">
@@ -533,7 +536,6 @@ export const JobsPage: FC = () => {
                 ))}
               </select>
             </div>
-            {/* Reset */}
             <button
               type="button"
               id="mobile-filter-reset"
@@ -545,7 +547,10 @@ export const JobsPage: FC = () => {
         </div>
       </div>
 
-      {/* ── Results Header ───────────────────────────────── */}
+      {/* -- Quick Stats Bar (animated) ----------------------- */}
+      <div id="quick-stats-bar" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-3"></div>
+
+      {/* -- Results Header ----------------------------------- */}
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 class="font-heading font-bold text-xl sm:text-2xl text-content-primary dark:text-content-dark">
@@ -555,7 +560,17 @@ export const JobsPage: FC = () => {
             Showing {publishedJobs.length} jobs
           </p>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-3">
+          {/* Keyboard shortcuts link (desktop only) */}
+          <a
+            href="#"
+            id="shortcuts-link"
+            class="hidden md:inline-flex items-center gap-1 text-xs text-content-secondary dark:text-content-dark-muted hover:text-content-primary dark:hover:text-content-dark transition-colors"
+            title="Keyboard shortcuts"
+          >
+            <kbd class="inline-flex items-center justify-center w-5 h-5 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded text-[10px] font-mono">?</kbd>
+            <span>Shortcuts</span>
+          </a>
           {/* View toggle */}
           <div class="hidden sm:flex items-center border border-gray-200 dark:border-gray-700 rounded-btn overflow-hidden">
             <button
@@ -584,7 +599,29 @@ export const JobsPage: FC = () => {
         </div>
       </div>
 
-      {/* ── Job Cards Grid ───────────────────────────────── */}
+      {/* -- Bookmarks Empty State (hidden by default) -------- */}
+      <div id="bookmarks-empty-state" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+        <div class="py-16 text-center">
+          <div class="mx-auto w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 flex items-center justify-center mb-5">
+            <svg class="w-10 h-10 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+            </svg>
+          </div>
+          <h3 class="font-heading font-bold text-lg text-content-primary dark:text-content-dark mb-2">No bookmarked jobs yet</h3>
+          <p class="text-sm text-content-secondary dark:text-content-dark-muted mb-5 max-w-md mx-auto">
+            Bookmark jobs you're interested in by clicking the bookmark icon on any job card. They'll appear here for quick access.
+          </p>
+          <button
+            type="button"
+            class="inline-flex items-center px-5 py-2.5 text-sm font-semibold text-brand-primary dark:text-blue-400 border border-brand-primary dark:border-blue-400 rounded-btn hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+            onclick="document.getElementById('tab-all-jobs').click()"
+          >
+            Browse All Jobs
+          </button>
+        </div>
+      </div>
+
+      {/* -- Job Cards Grid ----------------------------------- */}
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         <div
           id="jobs-grid"
@@ -595,21 +632,50 @@ export const JobsPage: FC = () => {
           ))}
         </div>
 
-        {/* No results message (hidden by default) */}
+        {/* No results (generic) */}
         <div id="no-results" class="hidden py-16 text-center">
-          <div class="mx-auto w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-4">
-            <svg class="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <div class="mx-auto w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 flex items-center justify-center mb-5">
+            <svg class="w-10 h-10 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
             </svg>
           </div>
-          <h3 class="font-heading font-bold text-lg text-content-primary dark:text-content-dark mb-1">No jobs found</h3>
-          <p class="text-sm text-content-secondary dark:text-content-dark-muted mb-4">Try adjusting your filters or search query.</p>
+          <h3 class="font-heading font-bold text-lg text-content-primary dark:text-content-dark mb-2">No jobs match your filters</h3>
+          <p class="text-sm text-content-secondary dark:text-content-dark-muted mb-5 max-w-md mx-auto">
+            Try adjusting your filters, changing the sector, or broadening your search query to find more opportunities.
+          </p>
           <button
             type="button"
             id="clear-filters-btn"
-            class="inline-flex items-center px-4 py-2 text-sm font-medium text-brand-primary dark:text-blue-400 border border-brand-primary dark:border-blue-400 rounded-btn hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+            class="inline-flex items-center px-5 py-2.5 text-sm font-semibold text-brand-primary dark:text-blue-400 border border-brand-primary dark:border-blue-400 rounded-btn hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
           >
             Clear All Filters
+          </button>
+        </div>
+
+        {/* No eligible jobs (shown when eligible-only is on but none found) */}
+        <div id="no-eligible-state" class="hidden py-16 text-center">
+          <div class="mx-auto w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 flex items-center justify-center mb-5">
+            <svg class="w-10 h-10 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+          </div>
+          <h3 class="font-heading font-bold text-lg text-content-primary dark:text-content-dark mb-2">No fully eligible jobs found</h3>
+          <p class="text-sm text-content-secondary dark:text-content-dark-muted mb-2 max-w-md mx-auto">
+            Based on your profile, none of the current jobs show 100% eligibility. But don't worry!
+          </p>
+          <p class="text-sm text-amber-600 dark:text-amber-400 font-medium mb-5">
+            You have <span id="partial-match-count" class="font-bold">0</span> partial matches you might still qualify for.
+          </p>
+          <button
+            type="button"
+            id="view-partial-btn"
+            class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-brand-primary hover:bg-blue-700 rounded-btn transition-colors"
+          >
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            View Partial Matches
           </button>
         </div>
 
@@ -631,10 +697,10 @@ export const JobsPage: FC = () => {
         </div>
       </div>
 
-      {/* Profile Wizard modal (reused from homepage) */}
+      {/* Profile Wizard */}
       <ProfileWizard />
 
-      {/* Inline job data for eligibility engine — embedded as JSON */}
+      {/* Inline job data for eligibility engine */}
       <script
         id="jobs-data-script"
         type="application/json"
