@@ -28,7 +28,7 @@ export const Navbar: FC<NavbarProps> = ({ currentPath = '/' }) => {
       >
         {/* Left: Logo */}
         <a href="/" class="flex items-center gap-1.5 group" aria-label="SarkariMatch Home">
-          <span class="text-brand-secondary text-xl font-bold" aria-hidden="true">✓</span>
+          <svg class="w-6 h-6 text-brand-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
           <span class="font-heading font-bold text-lg md:text-xl text-brand-primary dark:text-blue-400 tracking-tight">
             SarkariMatch
           </span>

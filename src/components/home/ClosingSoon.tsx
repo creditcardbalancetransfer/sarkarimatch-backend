@@ -51,7 +51,7 @@ export const ClosingSoon: FC = () => {
         {/* Section header */}
         <div class="text-center mb-10">
           <h2 class="font-heading font-extrabold text-2xl sm:text-3xl md:text-4xl text-content-primary dark:text-white mb-2">
-            <span class="inline-block mr-2" aria-hidden="true">⏰</span>
+            <svg class="inline-block w-7 h-7 mr-2 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             Closing Soon — Apply Now!
           </h2>
           <p class="text-base text-content-secondary dark:text-content-dark-muted">
@@ -125,7 +125,7 @@ export const ClosingSoon: FC = () => {
                         </p>
                         <div class="flex items-center gap-2 mb-4">
                           <span class={`inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-pill ${sector.bgClass} ${sector.textClass}`}>
-                            {sector.icon} {sector.label}
+                            <span class="w-3 h-3" dangerouslySetInnerHTML={{ __html: sector.icon }} /> {sector.label}
                           </span>
                           {job.total_vacancies > 0 && (
                             <span class="text-xs text-content-secondary dark:text-content-dark-muted">

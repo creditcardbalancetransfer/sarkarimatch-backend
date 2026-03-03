@@ -296,7 +296,7 @@ export function checkAge(
     // Could the user turn ageMin before the deadline? They're under-age.
     return {
       result: 'fail',
-      message: `Your age: ${ageStr} on last date. Required: ${ageMin}–${ageMax}${effectiveRelaxation > 0 ? ` (with +${effectiveRelaxation} relaxation → ${effectiveMax})` : ''}. ❌ Under age limit`,
+      message: `Your age: ${ageStr} on last date. Required: ${ageMin}–${ageMax}${effectiveRelaxation > 0 ? ` (with +${effectiveRelaxation} relaxation → ${effectiveMax})` : ''}. [FAIL] Under age limit`,
     }
   }
 
@@ -305,7 +305,7 @@ export function checkAge(
     // Clearly over
     return {
       result: 'fail',
-      message: `Your age: ${ageStr} on last date. Required: ${ageMin}–${ageMax}${effectiveRelaxation > 0 ? ` (with +${effectiveRelaxation} relaxation → ${effectiveMax})` : ''}. ❌ Over age limit`,
+      message: `Your age: ${ageStr} on last date. Required: ${ageMin}–${ageMax}${effectiveRelaxation > 0 ? ` (with +${effectiveRelaxation} relaxation → ${effectiveMax})` : ''}. [FAIL] Over age limit`,
     }
   }
 
@@ -325,13 +325,13 @@ export function checkAge(
     // logic but worth flagging.
     return {
       result: 'pass',
-      message: `Your age: ${ageStr} on last date. Required: ${ageMin}–${ageMax}${effectiveRelaxation > 0 ? ` (with +${effectiveRelaxation} relaxation → ${effectiveMax})` : ''}. ✅ Eligible (close to upper limit)`,
+      message: `Your age: ${ageStr} on last date. Required: ${ageMin}–${ageMax}${effectiveRelaxation > 0 ? ` (with +${effectiveRelaxation} relaxation → ${effectiveMax})` : ''}. [PASS] Eligible (close to upper limit)`,
     }
   }
 
   return {
     result: 'pass',
-    message: `Your age: ${ageStr} on last date. Required: ${ageMin}–${ageMax}${effectiveRelaxation > 0 ? ` (with +${effectiveRelaxation} relaxation → ${effectiveMax})` : ''}. ✅ Eligible`,
+    message: `Your age: ${ageStr} on last date. Required: ${ageMin}–${ageMax}${effectiveRelaxation > 0 ? ` (with +${effectiveRelaxation} relaxation → ${effectiveMax})` : ''}. [PASS] Eligible`,
   }
 }
 
@@ -377,13 +377,13 @@ export function checkEducation(
     const over = userRank > reqRank ? ' (overqualified)' : ''
     return {
       result: 'pass',
-      message: `${reqLabel} required. You have: ${userLabel}${over}. ✅ Match`,
+      message: `${reqLabel} required. You have: ${userLabel}${over}. [PASS] Match`,
     }
   }
 
   return {
     result: 'fail',
-    message: `${reqLabel} required. You have: ${userLabel}. ❌ Does not meet requirement`,
+    message: `${reqLabel} required. You have: ${userLabel}. [FAIL] Does not meet requirement`,
   }
 }
 
@@ -410,7 +410,7 @@ export function checkDegree(
     if (!requiredSubjects || requiredSubjects.length === 0) {
       return {
         result: 'not_required',
-        message: 'Any degree/discipline accepted. ✅ No restriction',
+        message: 'Any degree/discipline accepted. [PASS] No restriction',
       }
     }
   }
@@ -419,7 +419,7 @@ export function checkDegree(
   if (!userDegree) {
     return {
       result: 'unknown',
-      message: `Specific degree required${requiredDegrees ? ` (${requiredDegrees.join(', ')})` : ''}. Your degree: not set. ⚠️ Cannot verify`,
+      message: `Specific degree required${requiredDegrees ? ` (${requiredDegrees.join(', ')})` : ''}. Your degree: not set. [WARN] Cannot verify`,
     }
   }
 
@@ -430,7 +430,7 @@ export function checkDegree(
     if (!degreeMatch) {
       return {
         result: 'fail',
-        message: `Required: ${requiredDegrees.join(' / ')}. You have: ${userDegree}. ❌ Mismatch`,
+        message: `Required: ${requiredDegrees.join(' / ')}. You have: ${userDegree}. [FAIL] Mismatch`,
       }
     }
   } else {
@@ -442,21 +442,21 @@ export function checkDegree(
     if (!userBranch) {
       return {
         result: 'unknown',
-        message: `Degree matches. Subject required: ${requiredSubjects.join(', ')}. Your branch: not set. ⚠️ Cannot verify subject`,
+        message: `Degree matches. Subject required: ${requiredSubjects.join(', ')}. Your branch: not set. [WARN] Cannot verify subject`,
       }
     }
     const branchMatch = requiredSubjects.some(req => subjectsMatch(userBranch, req))
     if (!branchMatch) {
       return {
         result: 'fail',
-        message: `Degree matches. Required subject: ${requiredSubjects.join(' / ')}. Your branch: ${userBranch}. ❌ Subject mismatch`,
+        message: `Degree matches. Required subject: ${requiredSubjects.join(' / ')}. Your branch: ${userBranch}. [FAIL] Subject mismatch`,
       }
     }
   }
 
   return {
     result: 'pass',
-    message: `Degree: ${userDegree}${userBranch ? ` (${userBranch})` : ''}. ✅ Match`,
+    message: `Degree: ${userDegree}${userBranch ? ` (${userBranch})` : ''}. [PASS] Match`,
   }
 }
 
@@ -478,7 +478,7 @@ export function checkCategoryVacancy(
   if (vacancies === null || vacancies === undefined) {
     return {
       result: 'unknown',
-      message: 'Vacancy breakdown not available. ⚠️ Cannot verify',
+      message: 'Vacancy breakdown not available. [WARN] Cannot verify',
       vacanciesForCategory: 0,
     }
   }
@@ -489,13 +489,13 @@ export function checkCategoryVacancy(
       // Exam-only notifications like UGC NET
       return {
         result: 'pass',
-        message: 'This is an exam/eligibility test — no specific vacancies. ✅ Open to all',
+        message: 'This is an exam/eligibility test — no specific vacancies. [PASS] Open to all',
         vacanciesForCategory: 0,
       }
     }
     return {
       result: 'unknown',
-      message: `Total vacancies: ${vacancies}. Category-wise breakdown not available. ⚠️ Check notification`,
+      message: `Total vacancies: ${vacancies}. Category-wise breakdown not available. [WARN] Check notification`,
       vacanciesForCategory: 0,
     }
   }
@@ -506,7 +506,7 @@ export function checkCategoryVacancy(
   if (catVacancies > 0) {
     return {
       result: 'pass',
-      message: `${cat} vacancies: ${catVacancies}. ✅ Available`,
+      message: `${cat} vacancies: ${catVacancies}. [PASS] Available`,
       vacanciesForCategory: catVacancies,
     }
   }
@@ -515,7 +515,7 @@ export function checkCategoryVacancy(
   if (cat !== 'UR' && (vacancies['UR'] ?? 0) > 0) {
     return {
       result: 'pass',
-      message: `${cat} vacancies: 0. But UR (unreserved) vacancies: ${vacancies['UR']}. ✅ Can apply in UR`,
+      message: `${cat} vacancies: 0. But UR (unreserved) vacancies: ${vacancies['UR']}. [PASS] Can apply in UR`,
       vacanciesForCategory: 0,
     }
   }
@@ -523,14 +523,14 @@ export function checkCategoryVacancy(
   if (catVacancies === 0) {
     return {
       result: 'fail',
-      message: `${cat} vacancies: 0. No unreserved vacancies either. ❌ No vacancy`,
+      message: `${cat} vacancies: 0. No unreserved vacancies either. [FAIL] No vacancy`,
       vacanciesForCategory: 0,
     }
   }
 
   return {
     result: 'unknown',
-    message: `Vacancy information unclear for ${cat}. ⚠️ Check notification`,
+    message: `Vacancy information unclear for ${cat}. [WARN] Check notification`,
     vacanciesForCategory: 0,
   }
 }
@@ -983,7 +983,7 @@ function checkPercentage(
   educationText: string | undefined,
 ): { result: CheckResult; message: string } {
   if (!educationText) {
-    return { result: 'not_required', message: 'No minimum marks specified. ✅' }
+    return { result: 'not_required', message: 'No minimum marks specified. [PASS]' }
   }
 
   // Look for percentage requirement patterns
@@ -993,26 +993,26 @@ function checkPercentage(
   const requiredPct = minMatch ? parseInt(minMatch[1], 10) : (pctMatch ? parseInt(pctMatch[1], 10) : null)
 
   if (requiredPct === null) {
-    return { result: 'not_required', message: 'No minimum marks specified. ✅' }
+    return { result: 'not_required', message: 'No minimum marks specified. [PASS]' }
   }
 
   if (userPercentage === null || userPercentage === undefined) {
     return {
       result: 'unknown',
-      message: `Minimum ${requiredPct}% required. Your marks: not entered. ⚠️ Cannot verify`,
+      message: `Minimum ${requiredPct}% required. Your marks: not entered. [WARN] Cannot verify`,
     }
   }
 
   if (userPercentage >= requiredPct) {
     return {
       result: 'pass',
-      message: `Minimum ${requiredPct}% required. Your marks: ${userPercentage}%. ✅ Meets requirement`,
+      message: `Minimum ${requiredPct}% required. Your marks: ${userPercentage}%. [PASS] Meets requirement`,
     }
   }
 
   return {
     result: 'fail',
-    message: `Minimum ${requiredPct}% required. Your marks: ${userPercentage}%. ❌ Below requirement`,
+    message: `Minimum ${requiredPct}% required. Your marks: ${userPercentage}%. [FAIL] Below requirement`,
   }
 }
 

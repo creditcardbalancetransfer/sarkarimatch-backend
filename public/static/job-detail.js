@@ -237,11 +237,11 @@
       var result = evaluatePostForWidget(profile, post);
       var icon, cls;
       if (result.label === 'eligible') {
-        icon = '\u2705'; cls = 'text-green-600 dark:text-green-400';
+        icon = '<svg class="w-3.5 h-3.5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>'; cls = 'text-green-600 dark:text-green-400';
       } else if (result.label === 'partial') {
-        icon = '\u26a0\ufe0f'; cls = 'text-amber-600 dark:text-amber-400';
+        icon = '<svg class="w-3.5 h-3.5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>'; cls = 'text-amber-600 dark:text-amber-400';
       } else {
-        icon = '\u274c'; cls = 'text-red-600 dark:text-red-400';
+        icon = '<svg class="w-3.5 h-3.5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>'; cls = 'text-red-600 dark:text-red-400';
       }
       cell.innerHTML = '<span class="' + cls + ' text-xs font-semibold">' + icon + ' ' + result.score + '%</span>';
     });
@@ -390,7 +390,7 @@
       container.classList.remove('hidden');
       container.innerHTML = '<div class="jd-info-box jd-info-box-blue">' +
         '<div class="flex items-start gap-3">' +
-        '<span class="shrink-0 text-lg">\ud83d\udd0d</span>' +
+        '<span class="shrink-0"><svg class="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg></span>' +
         '<div>' +
         '<h3 class="font-semibold text-sm text-blue-800 dark:text-blue-300 mb-1">Date Clash Check</h3>' +
         '<p class="text-sm text-blue-700 dark:text-blue-400 leading-relaxed">You have <strong>' + bookmarks.length + '</strong> bookmarked job(s). Check their dates on the <a href="/jobs" class="underline font-medium">Jobs page</a> to avoid scheduling conflicts with this notification\'s last date (' + formatDateShortJS(lastDate) + ')' + (examDate ? ' and exam date (' + formatDateShortJS(examDate) + ')' : '') + '.</p>' +
@@ -699,7 +699,7 @@
     var summaryEl = document.getElementById('eligibility-summary');
     if (summaryEl) {
       var summaryColor = eligibleCount > 0 ? 'bg-green-50 dark:bg-green-900/20' : partialCount > 0 ? 'bg-amber-50 dark:bg-amber-900/20' : 'bg-red-50 dark:bg-red-900/20';
-      var summaryIcon = eligibleCount > 0 ? '\u2705' : partialCount > 0 ? '\u26a0\ufe0f' : '\u274c';
+      var summaryIcon = eligibleCount > 0 ? '<svg class="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>' : partialCount > 0 ? '<svg class="w-5 h-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>' : '<svg class="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>';
       var summaryText = eligibleCount > 0
         ? 'Eligible for <strong>' + eligibleCount + '</strong> of ' + posts.length + ' posts'
         : partialCount > 0
@@ -707,7 +707,7 @@
           : 'Not eligible for any of the ' + posts.length + ' posts';
 
       summaryEl.innerHTML = '<div class="flex items-center gap-3 p-3 rounded-btn ' + summaryColor + '">' +
-        '<span class="text-lg">' + summaryIcon + '</span>' +
+        '<span class="shrink-0">' + summaryIcon + '</span>' +
         '<div class="text-sm text-content-primary dark:text-content-dark">' + summaryText + '</div>' +
         '</div>';
 
@@ -716,7 +716,7 @@
         var badgesHtml = '<div class="flex flex-wrap gap-1.5 mt-2">';
         results.forEach(function (r, i) {
           var bc = r.label === 'eligible' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : r.label === 'partial' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300' : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300';
-          var icon = r.label === 'eligible' ? '\u2705' : r.label === 'partial' ? '\u26a0\ufe0f' : '\u274c';
+          var icon = r.label === 'eligible' ? '<svg class="w-3 h-3 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>' : r.label === 'partial' ? '<svg class="w-3 h-3 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>' : '<svg class="w-3 h-3 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>';
           badgesHtml += '<span class="px-2 py-0.5 text-[10px] font-semibold rounded-pill ' + bc + '" title="' + escHtml(r.post_name) + '">' + icon + ' Post ' + (i + 1) + ' (' + r.score + '%)</span>';
         });
         badgesHtml += '</div>';
@@ -746,11 +746,11 @@
     if (!checksEl || !result) return;
 
     var checkOrder = [
-      { key: 'age', label: 'Age', icon: '\ud83d\udcc5' },
-      { key: 'education', label: 'Education', icon: '\ud83c\udf93' },
-      { key: 'degree', label: 'Degree', icon: '\ud83d\udcda' },
-      { key: 'percentage', label: 'Marks', icon: '\ud83d\udcaf' },
-      { key: 'vacancy', label: 'Vacancy', icon: '\ud83d\udc64' },
+      { key: 'age', label: 'Age', iconSvg: '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75"/></svg>' },
+      { key: 'education', label: 'Education', iconSvg: '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347"/></svg>' },
+      { key: 'degree', label: 'Degree', iconSvg: '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>' },
+      { key: 'percentage', label: 'Marks', iconSvg: '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>' },
+      { key: 'vacancy', label: 'Vacancy', iconSvg: '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>' },
     ];
 
     var html = '';
@@ -772,7 +772,7 @@
       html += '<div class="flex items-start gap-3 p-2.5 rounded-btn border ' + statusColor + '">' +
         '<div class="shrink-0 mt-0.5">' + statusIcon + '</div>' +
         '<div class="flex-1 min-w-0">' +
-        '<div class="text-xs font-semibold text-content-primary dark:text-content-dark">' + c.icon + ' ' + c.label + '</div>' +
+        '<div class="text-xs font-semibold text-content-primary dark:text-content-dark flex items-center gap-1">' + c.iconSvg + ' ' + c.label + '</div>' +
         '<div class="text-xs text-content-secondary dark:text-content-dark-muted mt-0.5 leading-relaxed">' + escHtml(detail) + '</div>' +
         '</div>' +
         '</div>';

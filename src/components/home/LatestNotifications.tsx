@@ -151,7 +151,7 @@ export const LatestNotifications: FC = () => {
                         <span
                           class={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-pill text-xs font-semibold ${sector.bgClass} ${sector.textClass}`}
                         >
-                          <span aria-hidden="true">{sector.icon}</span>
+                          <span class="w-3.5 h-3.5" aria-hidden="true" dangerouslySetInnerHTML={{ __html: sector.icon }} />
                           {sector.label}
                         </span>
                         {/* Eligibility mini-badge -- injected by JS */}

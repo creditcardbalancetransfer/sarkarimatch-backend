@@ -215,7 +215,7 @@
     var uRank = getEducationRank(profile.education_level);
     var rRank = getEducationRank(reqLevel);
     var eduResult = (uRank === 0 || rRank === 0) ? 'unknown' : (uRank >= rRank ? 'pass' : 'fail');
-    var eduMsg = eduResult === 'pass' ? (EDUCATION_LABELS[profile.education_level] || profile.education_level) + ' \u2265 ' + (EDUCATION_LABELS[reqLevel] || reqLevel) :
+    var eduMsg = eduResult === 'pass' ? (EDUCATION_LABELS[profile.education_level] || profile.education_level) + ' >= ' + (EDUCATION_LABELS[reqLevel] || reqLevel) :
                  eduResult === 'fail' ? 'Need ' + (EDUCATION_LABELS[reqLevel] || reqLevel) + ', have ' + (EDUCATION_LABELS[profile.education_level] || profile.education_level) : 'Education unknown';
 
     // -- Degree check --
@@ -620,7 +620,7 @@
 
     for (var i = 0; i < result.posts.length; i++) {
       var p = result.posts[i];
-      var icon = p.label === 'eligible' ? '\u2705' : (p.label === 'partial' ? '\u26a0\ufe0f' : '\u274c');
+      var icon = p.label === 'eligible' ? '<svg class="w-3.5 h-3.5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>' : (p.label === 'partial' ? '<svg class="w-3.5 h-3.5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>' : '<svg class="w-3.5 h-3.5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>');
       var scoreColor = p.label === 'eligible' ? 'text-green-600 dark:text-green-400' : (p.label === 'partial' ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400');
       var bgColor = p.label === 'eligible' ? 'bg-green-50 dark:bg-green-900/10' : (p.label === 'partial' ? 'bg-amber-50 dark:bg-amber-900/10' : 'bg-red-50 dark:bg-red-900/10');
 
@@ -635,7 +635,7 @@
       if (p.criteria && p.criteria.length > 0) {
         for (var ci = 0; ci < p.criteria.length; ci++) {
           var cr = p.criteria[ci];
-          var crIcon = cr.result === 'pass' || cr.result === 'not_required' ? '\u2713' : (cr.result === 'unknown' ? '?' : '\u2717');
+          var crIcon = cr.result === 'pass' || cr.result === 'not_required' ? '<svg class="w-3 h-3 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>' : (cr.result === 'unknown' ? '<svg class="w-3 h-3 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/></svg>' : '<svg class="w-3 h-3 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>');
           var crColor = cr.result === 'pass' || cr.result === 'not_required' ? 'text-green-600 dark:text-green-400' : (cr.result === 'unknown' ? 'text-amber-500' : 'text-red-500');
           html += '<div class="flex items-start gap-1.5 text-[11px] ml-4">' +
             '<span class="' + crColor + ' font-bold leading-4">' + crIcon + '</span>' +
@@ -1458,7 +1458,7 @@
       '<div class="absolute inset-0 bg-black/40" style="backdrop-filter:blur(4px)"></div>' +
       '<div class="relative bg-white dark:bg-surface-card-dark rounded-card shadow-2xl max-w-sm w-full mx-4 overflow-hidden" style="animation:fadeIn 0.2s ease-out">' +
         '<div class="p-5 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">' +
-          '<h3 class="font-heading font-bold text-lg text-content-primary dark:text-content-dark">\u2328\ufe0f Keyboard Shortcuts</h3>' +
+          '<h3 class="font-heading font-bold text-lg text-content-primary dark:text-content-dark flex items-center gap-2"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z"/></svg> Keyboard Shortcuts</h3>' +
           '<button type="button" class="shortcuts-modal-close w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-400">' +
             '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' +
           '</button>' +

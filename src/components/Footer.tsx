@@ -57,7 +57,7 @@ export const Footer: FC = () => {
           {/* Brand column */}
           <div class="sm:col-span-2 lg:col-span-1">
             <a href="/" class="inline-flex items-center gap-1.5 mb-4">
-              <span class="text-brand-secondary text-xl font-bold" aria-hidden="true">✓</span>
+              <svg class="w-6 h-6 text-brand-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
               <span class="font-heading font-bold text-xl text-white">SarkariMatch</span>
             </a>
             <p class="text-xs font-medium text-brand-secondary mb-3 tracking-wide">
@@ -111,7 +111,7 @@ export const Footer: FC = () => {
                 id="shortcuts-link"
                 class="text-gray-500 dark:text-gray-600 hover:text-gray-300 transition-colors duration-150 inline-flex items-center gap-1"
               >
-                &#x2328;&#xFE0F; Keyboard shortcuts
+                <svg class="w-4 h-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"/></svg> Keyboard shortcuts
               </a>
               <span class="text-gray-700" aria-hidden="true">|</span>
               <a

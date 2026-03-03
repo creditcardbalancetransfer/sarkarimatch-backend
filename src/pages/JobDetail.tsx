@@ -16,15 +16,15 @@ import {
 /* ── Helpers ───────────────────────────────────────────────── */
 const TODAY = '2026-03-03'
 
-function getStatusBadge(job: Job): { label: string; color: string; bgClass: string; textClass: string; icon: string } {
+function getStatusBadge(job: Job): { label: string; color: string; bgClass: string; textClass: string; iconSvg: string } {
   const lastDate = job.important_dates.last_date
   const startDate = job.important_dates.start_date
   const days = daysRemaining(lastDate, TODAY)
 
-  if (days < 0) return { label: 'EXPIRED', color: '#6B7280', bgClass: 'bg-gray-100 dark:bg-gray-800', textClass: 'text-gray-700 dark:text-gray-300', icon: '\u26d4' }
-  if (TODAY < startDate) return { label: 'UPCOMING', color: '#7C3AED', bgClass: 'bg-purple-100 dark:bg-purple-900/30', textClass: 'text-purple-800 dark:text-purple-300', icon: '\ud83d\udcc5' }
-  if (days <= 7) return { label: 'CLOSING SOON', color: '#DC2626', bgClass: 'bg-red-100 dark:bg-red-900/30', textClass: 'text-red-800 dark:text-red-300', icon: '\u23f3' }
-  return { label: 'ACTIVE', color: '#059669', bgClass: 'bg-green-100 dark:bg-green-900/30', textClass: 'text-green-800 dark:text-green-300', icon: '\u2705' }
+  if (days < 0) return { label: 'EXPIRED', color: '#6B7280', bgClass: 'bg-gray-100 dark:bg-gray-800', textClass: 'text-gray-700 dark:text-gray-300', iconSvg: '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" /></svg>' }
+  if (TODAY < startDate) return { label: 'UPCOMING', color: '#7C3AED', bgClass: 'bg-purple-100 dark:bg-purple-900/30', textClass: 'text-purple-800 dark:text-purple-300', iconSvg: '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" /></svg>' }
+  if (days <= 7) return { label: 'CLOSING SOON', color: '#DC2626', bgClass: 'bg-red-100 dark:bg-red-900/30', textClass: 'text-red-800 dark:text-red-300', iconSvg: '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>' }
+  return { label: 'ACTIVE', color: '#059669', bgClass: 'bg-green-100 dark:bg-green-900/30', textClass: 'text-green-800 dark:text-green-300', iconSvg: '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>' }
 }
 
 /* ── FAQ Generator ─────────────────────────────────────────── */
@@ -248,10 +248,10 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
 
   // All dates array for timeline
   const allDates = [
-    { label: 'Notification Date', date: job.important_dates.notification_date, icon: '\ud83d\udce2' },
-    { label: 'Application Start Date', date: job.important_dates.start_date, icon: '\ud83d\udcc4' },
-    { label: 'Application Last Date', date: job.important_dates.last_date, icon: '\u23f0' },
-    ...(job.important_dates.exam_date ? [{ label: 'Exam Date', date: job.important_dates.exam_date, icon: '\ud83d\udcdd' }] : []),
+    { label: 'Notification Date', date: job.important_dates.notification_date, iconSvg: '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 110-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 01-1.44-4.282m3.102.069a18.03 18.03 0 01-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 018.835 2.535M10.34 6.66a23.847 23.847 0 008.835-2.535m0 0A23.74 23.74 0 0018.795 3m.38 1.125a23.91 23.91 0 011.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 001.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 010 3.46" /></svg>' },
+    { label: 'Application Start Date', date: job.important_dates.start_date, iconSvg: '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>' },
+    { label: 'Application Last Date', date: job.important_dates.last_date, iconSvg: '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>' },
+    ...(job.important_dates.exam_date ? [{ label: 'Exam Date', date: job.important_dates.exam_date, iconSvg: '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>' }] : []),
   ]
 
   const canonicalUrl = `https://sarkarimatch.com/jobs/${job.slug}`
@@ -316,16 +316,17 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           {/* Org icon + Title row */}
           <div class="flex items-start gap-4 mb-4">
-            <div class={`shrink-0 w-14 h-14 sm:w-16 sm:h-16 rounded-xl flex items-center justify-center text-2xl sm:text-3xl ${sector.bgClass} border border-gray-200/60 dark:border-gray-700/60`}>
-              {sector.icon}
+            <div class={`shrink-0 w-14 h-14 sm:w-16 sm:h-16 rounded-xl flex items-center justify-center ${sector.bgClass} border border-gray-200/60 dark:border-gray-700/60`}>
+              <span class="w-7 h-7 sm:w-8 sm:h-8" dangerouslySetInnerHTML={{ __html: sector.icon }} />
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2 flex-wrap mb-2">
                 <span class={`inline-flex items-center gap-1 px-2.5 py-1 rounded-pill text-xs font-bold ${status.bgClass} ${status.textClass}`}>
-                  <span aria-hidden="true">{status.icon}</span>
+                  <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: status.iconSvg }} />
                   {status.label}
                 </span>
                 <span class={`inline-flex items-center gap-1 px-2.5 py-1 rounded-pill text-xs font-semibold ${sector.bgClass} ${sector.textClass}`}>
+                  <span class="w-3.5 h-3.5" dangerouslySetInnerHTML={{ __html: sector.icon }} />
                   {sector.label}
                 </span>
                 {job.featured && (
@@ -790,9 +791,9 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
                           </div>
                         )}
                         <div class="space-y-1 text-xs text-content-secondary dark:text-content-dark-muted">
-                          <div>\ud83c\udf93 {post.education_required}</div>
-                          <div>\ud83d\udcc5 {post.age_limit}</div>
-                          <div>\ud83d\udcb0 {post.salary}</div>
+                          <div class="flex items-center gap-1.5"><svg class="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84" /></svg> {post.education_required}</div>
+                          <div class="flex items-center gap-1.5"><svg class="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75" /></svg> {post.age_limit}</div>
+                          <div class="flex items-center gap-1.5"><svg class="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75" /></svg> {post.salary}</div>
                         </div>
                       </div>
                     </div>
@@ -837,7 +838,13 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
                   job.application_mode === 'Offline' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300' :
                   'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
                 }`}>
-                  {job.application_mode === 'Online' ? '\ud83d\udcbb' : job.application_mode === 'Offline' ? '\ud83d\udce8' : '\ud83d\udcbb\ud83d\udce8'}
+                  {job.application_mode === 'Online' ? (
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" /></svg>
+                  ) : job.application_mode === 'Offline' ? (
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
+                  ) : (
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25" /></svg>
+                  )}
                   {job.application_mode} Application
                 </span>
               </div>
@@ -958,7 +965,10 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
                   <h3 class="jd-heading">Physical &amp; Medical Standards</h3>
                   <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="jd-info-box jd-info-box-amber">
-                      <h4 class="font-semibold text-sm text-amber-800 dark:text-amber-300 mb-2">\ud83c\udfcb\ufe0f Physical Fitness</h4>
+                      <h4 class="font-semibold text-sm text-amber-800 dark:text-amber-300 mb-2 flex items-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" /></svg>
+                        Physical Fitness
+                      </h4>
                       <ul class="text-xs text-amber-700 dark:text-amber-400 space-y-1 leading-relaxed">
                         <li>1.6 km run in prescribed time</li>
                         <li>Pull-ups (6-10 reps)</li>
@@ -967,7 +977,10 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
                       </ul>
                     </div>
                     <div class="jd-info-box jd-info-box-red">
-                      <h4 class="font-semibold text-sm text-red-800 dark:text-red-300 mb-2">\ud83c\udfe5 Medical Standards</h4>
+                      <h4 class="font-semibold text-sm text-red-800 dark:text-red-300 mb-2 flex items-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" /></svg>
+                        Medical Standards
+                      </h4>
                       <ul class="text-xs text-red-700 dark:text-red-400 space-y-1 leading-relaxed">
                         <li>Eyesight: 6/6 without glasses</li>
                         <li>Color vision: Normal</li>
@@ -976,7 +989,10 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
                       </ul>
                     </div>
                     <div class="jd-info-box jd-info-box-green">
-                      <h4 class="font-semibold text-sm text-green-800 dark:text-green-300 mb-2">\ud83c\udf96\ufe0f Training</h4>
+                      <h4 class="font-semibold text-sm text-green-800 dark:text-green-300 mb-2 flex items-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg>
+                        Training
+                      </h4>
                       <ul class="text-xs text-green-700 dark:text-green-400 space-y-1 leading-relaxed">
                         <li>Basic military training</li>
                         <li>Weapon handling</li>
@@ -994,7 +1010,10 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
                   <h3 class="jd-heading">Additional Selection Components</h3>
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div class="jd-info-box jd-info-box-purple">
-                      <h4 class="font-semibold text-sm text-purple-800 dark:text-purple-300 mb-2">\ud83c\udf99\ufe0f Personality Test / Interview</h4>
+                      <h4 class="font-semibold text-sm text-purple-800 dark:text-purple-300 mb-2 flex items-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" /></svg>
+                        Personality Test / Interview
+                      </h4>
                       <ul class="text-xs text-purple-700 dark:text-purple-400 space-y-1 leading-relaxed">
                         <li>Tests personality, communication skills</li>
                         <li>Awareness of current affairs</li>
@@ -1003,7 +1022,10 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
                       </ul>
                     </div>
                     <div class="jd-info-box jd-info-box-blue">
-                      <h4 class="font-semibold text-sm text-blue-800 dark:text-blue-300 mb-2">\ud83d\udcc4 Document Verification</h4>
+                      <h4 class="font-semibold text-sm text-blue-800 dark:text-blue-300 mb-2 flex items-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                        Document Verification
+                      </h4>
                       <ul class="text-xs text-blue-700 dark:text-blue-400 space-y-1 leading-relaxed">
                         <li>Original certificates verification</li>
                         <li>Caste / Category certificate</li>
@@ -1045,7 +1067,7 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
                           {isPast ? (
                             <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
                           ) : (
-                            <span class="text-xs">{item.icon}</span>
+                            <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: item.iconSvg }} />
                           )}
                         </div>
                         {/* Content */}
@@ -1063,7 +1085,7 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
                               isUpcoming ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300' :
                               isFuture ? 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400' : ''
                             }`}>
-                              {isPast ? '\u2705 Passed' : isToday ? '\ud83d\udd25 Today!' : `${dLeft} days left`}
+                              {isPast ? (<><svg class="w-3 h-3 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg> Passed</>) : isToday ? (<><svg class="w-3 h-3 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" /></svg> Today!</>) : `${dLeft} days left`}
                             </div>
                           </div>
                         </div>
@@ -1156,7 +1178,9 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
               ) : (
                 <div class="jd-info-box jd-info-box-blue mb-6">
                   <div class="flex items-start gap-3">
-                    <span class="shrink-0 text-lg">\u2139\ufe0f</span>
+                    <span class="shrink-0 w-5 h-5 mt-0.5">
+                      <svg class="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" /></svg>
+                    </span>
                     <div>
                       <h3 class="font-semibold text-sm text-blue-800 dark:text-blue-300 mb-1">No Written Examination</h3>
                       <p class="text-sm text-blue-700 dark:text-blue-400 leading-relaxed">
@@ -1231,7 +1255,7 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
                   class="shrink-0 w-[280px] snap-start bg-white dark:bg-surface-card-dark rounded-card border border-gray-200 dark:border-gray-700 p-4 hover:shadow-card-hover hover:-translate-y-0.5 transition-all group"
                 >
                   <div class="flex items-center gap-2 mb-2">
-                    <span class={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${sjSector.bgClass}`}>{sjSector.icon}</span>
+                    <span class={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${sjSector.bgClass}`}><span class="w-4 h-4" dangerouslySetInnerHTML={{ __html: sjSector.icon }} /></span>
                     <span class={`text-[10px] font-semibold px-2 py-0.5 rounded-pill ${sjSector.bgClass} ${sjSector.textClass}`}>{sjSector.label}</span>
                   </div>
                   <h3 class="text-sm font-semibold text-content-primary dark:text-content-dark line-clamp-2 mb-2 group-hover:text-brand-primary dark:group-hover:text-blue-400 transition-colors">{sj.notification_title}</h3>
