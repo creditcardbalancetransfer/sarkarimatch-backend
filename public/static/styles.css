@@ -666,6 +666,79 @@ kbd {
 
 
 /* ═══════════════════════════════════════════════════
+   JOB DETAIL PAGE
+   ═══════════════════════════════════════════════════ */
+
+/* Hero gradient */
+.jd-hero {
+  position: relative;
+}
+
+/* Sidebar sticky */
+.jd-sidebar {
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.jd-sidebar::-webkit-scrollbar {
+  width: 3px;
+}
+.jd-sidebar::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 2px;
+}
+.dark .jd-sidebar::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
+/* Tab scrollbar hide */
+.jd-tabs {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.jd-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+/* Tab button */
+.jd-tab-btn {
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+/* Tab content animation */
+.jd-tab-content {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Selection timeline dot glow */
+.jd-hero .rounded-full {
+  transition: transform 0.2s ease;
+}
+
+/* Share dropdown animation */
+#share-dropdown {
+  animation: tooltipSlideDown 0.15s ease-out;
+}
+
+/* Vacancy table hover rows */
+table tbody tr:hover {
+  background-color: rgba(59, 130, 246, 0.04);
+}
+.dark table tbody tr:hover {
+  background-color: rgba(59, 130, 246, 0.08);
+}
+
+/* Mobile: sidebar not sticky */
+@media (max-width: 1023px) {
+  .jd-sidebar {
+    position: static !important;
+    max-height: none;
+    overflow-y: visible;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════
    GENERIC HELPERS
    ═══════════════════════════════════════════════════ */
 .hover-lift {

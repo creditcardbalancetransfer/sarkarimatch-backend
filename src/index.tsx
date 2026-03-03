@@ -1,9 +1,11 @@
 import { Hono } from 'hono'
 import { HomePage } from './pages/Home'
 import { JobsPage } from './pages/Jobs'
+import { JobDetailPage, JobNotFound } from './pages/JobDetail'
 import { AboutPage } from './pages/About'
 import { PrivacyPage } from './pages/Privacy'
 import { DisclaimerPage } from './pages/Disclaimer'
+import { placeholderJobs } from './lib/placeholder-data'
 
 const app = new Hono()
 
@@ -15,6 +17,18 @@ app.get('/', (c) => {
 // Jobs listing page
 app.get('/jobs', (c) => {
   return c.html(<JobsPage />)
+})
+
+// Job detail page (dynamic route)
+app.get('/jobs/:slug', (c) => {
+  const slug = c.req.param('slug')
+  const job = placeholderJobs.find((j) => j.slug === slug && j.status === 'published')
+
+  if (!job) {
+    return c.html(<JobNotFound />, 404)
+  }
+
+  return c.html(<JobDetailPage job={job} />)
 })
 
 // About page
