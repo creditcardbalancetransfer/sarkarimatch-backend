@@ -977,6 +977,79 @@ kbd {
   transition: width 0.5s ease-out;
 }
 
+/* ── FAQ Accordion ─────────────────────────────── */
+.jd-faq-item {
+  transition: box-shadow 0.15s ease;
+}
+.jd-faq-item:hover {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+.jd-faq-chevron {
+  transition: transform 0.2s ease;
+}
+.jd-faq-body {
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+.jd-faq-body.hidden {
+  max-height: 0;
+  overflow: hidden;
+}
+
+/* ── Similar Jobs Carousel ─────────────────────── */
+#similar-carousel {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+#similar-carousel::-webkit-scrollbar {
+  display: none;
+}
+#similar-carousel > a {
+  scroll-snap-align: start;
+}
+/* Mobile: show ~1.5 cards */
+@media (max-width: 640px) {
+  #similar-carousel > a {
+    min-width: 260px;
+    max-width: 280px;
+  }
+}
+
+/* ── Prev/Next Navigation ──────────────────────── */
+.jd-prev-next a {
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+/* ── Related Internal Links ────────────────────── */
+[aria-labelledby="related-links-heading"] a {
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+[aria-labelledby="related-links-heading"] a:hover {
+  transform: translateY(-1px);
+}
+
+/* ── Print: show hero + current tab, hide rest ── */
+@media print {
+  .jd-tab-content.hidden {
+    display: none !important;
+  }
+  #similar-jobs,
+  #faq-section,
+  [aria-label="Job navigation"],
+  [aria-labelledby="related-links-heading"],
+  #jd-back-to-top,
+  #print-page-btn,
+  .jd-tabs,
+  .jd-sidebar,
+  #share-dropdown {
+    display: none !important;
+  }
+  .jd-tab-content:not(.hidden) {
+    display: block !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 /* Mobile: sidebar not sticky */
 @media (max-width: 1023px) {
   .jd-sidebar {
@@ -1000,10 +1073,9 @@ kbd {
   }
 }
 
-/* Print: show all tabs */
+/* Print: job detail specific */
 @media print {
   .jd-tab-content {
-    display: block !important;
     opacity: 1 !important;
     transform: none !important;
   }
@@ -1012,6 +1084,9 @@ kbd {
   }
   .jd-sidebar {
     display: none;
+  }
+  .jd-hero {
+    break-after: avoid;
   }
 }
 

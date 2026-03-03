@@ -14,18 +14,126 @@ import {
 } from '../lib/job-helpers'
 
 /* ── Helpers ───────────────────────────────────────────────── */
+const TODAY = '2026-03-03'
 
 function getStatusBadge(job: Job): { label: string; color: string; bgClass: string; textClass: string; icon: string } {
-  const today = '2026-03-03'
   const lastDate = job.important_dates.last_date
   const startDate = job.important_dates.start_date
-  const days = daysRemaining(lastDate, today)
+  const days = daysRemaining(lastDate, TODAY)
 
   if (days < 0) return { label: 'EXPIRED', color: '#6B7280', bgClass: 'bg-gray-100 dark:bg-gray-800', textClass: 'text-gray-700 dark:text-gray-300', icon: '\u26d4' }
-  if (today < startDate) return { label: 'UPCOMING', color: '#7C3AED', bgClass: 'bg-purple-100 dark:bg-purple-900/30', textClass: 'text-purple-800 dark:text-purple-300', icon: '\ud83d\udcc5' }
+  if (TODAY < startDate) return { label: 'UPCOMING', color: '#7C3AED', bgClass: 'bg-purple-100 dark:bg-purple-900/30', textClass: 'text-purple-800 dark:text-purple-300', icon: '\ud83d\udcc5' }
   if (days <= 7) return { label: 'CLOSING SOON', color: '#DC2626', bgClass: 'bg-red-100 dark:bg-red-900/30', textClass: 'text-red-800 dark:text-red-300', icon: '\u23f3' }
   return { label: 'ACTIVE', color: '#059669', bgClass: 'bg-green-100 dark:bg-green-900/30', textClass: 'text-green-800 dark:text-green-300', icon: '\u2705' }
 }
+
+/* ── FAQ Generator ─────────────────────────────────────────── */
+function generateFAQs(job: Job): { question: string; answer: string }[] {
+  const faqs: { question: string; answer: string }[] = []
+  const eduLabel = educationLabels[job.education_level] || job.education_level
+  const salary = formatSalary(job.salary_min, job.salary_max)
+  const vacancies = formatVacancies(job.total_vacancies)
+
+  faqs.push({
+    question: `What is the eligibility criteria for ${job.notification_title}?`,
+    answer: `Candidates must have ${eduLabel} qualification. The age limit is ${job.age_min === 0 && job.age_max === 0 ? 'no age limit specified' : `${job.age_min}–${job.age_max} years`} (with relaxation for SC/ST/OBC/PwBD as per government rules). Detailed eligibility for each post is mentioned in the official notification.`,
+  })
+
+  faqs.push({
+    question: `What is the salary for ${job.organization} ${job.posts[0]?.post_name || 'this post'}?`,
+    answer: `The salary range is ${salary} per month. This includes basic pay plus allowances such as DA, HRA, and other benefits as per ${job.organization} norms.`,
+  })
+
+  faqs.push({
+    question: `How to apply for ${job.notification_title}?`,
+    answer: `Applications must be submitted ${job.application_mode.toLowerCase()}. Visit ${job.official_website} and follow the application process. The last date to apply is ${formatDateShort(job.important_dates.last_date)}. Application fee is ₹${job.application_fee_general} for General/OBC and ${job.application_fee_sc_st === 0 ? 'Nil' : '₹' + job.application_fee_sc_st} for SC/ST candidates.`,
+  })
+
+  faqs.push({
+    question: `What is the selection process for ${job.notification_title}?`,
+    answer: `The selection process consists of ${job.selection_process.length} stages: ${job.selection_process.map(s => s.name).join(', ')}. ${job.selection_process.filter(s => s.is_eliminatory).length} of these stages are eliminatory in nature.`,
+  })
+
+  if (job.exam_pattern) {
+    const totalQ = job.exam_pattern.reduce((s, sec) => s + sec.questions, 0)
+    const totalM = job.exam_pattern.reduce((s, sec) => s + sec.marks, 0)
+    faqs.push({
+      question: `What is the exam pattern for ${job.notification_title}?`,
+      answer: `The exam has ${job.exam_pattern.length} sections with a total of ${totalQ} questions carrying ${totalM} marks. Sections include ${job.exam_pattern.map(s => s.section).join(', ')}. ${job.marking_scheme || ''}`,
+    })
+  }
+
+  if (job.age_min > 0 || job.age_max > 0) {
+    faqs.push({
+      question: `What is the age limit for ${job.notification_title}?`,
+      answer: `The age limit is ${job.age_min}–${job.age_max} years as on the last date of application. Age relaxation: OBC – 3 years, SC/ST – 5 years, PwBD – up to 10 years, Ex-Servicemen – as per government rules.`,
+    })
+  }
+
+  if (job.total_vacancies > 0) {
+    faqs.push({
+      question: `How many vacancies are there in ${job.notification_title}?`,
+      answer: `There are a total of ${vacancies} vacancies across ${job.posts.length} post(s): ${job.posts.map(p => `${p.post_name} (${formatVacancies(p.vacancies_total)})`).join(', ')}.`,
+    })
+  }
+
+  faqs.push({
+    question: `What is the educational qualification required for ${job.notification_title}?`,
+    answer: `The minimum qualification required is ${eduLabel}. ${job.posts.length > 1 ? 'Different posts may have specific educational requirements: ' + job.posts.map(p => `${p.post_name} – ${p.education_required}`).join('; ') + '.' : `Specifically: ${job.posts[0]?.education_required || eduLabel}.`}`,
+  })
+
+  return faqs.slice(0, 8)
+}
+
+/* ── Similar Jobs finder ───────────────────────────────────── */
+function findSimilarJobs(currentJob: Job): Job[] {
+  const candidates = placeholderJobs.filter(
+    j => j.slug !== currentJob.slug && j.status === 'published' && daysRemaining(j.important_dates.last_date, TODAY) >= 0
+  )
+  // Priority: same sector > same education > featured > any
+  const sameSector = candidates.filter(j => j.sector === currentJob.sector)
+  const sameEdu = candidates.filter(j => j.education_level === currentJob.education_level && j.sector !== currentJob.sector)
+  const rest = candidates.filter(j => j.sector !== currentJob.sector && j.education_level !== currentJob.education_level)
+  const ordered = [...sameSector, ...sameEdu, ...rest]
+  return ordered.slice(0, 4)
+}
+
+/* ── Prev / Next job navigation ────────────────────────────── */
+function getAdjacentJobs(currentJob: Job): { prev: Job | null; next: Job | null } {
+  const published = placeholderJobs.filter(j => j.status === 'published')
+  const idx = published.findIndex(j => j.slug === currentJob.slug)
+  return {
+    prev: idx > 0 ? published[idx - 1] : null,
+    next: idx < published.length - 1 ? published[idx + 1] : null,
+  }
+}
+
+/* ── Reading time estimate ─────────────────────────────────── */
+function estimateReadingTime(job: Job): number {
+  const text = [
+    job.summary,
+    job.how_to_apply.join(' '),
+    job.selection_process.map(s => s.name + ' ' + s.description).join(' '),
+    job.exam_pattern ? job.exam_pattern.map(s => s.section).join(' ') : '',
+    job.syllabus_topics ? Object.entries(job.syllabus_topics).map(([k, v]) => k + ' ' + v.join(' ')).join(' ') : '',
+  ].join(' ')
+  const words = text.split(/\s+/).length
+  return Math.max(3, Math.ceil(words / 200))
+}
+
+/* ── Related SEO internal links ────────────────────────────── */
+const relatedInternalLinks = [
+  { label: 'Banking Jobs', href: '/jobs?sector=banking', desc: 'SBI, IBPS, RBI and other bank recruitments' },
+  { label: 'Railway Jobs', href: '/jobs?sector=railway', desc: 'RRB, KRCL and Indian Railway vacancies' },
+  { label: 'SSC Jobs', href: '/jobs?sector=ssc', desc: 'SSC CGL, CHSL, MTS and other exams' },
+  { label: 'Defence Jobs', href: '/jobs?sector=defence', desc: 'Army, Navy, Air Force & UPSC CDS' },
+  { label: 'State PSC Jobs', href: '/jobs?sector=state_psc', desc: 'BPSC, UPPSC and state commission exams' },
+  { label: 'Teaching Jobs', href: '/jobs?sector=teaching', desc: 'UGC NET, CTET and academic positions' },
+  { label: 'Police Jobs', href: '/jobs?sector=police', desc: 'State police constable & SI recruitment' },
+  { label: 'Latest Government Jobs', href: '/jobs', desc: 'Browse all active sarkari job notifications' },
+  { label: 'About SarkariMatch', href: '/about', desc: 'India\'s smart eligibility-checking job portal' },
+  { label: 'Privacy Policy', href: '/privacy', desc: 'How we handle your data securely' },
+]
 
 /* ── 404 Not Found Component ─────────────────────────────── */
 export const JobNotFound: FC = () => {
@@ -69,14 +177,18 @@ export const JobNotFound: FC = () => {
 export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
   const sector = sectorMeta[job.sector] || sectorMeta.other
   const status = getStatusBadge(job)
-  const days = daysRemaining(job.important_dates.last_date, '2026-03-03')
-  const progress = applicationProgress(job.important_dates.start_date, job.important_dates.last_date, '2026-03-03')
+  const days = daysRemaining(job.important_dates.last_date, TODAY)
+  const progress = applicationProgress(job.important_dates.start_date, job.important_dates.last_date, TODAY)
   const salary = formatSalary(job.salary_min, job.salary_max)
   const vacancies = formatVacancies(job.total_vacancies)
   const eduLabel = educationLabels[job.education_level] || job.education_level
   const isExpired = days < 0
   const isDefence = job.sector === 'defence'
   const isUPSCOrPSC = job.sector === 'upsc' || job.sector === 'state_psc'
+  const readingTime = estimateReadingTime(job)
+  const faqs = generateFAQs(job)
+  const similarJobs = findSimilarJobs(job)
+  const { prev, next } = getAdjacentJobs(job)
 
   // Compute vacancy totals for the stacked bar
   const vbTotals = job.vacancy_breakdown.reduce(
@@ -95,12 +207,12 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
     ],
   }
 
-  /* Schema.org JobPosting */
-  const jobSchema = {
+  /* Schema.org JobPosting — one per post */
+  const jobPostingSchemas = job.posts.map((post, i) => ({
     '@context': 'https://schema.org',
     '@type': 'JobPosting',
-    'title': job.notification_title,
-    'description': job.summary,
+    'title': `${post.post_name} — ${job.organization}`,
+    'description': `${job.summary} Post: ${post.post_name}. Education: ${post.education_required}. Age: ${post.age_limit}.`,
     'datePosted': job.important_dates.notification_date,
     'validThrough': job.important_dates.last_date,
     'hiringOrganization': {
@@ -118,6 +230,20 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
       'value': { '@type': 'QuantitativeValue', 'minValue': job.salary_min, 'maxValue': job.salary_max, 'unitText': 'MONTH' },
     },
     'employmentType': 'FULL_TIME',
+    'industry': sector.label,
+    'qualifications': post.education_required,
+    'totalJobOpenings': post.vacancies_total,
+  }))
+
+  /* Schema.org FAQPage */
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    'mainEntity': faqs.map(faq => ({
+      '@type': 'Question',
+      'name': faq.question,
+      'acceptedAnswer': { '@type': 'Answer', 'text': faq.answer },
+    })),
   }
 
   // All dates array for timeline
@@ -128,25 +254,39 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
     ...(job.important_dates.exam_date ? [{ label: 'Exam Date', date: job.important_dates.exam_date, icon: '\ud83d\udcdd' }] : []),
   ]
 
+  const canonicalUrl = `https://sarkarimatch.com/jobs/${job.slug}`
+
   return (
     <Layout
       meta={{
-        title: `${job.notification_title} \u2014 SarkariMatch`,
-        description: job.summary,
-        ogTitle: job.notification_title,
-        ogDescription: job.summary,
-        ogUrl: `https://sarkarimatch.com/jobs/${job.slug}`,
+        title: `${job.notification_title} — Apply Now | Eligibility, Dates, Salary — SarkariMatch`,
+        description: `${job.notification_title}: ${vacancies} vacancies, ${salary}/month salary, last date ${formatDateShort(job.important_dates.last_date)}. Check eligibility, exam pattern & apply online at SarkariMatch.`,
+        ogTitle: `${job.notification_title} — ${vacancies} Vacancies`,
+        ogDescription: `Apply for ${job.notification_title}. ${vacancies} vacancies, ${salary}/month. Last date: ${formatDateShort(job.important_dates.last_date)}. Check eligibility now!`,
+        ogUrl: canonicalUrl,
+        canonical: canonicalUrl,
       }}
       currentPath="/jobs"
-      structuredData={jobSchema}
+      structuredData={breadcrumbSchema}
     >
       {/* Profile Provider */}
       <ProfileProvider />
 
-      {/* BreadcrumbList JSON-LD */}
+      {/* BreadcrumbList JSON-LD (already in Layout via structuredData) */}
+
+      {/* JobPosting JSON-LD — one per post */}
+      {jobPostingSchemas.map((schema, i) => (
+        <script
+          key={`jp-${i}`}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+      ))}
+
+      {/* FAQPage JSON-LD */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
       {/* ── Breadcrumb ─────────────────────────────────────── */}
@@ -254,6 +394,29 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
                 style={`width: ${Math.min(progress, 100)}%`}
               ></div>
             </div>
+          </div>
+
+          {/* Meta info row: reading time + last updated + print */}
+          <div class="mt-4 flex items-center justify-between flex-wrap gap-2 text-xs text-content-secondary dark:text-content-dark-muted">
+            <div class="flex items-center gap-3 flex-wrap">
+              <span class="inline-flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                {readingTime} min read
+              </span>
+              <span class="inline-flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" /></svg>
+                Updated: {formatDateShort(job.created_at.split('T')[0])}
+              </span>
+            </div>
+            <button
+              type="button"
+              id="print-page-btn"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-btn bg-white/60 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-xs font-medium print:hidden"
+              aria-label="Print this page"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" /></svg>
+              Print
+            </button>
           </div>
         </div>
       </section>
@@ -1031,6 +1194,134 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
         </div>
       </div>
 
+      {/* ── Similar Jobs Carousel ──────────────────────────── */}
+      {similarJobs.length > 0 && (
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 border-t border-gray-200 dark:border-gray-700" id="similar-jobs" aria-labelledby="similar-jobs-heading">
+          <div class="flex items-center justify-between mb-5">
+            <div>
+              <h2 id="similar-jobs-heading" class="jd-heading mb-1">Similar Government Jobs</h2>
+              <p class="text-sm text-content-secondary dark:text-content-dark-muted">Other jobs you might be eligible for</p>
+            </div>
+            <div class="hidden sm:flex gap-2">
+              <button type="button" id="similar-prev" aria-label="Previous similar jobs" class="w-9 h-9 rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-card-dark flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+              </button>
+              <button type="button" id="similar-next" aria-label="Next similar jobs" class="w-9 h-9 rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-card-dark flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+              </button>
+            </div>
+          </div>
+          <div id="similar-carousel" class="flex gap-4 overflow-x-auto scroll-smooth pb-3" style="scroll-snap-type:x mandatory;scrollbar-width:none;-ms-overflow-style:none">
+            {similarJobs.map((sj) => {
+              const sjSector = sectorMeta[sj.sector] || sectorMeta.other
+              const sjDays = daysRemaining(sj.important_dates.last_date, TODAY)
+              const sjSalary = formatSalary(sj.salary_min, sj.salary_max)
+              const sjVac = formatVacancies(sj.total_vacancies)
+              return (
+                <a
+                  key={sj.slug}
+                  href={`/jobs/${sj.slug}`}
+                  class="shrink-0 w-[280px] snap-start bg-white dark:bg-surface-card-dark rounded-card border border-gray-200 dark:border-gray-700 p-4 hover:shadow-card-hover hover:-translate-y-0.5 transition-all group"
+                >
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${sjSector.bgClass}`}>{sjSector.icon}</span>
+                    <span class={`text-[10px] font-semibold px-2 py-0.5 rounded-pill ${sjSector.bgClass} ${sjSector.textClass}`}>{sjSector.label}</span>
+                  </div>
+                  <h3 class="text-sm font-semibold text-content-primary dark:text-content-dark line-clamp-2 mb-2 group-hover:text-brand-primary dark:group-hover:text-blue-400 transition-colors">{sj.notification_title}</h3>
+                  <p class="text-xs text-content-secondary dark:text-content-dark-muted mb-3 truncate">{sj.organization}</p>
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="text-content-secondary dark:text-content-dark-muted">{sjVac === 'Exam' ? 'Exam' : sjVac + ' posts'}</span>
+                    <span class={`font-semibold ${sjDays <= 7 ? 'text-red-600 dark:text-red-400' : 'text-content-primary dark:text-content-dark'}`}>
+                      {sjDays <= 0 ? 'Closed' : sjDays + 'd left'}
+                    </span>
+                  </div>
+                  <div class="text-xs text-brand-primary dark:text-blue-400 font-medium mt-1">{sjSalary}/mo</div>
+                </a>
+              )
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* ── FAQ Section ────────────────────────────────────── */}
+      <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 border-t border-gray-200 dark:border-gray-700" id="faq-section" aria-labelledby="faq-heading">
+        <h2 id="faq-heading" class="jd-heading">Frequently Asked Questions</h2>
+        <p class="text-sm text-content-secondary dark:text-content-dark-muted mb-5">Common questions about {job.notification_title}</p>
+        <div class="space-y-2" id="faq-accordion" role="list">
+          {faqs.map((faq, i) => (
+            <div key={i} class="jd-faq-item rounded-card border border-gray-200 dark:border-gray-700 overflow-hidden" role="listitem">
+              <button
+                type="button"
+                class="jd-faq-trigger w-full flex items-start justify-between gap-3 px-4 py-3.5 bg-white dark:bg-surface-card-dark hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-left"
+                data-faq={i}
+                aria-expanded={i === 0 ? 'true' : 'false'}
+                aria-controls={`faq-body-${i}`}
+              >
+                <span class="font-semibold text-sm text-content-primary dark:text-content-dark leading-relaxed pr-2">{faq.question}</span>
+                <svg class={`shrink-0 w-4 h-4 mt-0.5 text-content-secondary dark:text-content-dark-muted jd-faq-chevron transition-transform ${i === 0 ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+              </button>
+              <div class={`jd-faq-body px-4 pb-4 ${i === 0 ? '' : 'hidden'}`} id={`faq-body-${i}`} data-faq-body={i} role="region" aria-labelledby={`faq-trigger-${i}`}>
+                <p class="text-sm text-content-secondary dark:text-content-dark-muted leading-relaxed">{faq.answer}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Prev/Next Job Navigation ───────────────────────── */}
+      <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 border-t border-gray-200 dark:border-gray-700" aria-label="Job navigation">
+        <div class="flex items-stretch gap-4">
+          {prev ? (
+            <a href={`/jobs/${prev.slug}`} class="flex-1 flex items-center gap-3 p-4 rounded-card border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-card-dark hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group">
+              <svg class="w-5 h-5 text-content-secondary dark:text-content-dark-muted group-hover:text-brand-primary transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+              <div class="min-w-0">
+                <div class="text-xs text-content-secondary dark:text-content-dark-muted mb-0.5">Previous Job</div>
+                <div class="text-sm font-semibold text-content-primary dark:text-content-dark truncate group-hover:text-brand-primary dark:group-hover:text-blue-400 transition-colors">{prev.notification_title}</div>
+              </div>
+            </a>
+          ) : <div class="flex-1"></div>}
+          {next ? (
+            <a href={`/jobs/${next.slug}`} class="flex-1 flex items-center justify-end gap-3 p-4 rounded-card border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-card-dark hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group text-right">
+              <div class="min-w-0">
+                <div class="text-xs text-content-secondary dark:text-content-dark-muted mb-0.5">Next Job</div>
+                <div class="text-sm font-semibold text-content-primary dark:text-content-dark truncate group-hover:text-brand-primary dark:group-hover:text-blue-400 transition-colors">{next.notification_title}</div>
+              </div>
+              <svg class="w-5 h-5 text-content-secondary dark:text-content-dark-muted group-hover:text-brand-primary transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+            </a>
+          ) : <div class="flex-1"></div>}
+        </div>
+      </nav>
+
+      {/* ── Related Internal Links (SEO) ───────────────────── */}
+      <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 border-t border-gray-200 dark:border-gray-700" aria-labelledby="related-links-heading">
+        <h2 id="related-links-heading" class="text-base font-semibold text-content-primary dark:text-content-dark mb-4">Explore More on SarkariMatch</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
+          {relatedInternalLinks.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              class="p-3 rounded-card border border-gray-100 dark:border-gray-700/50 bg-gray-50/50 dark:bg-gray-800/30 hover:bg-white dark:hover:bg-surface-card-dark hover:border-gray-200 dark:hover:border-gray-600 transition-all text-center group"
+              title={link.desc}
+            >
+              <div class="text-xs font-semibold text-content-primary dark:text-content-dark group-hover:text-brand-primary dark:group-hover:text-blue-400 transition-colors">{link.label}</div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Back to top link ────────────────────────────────── */}
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6 text-center print:hidden">
+        <button
+          type="button"
+          id="jd-back-to-top"
+          class="inline-flex items-center gap-1.5 text-xs text-content-secondary dark:text-content-dark-muted hover:text-brand-primary dark:hover:text-blue-400 transition-colors"
+          aria-label="Back to top"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" /></svg>
+          Back to top
+        </button>
+      </div>
+
       {/* Profile Wizard */}
       <ProfileWizard />
 
@@ -1039,6 +1330,13 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
         id="jd-job-data"
         type="application/json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(job) }}
+      />
+
+      {/* Similar jobs data for carousel */}
+      <script
+        id="jd-similar-data"
+        type="application/json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(similarJobs.map(sj => ({ slug: sj.slug, title: sj.notification_title }))) }}
       />
 
       {/* Job detail client-side script */}

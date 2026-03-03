@@ -1,9 +1,10 @@
 /**
  * SarkariMatch — Job Detail Page Client-Side Script
  *
- * Handles: tab switching (hash routing, fade-in), eligibility checker,
+ * Handles: tab switching (hash routing, fade-in, scroll-spy), eligibility checker,
  * bookmark toggle, share, document checklist, calendar export,
- * clash detector, vacancy table expand, syllabus accordion, selection stage expand.
+ * clash detector, vacancy table expand, syllabus accordion, selection stage expand,
+ * FAQ accordion, similar jobs carousel, print, back-to-top.
  */
 (function () {
   'use strict';
@@ -126,6 +127,43 @@
     var tab = getTabFromHash();
     if (tab) switchTab(tab, false);
   });
+
+  // ═══════════════════════════════════════════════════════════
+  // SCROLL-SPY — Highlight active tab based on scroll position
+  // ═══════════════════════════════════════════════════════════
+  function initScrollSpy() {
+    var tabsBar = document.querySelector('.jd-tabs');
+    if (!tabsBar) return;
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
+          var tabName = entry.target.getAttribute('data-tab-content');
+          if (tabName && tabName !== currentTab) {
+            // Only update tab styling, not URL hash (too noisy)
+            tabBtns.forEach(function (btn) {
+              var isActive = btn.getAttribute('data-tab') === tabName;
+              btn.classList.toggle('text-brand-secondary', isActive);
+              btn.classList.toggle('dark:text-amber-400', isActive);
+              btn.classList.toggle('border-brand-secondary', isActive);
+              btn.classList.toggle('dark:border-amber-400', isActive);
+              btn.classList.toggle('font-bold', isActive);
+              btn.classList.toggle('text-content-secondary', !isActive);
+              btn.classList.toggle('dark:text-content-dark-muted', !isActive);
+              btn.classList.toggle('border-transparent', !isActive);
+              btn.classList.toggle('font-medium', !isActive);
+            });
+          }
+        }
+      });
+    }, { threshold: [0.3], rootMargin: '-80px 0px -50% 0px' });
+
+    tabContents.forEach(function (el) {
+      if (!el.classList.contains('hidden')) {
+        observer.observe(el);
+      }
+    });
+  }
 
   // ═══════════════════════════════════════════════════════════
   // OVERVIEW — Read More / Read Less
@@ -301,10 +339,6 @@
         return dt.getFullYear() + pad(dt.getMonth() + 1) + pad(dt.getDate());
       };
 
-      // Reminder: 3 days before
-      var reminder = new Date(d);
-      reminder.setDate(reminder.getDate() - 3);
-
       var ics = [
         'BEGIN:VCALENDAR',
         'VERSION:2.0',
@@ -346,21 +380,12 @@
     if (!profile) return;
 
     var bookmarks = getBookmarks();
-    // Get all placeholder jobs from page data — we only have current job's data,
-    // so we check bookmarks list only
     if (!bookmarks.length && !job) return;
 
     var lastDate = job.important_dates.last_date;
     var examDate = job.important_dates.exam_date;
     if (!lastDate) return;
 
-    var clashDays = 3;
-    var lastDateMs = new Date(lastDate).getTime();
-    var examDateMs = examDate ? new Date(examDate).getTime() : null;
-    var dayMs = 86400000;
-
-    // We can only detect clashes with jobs the user has bookmarked
-    // Since we don't have all job data client-side, we show a note
     if (bookmarks.length > 0) {
       container.classList.remove('hidden');
       container.innerHTML = '<div class="jd-info-box jd-info-box-blue">' +
@@ -401,6 +426,94 @@
           if (chevron) chevron.classList.add('rotate-180');
         }
       });
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // FAQ ACCORDION
+  // ═══════════════════════════════════════════════════════════
+  function initFAQAccordion() {
+    var triggers = document.querySelectorAll('.jd-faq-trigger');
+    triggers.forEach(function (trigger) {
+      trigger.addEventListener('click', function () {
+        var idx = trigger.getAttribute('data-faq');
+        var body = document.querySelector('[data-faq-body="' + idx + '"]');
+        var chevron = trigger.querySelector('.jd-faq-chevron');
+        var isExpanded = trigger.getAttribute('aria-expanded') === 'true';
+
+        if (isExpanded) {
+          if (body) body.classList.add('hidden');
+          trigger.setAttribute('aria-expanded', 'false');
+          if (chevron) chevron.classList.remove('rotate-180');
+        } else {
+          if (body) body.classList.remove('hidden');
+          trigger.setAttribute('aria-expanded', 'true');
+          if (chevron) chevron.classList.add('rotate-180');
+        }
+      });
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // SIMILAR JOBS CAROUSEL
+  // ═══════════════════════════════════════════════════════════
+  function initSimilarCarousel() {
+    var carousel = document.getElementById('similar-carousel');
+    var prevBtn = document.getElementById('similar-prev');
+    var nextBtn = document.getElementById('similar-next');
+    if (!carousel) return;
+
+    var scrollAmount = 296; // 280px card + 16px gap
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', function () {
+        carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+      });
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener('click', function () {
+        carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      });
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // PRINT BUTTON
+  // ═══════════════════════════════════════════════════════════
+  function initPrint() {
+    var btn = document.getElementById('print-page-btn');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      // Show all tab contents for print
+      var hiddenTabs = [];
+      tabContents.forEach(function (tc) {
+        if (tc.classList.contains('hidden')) {
+          tc.classList.remove('hidden');
+          tc.style.opacity = '1';
+          tc.style.transform = 'none';
+          hiddenTabs.push(tc);
+        }
+      });
+      window.print();
+      // Re-hide tabs after print
+      setTimeout(function () {
+        hiddenTabs.forEach(function (tc) {
+          tc.classList.add('hidden');
+          tc.style.opacity = '';
+          tc.style.transform = '';
+        });
+      }, 500);
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // BACK TO TOP
+  // ═══════════════════════════════════════════════════════════
+  function initBackToTop() {
+    var btn = document.getElementById('jd-back-to-top');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
 
@@ -792,6 +905,54 @@
   }
 
   // ═══════════════════════════════════════════════════════════
+  // KEYBOARD ACCESSIBILITY — Tab nav with arrows
+  // ═══════════════════════════════════════════════════════════
+  function initKeyboardNav() {
+    var tabContainer = document.querySelector('.jd-tabs');
+    if (!tabContainer) return;
+
+    tabContainer.addEventListener('keydown', function (e) {
+      var tabs = Array.from(tabBtns);
+      var currentIdx = tabs.findIndex(function (t) { return t.getAttribute('data-tab') === currentTab; });
+      if (currentIdx === -1) return;
+
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        var nextIdx = (currentIdx + 1) % tabs.length;
+        tabs[nextIdx].focus();
+        switchTab(tabs[nextIdx].getAttribute('data-tab'));
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        var prevIdx = (currentIdx - 1 + tabs.length) % tabs.length;
+        tabs[prevIdx].focus();
+        switchTab(tabs[prevIdx].getAttribute('data-tab'));
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        tabs[0].focus();
+        switchTab(tabs[0].getAttribute('data-tab'));
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        tabs[tabs.length - 1].focus();
+        switchTab(tabs[tabs.length - 1].getAttribute('data-tab'));
+      }
+    });
+
+    // Add ARIA roles for tabs
+    tabBtns.forEach(function (btn, i) {
+      btn.setAttribute('role', 'tab');
+      btn.setAttribute('tabindex', i === 0 ? '0' : '-1');
+      btn.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+    });
+    tabContents.forEach(function (tc) {
+      tc.setAttribute('role', 'tabpanel');
+      tc.setAttribute('tabindex', '0');
+    });
+    if (tabContainer) {
+      tabContainer.querySelector('.flex')?.setAttribute('role', 'tablist');
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════
   // PROFILE CHANGE LISTENER
   // ═══════════════════════════════════════════════════════════
   window.addEventListener('sarkarimatch-profile-changed', function () {
@@ -819,6 +980,12 @@
     initCalendar();
     initClashDetector();
     initSyllabusAccordion();
+    initFAQAccordion();
+    initSimilarCarousel();
+    initPrint();
+    initBackToTop();
+    initScrollSpy();
+    initKeyboardNav();
     renderEligibility();
     initBookmark();
     initShare();
