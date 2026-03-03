@@ -433,6 +433,121 @@ main {
 
 
 /* ═══════════════════════════════════════════════════
+   PROFILE WIZARD — Modal, Steps & Animations
+   ═══════════════════════════════════════════════════ */
+
+/* Modal card entrance */
+@keyframes pwCardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.pw-card-enter {
+  animation: pwCardEnter 0.3s ease-out forwards;
+}
+
+/* Step slide animations */
+@keyframes pwSlideRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pwSlideLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.pw-slide-right {
+  animation: pwSlideRight 0.3s ease-out forwards;
+}
+
+.pw-slide-left {
+  animation: pwSlideLeft 0.3s ease-out forwards;
+}
+
+/* Conditional field slide-down */
+.pw-slide-down {
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  overflow: hidden;
+}
+
+.pw-slide-down.hidden {
+  max-height: 0;
+  opacity: 0;
+  margin: 0;
+  padding: 0;
+}
+
+/* Toast notification */
+@keyframes pwToastEnter {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.pw-toast-enter {
+  animation: pwToastEnter 0.35s ease-out forwards;
+}
+
+/* Wizard step container styling */
+.pw-step {
+  min-height: 200px;
+}
+
+/* Wizard select styling */
+.pw-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 2.5rem;
+}
+
+/* Print: hide wizard */
+@media print {
+  #profile-wizard-overlay,
+  #pw-toast {
+    display: none !important;
+  }
+}
+
+/* Reduced motion: disable wizard animations */
+@media (prefers-reduced-motion: reduce) {
+  .pw-card-enter,
+  .pw-slide-right,
+  .pw-slide-left,
+  .pw-toast-enter {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════
    GENERIC HELPERS
    ═══════════════════════════════════════════════════ */
 .hover-lift {

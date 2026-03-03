@@ -90,6 +90,7 @@ export const Navbar: FC<NavbarProps> = ({ currentPath = '/' }) => {
           {/* Set Your Profile button (desktop) */}
           <a
             href="#"
+            data-open-wizard
             class="hidden md:inline-flex items-center px-4 py-2 bg-brand-secondary hover:bg-brand-secondary-dark text-white font-bold text-sm rounded-pill transition-colors duration-150 shadow-sm hover:shadow-card-hover"
             role="button"
             aria-label="Set your job profile preferences"
@@ -198,6 +199,7 @@ export const Navbar: FC<NavbarProps> = ({ currentPath = '/' }) => {
           <div class="p-4 border-t border-gray-100 dark:border-gray-800">
             <a
               href="#"
+              data-open-wizard
               class="w-full flex items-center justify-center px-4 py-2.5 bg-brand-secondary hover:bg-brand-secondary-dark text-white font-bold text-sm rounded-pill transition-colors duration-150"
               role="button"
             >

@@ -160,6 +160,7 @@ export const Layout: FC<LayoutProps> = ({ meta, currentPath = '/', children, str
         </button>
 
         <script src="/static/app.js" defer></script>
+        <script src="/static/profile-wizard.js" defer></script>
       </body>
     </html>
   )

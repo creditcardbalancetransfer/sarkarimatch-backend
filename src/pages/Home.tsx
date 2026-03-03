@@ -8,6 +8,7 @@ import { BrowseByEducation } from '../components/home/BrowseByEducation'
 import { LatestNotifications } from '../components/home/LatestNotifications'
 import { ClosingSoon } from '../components/home/ClosingSoon'
 import { CtaBanner } from '../components/home/CtaBanner'
+import { ProfileWizard } from '../components/ProfileWizard'
 
 const websiteSchema = {
   '@context': 'https://schema.org',
@@ -45,6 +46,7 @@ export const HomePage: FC = () => {
       <LatestNotifications />
       <ClosingSoon />
       <CtaBanner />
+      <ProfileWizard />
     </Layout>
   )
 }
