@@ -285,10 +285,10 @@ main {
 
 /* Bookmark active state: hide outline, show filled */
 .bookmark-btn.bookmarked .bookmark-outline {
-  display: none;
+  display: none !important;
 }
 .bookmark-btn.bookmarked .bookmark-filled {
-  display: block;
+  display: block !important;
 }
 
 

@@ -1338,21 +1338,34 @@
       var slug = btn.getAttribute('data-slug');
       if (!slug) return;
       var bm = getBookmarks();
-      if (bm.indexOf(slug) !== -1) btn.classList.add('bookmarked');
+      if (bm.indexOf(slug) !== -1) {
+        btn.classList.add('bookmarked');
+        // Also toggle hidden classes for Tailwind compatibility
+        var outline = btn.querySelector('.bookmark-outline');
+        var filled = btn.querySelector('.bookmark-filled');
+        if (outline) outline.classList.add('hidden');
+        if (filled) filled.classList.remove('hidden');
+      }
 
       btn.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
         var bookmarks = getBookmarks();
         var idx = bookmarks.indexOf(slug);
+        var outline = btn.querySelector('.bookmark-outline');
+        var filled = btn.querySelector('.bookmark-filled');
         if (idx === -1) {
           bookmarks.push(slug);
           btn.classList.add('bookmarked');
           btn.setAttribute('aria-label', 'Remove bookmark');
+          if (outline) outline.classList.add('hidden');
+          if (filled) filled.classList.remove('hidden');
         } else {
           bookmarks.splice(idx, 1);
           btn.classList.remove('bookmarked');
           btn.setAttribute('aria-label', 'Bookmark this job');
+          if (outline) outline.classList.remove('hidden');
+          if (filled) filled.classList.add('hidden');
         }
         saveBookmarks(bookmarks);
 
