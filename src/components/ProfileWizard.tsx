@@ -392,7 +392,12 @@ export const ProfileWizard: FC = () => {
                             class="pw-state-option w-full text-left px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800 text-content-primary dark:text-content-dark transition-colors"
                             data-value={i === 0 ? 'all_india' : s.toLowerCase().replace(/[^a-z0-9]/g, '_')}
                           >
-                            {i === 0 ? '🇮🇳 All India (show all locations)' : s}
+                            {i === 0 ? (
+                              <span class="inline-flex items-center gap-1.5">
+                                <svg class="w-4 h-3 inline shrink-0" viewBox="0 0 36 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="36" height="8" fill="#FF9933"/><rect y="8" width="36" height="8" fill="#fff"/><rect y="16" width="36" height="8" fill="#138808"/><circle cx="18" cy="12" r="3" fill="#000080"/></svg>
+                                <span>All India (show all locations)</span>
+                              </span>
+                            ) : s}
                           </button>
                         ))}
                       </div>

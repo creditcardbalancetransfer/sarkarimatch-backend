@@ -296,7 +296,7 @@ export function checkAge(
     // Could the user turn ageMin before the deadline? They're under-age.
     return {
       result: 'fail',
-      message: `Your age: ${ageStr} on last date. Required: ${ageMin}–${ageMax}${effectiveRelaxation > 0 ? ` (with +${effectiveRelaxation} relaxation → ${effectiveMax})` : ''}. [FAIL] Under age limit`,
+      message: `Your age: ${ageStr} on last date. Required: ${ageMin}\u2013${ageMax}${effectiveRelaxation > 0 ? ` (with +${effectiveRelaxation} relaxation \u2192 ${effectiveMax})` : ''}. [FAIL] Under age limit`,
     }
   }
 

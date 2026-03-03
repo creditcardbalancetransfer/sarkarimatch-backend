@@ -384,8 +384,12 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
           <div class="mt-5">
             <div class="flex items-center justify-between text-xs text-content-secondary dark:text-content-dark-muted mb-1.5">
               <span>Application Window</span>
-              <span>
-                {formatDateShort(job.important_dates.start_date)} \u2192 {formatDateShort(job.important_dates.last_date)}
+              <span class="inline-flex items-center gap-1">
+                <span>{formatDateShort(job.important_dates.start_date)}</span>
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+                <span>{formatDateShort(job.important_dates.last_date)}</span>
               </span>
             </div>
             <div class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
@@ -649,7 +653,7 @@ export const JobDetailPage: FC<{ job: Job }> = ({ job }) => {
                       <tr class="jd-kv-row"><td class="jd-kv-key">Application Fee</td><td class="jd-kv-val">{job.application_fee_general === 0 ? 'Free' : `Gen/OBC: \u20b9${job.application_fee_general} | SC/ST: ${job.application_fee_sc_st === 0 ? 'Free' : '\u20b9' + job.application_fee_sc_st}`}</td></tr>
                       <tr class="jd-kv-row"><td class="jd-kv-key">Last Date</td><td class="jd-kv-val">{formatDateShort(job.important_dates.last_date)} {days >= 0 ? `(${days} days left)` : '(Closed)'}</td></tr>
                       <tr class="jd-kv-row"><td class="jd-kv-key">Mode of Apply</td><td class="jd-kv-val">{job.application_mode}</td></tr>
-                      <tr class="jd-kv-row"><td class="jd-kv-key">Selection</td><td class="jd-kv-val">{job.selection_process.map(s => s.name).join(' \u2192 ')}</td></tr>
+                      <tr class="jd-kv-row"><td class="jd-kv-key">Selection</td><td class="jd-kv-val"><span dangerouslySetInnerHTML={{ __html: job.selection_process.map(s => s.name).join(' <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 inline mx-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path></svg> ') }}></span></td></tr>
                       <tr class="jd-kv-row"><td class="jd-kv-key">Job Location</td><td class="jd-kv-val">{job.locations.join(', ')}</td></tr>
                     </tbody>
                   </table>

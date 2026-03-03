@@ -19,7 +19,7 @@ export const HeroSection: FC = () => {
           <div class="flex-1 lg:max-w-[60%] text-center lg:text-left">
             {/* Pill badge */}
             <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-pill bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-800 mb-6 hero-fade-up">
-              <span class="text-base leading-none" aria-hidden="true">🇮🇳</span>
+              <span class="text-base leading-none" aria-hidden="true"><svg class="w-5 h-4 inline" viewBox="0 0 36 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="36" height="8" fill="#FF9933"/><rect y="8" width="36" height="8" fill="#fff"/><rect y="16" width="36" height="8" fill="#138808"/><circle cx="18" cy="12" r="3" fill="#000080"/></svg></span>
               <span class="text-xs font-semibold text-brand-primary dark:text-blue-400 tracking-wide">
                 India's #1 Personalized Govt Job Finder
               </span>

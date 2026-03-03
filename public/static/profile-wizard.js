@@ -500,7 +500,7 @@
   stateOptions.forEach(function (opt) {
     opt.addEventListener('click', function () {
       var val = opt.getAttribute('data-value');
-      var label = opt.textContent.trim().replace('🇮🇳 ', '').replace(' (show all locations)', '');
+      var label = opt.textContent.trim().replace(' (show all locations)', '');
       state.preferred_state = val;
       state.preferred_state_label = label;
       stateSearch.value = label;
@@ -697,7 +697,7 @@
       state.preferred_state = p.preferred_state;
       var opt = document.querySelector('.pw-state-option[data-value="' + p.preferred_state + '"]');
       if (opt) {
-        var label = opt.textContent.trim().replace('🇮🇳 ', '').replace(' (show all locations)', '');
+        var label = opt.textContent.trim().replace(' (show all locations)', '');
         state.preferred_state_label = label;
         stateSearch.value = label;
         stateSelectedText.textContent = label + ' selected';
