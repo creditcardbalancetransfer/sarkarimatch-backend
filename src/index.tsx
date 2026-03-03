@@ -9,6 +9,7 @@ import { placeholderJobs } from './lib/placeholder-data'
 import { AdminLoginPage } from './pages/admin/AdminLogin'
 import { AdminDashboardPage } from './pages/admin/AdminDashboard'
 import { AdminUploadPage } from './pages/admin/AdminUpload'
+import { AdminJobsPage } from './pages/admin/AdminJobs'
 
 const app = new Hono()
 
@@ -62,9 +63,12 @@ app.get('/admin/dashboard', (c) => c.html(<AdminDashboardPage />))
 // Admin Upload page (3-step wizard)
 app.get('/admin/upload', (c) => c.html(<AdminUploadPage />))
 
+// Admin Manage Jobs page
+app.get('/admin/jobs', (c) => c.html(<AdminJobsPage />))
+
 // Placeholder admin pages (to be implemented)
-app.get('/admin/jobs', (c) => c.html(<AdminDashboardPage />))
 app.get('/admin/jobs/new', (c) => c.html(<AdminDashboardPage />))
+app.get('/admin/jobs/:id/edit', (c) => c.html(<AdminDashboardPage />))
 app.get('/admin/settings', (c) => c.html(<AdminDashboardPage />))
 
 export default app
