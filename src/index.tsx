@@ -10,6 +10,8 @@ import { AdminLoginPage } from './pages/admin/AdminLogin'
 import { AdminDashboardPage } from './pages/admin/AdminDashboard'
 import { AdminUploadPage } from './pages/admin/AdminUpload'
 import { AdminJobsPage } from './pages/admin/AdminJobs'
+import { AdminEditJobPage, AdminEditJobNotFound } from './pages/admin/AdminEditJob'
+import { AdminSettingsPage } from './pages/admin/AdminSettings'
 
 const app = new Hono()
 
@@ -66,9 +68,63 @@ app.get('/admin/upload', (c) => c.html(<AdminUploadPage />))
 // Admin Manage Jobs page
 app.get('/admin/jobs', (c) => c.html(<AdminJobsPage />))
 
-// Placeholder admin pages (to be implemented)
-app.get('/admin/jobs/new', (c) => c.html(<AdminDashboardPage />))
-app.get('/admin/jobs/:id/edit', (c) => c.html(<AdminDashboardPage />))
-app.get('/admin/settings', (c) => c.html(<AdminDashboardPage />))
+// Admin Edit Job page — looks up job from seed data (localStorage handled client-side)
+app.get('/admin/jobs/:id/edit', (c) => {
+  const jobId = c.req.param('id')
+  const job = placeholderJobs.find((j) => j.id === jobId)
+
+  if (job) {
+    return c.html(<AdminEditJobPage job={job} jobId={jobId} />)
+  }
+
+  // Job not found in seed data — render the page shell with the ID.
+  // Client JS will try to find it in localStorage. If truly not found, shows 404.
+  // For server-side, we create a minimal placeholder that JS will override.
+  // We still render the edit page shell to allow localStorage jobs to be edited.
+  const placeholderJob = {
+    id: jobId,
+    slug: jobId,
+    notification_title: 'Loading...',
+    advertisement_number: '',
+    department: '',
+    organization: '',
+    sector: 'other' as const,
+    total_vacancies: 0,
+    education_level: 'graduate' as const,
+    age_min: 0,
+    age_max: 0,
+    salary_min: 0,
+    salary_max: 0,
+    application_fee_general: 0,
+    application_fee_sc_st: 0,
+    important_dates: { notification_date: '', start_date: '', last_date: '', exam_date: null },
+    apply_link: '',
+    locations: [],
+    tags: [],
+    status: 'draft' as const,
+    featured: false,
+    posts: [],
+    created_at: new Date().toISOString(),
+    summary: '',
+    how_to_apply: [],
+    selection_process: [],
+    exam_pattern: null,
+    syllabus_topics: null,
+    official_website: '',
+    pdf_url: '',
+    vacancy_breakdown: [],
+    application_mode: 'Online' as const,
+    documents_required: [],
+    important_notice: null,
+    marking_scheme: null,
+  }
+
+  return c.html(<AdminEditJobPage job={placeholderJob} jobId={jobId} />)
+})
+
+app.get('/admin/jobs/new', (c) => c.redirect('/admin/upload'))
+
+// Admin Settings page
+app.get('/admin/settings', (c) => c.html(<AdminSettingsPage />))
 
 export default app

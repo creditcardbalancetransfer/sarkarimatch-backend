@@ -136,6 +136,65 @@ export const AdminLayout: FC<AdminLayoutProps> = ({ pageTitle, currentPath, chil
               .stat-card:nth-child(2) { animation-delay: 0.1s; }
               .stat-card:nth-child(3) { animation-delay: 0.15s; }
               .stat-card:nth-child(4) { animation-delay: 0.2s; }
+
+              /* Page transition */
+              .admin-page-content {
+                animation: pageFadeIn 0.25s ease-out forwards;
+              }
+              @keyframes pageFadeIn {
+                from { opacity: 0; transform: translateY(6px); }
+                to { opacity: 1; transform: translateY(0); }
+              }
+
+              /* Skeleton loader */
+              .skeleton {
+                background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+                background-size: 200% 100%;
+                animation: skeleton-shimmer 1.5s infinite;
+                border-radius: 6px;
+              }
+              .dark .skeleton {
+                background: linear-gradient(90deg, #334155 25%, #475569 50%, #334155 75%);
+                background-size: 200% 100%;
+              }
+              @keyframes skeleton-shimmer {
+                0% { background-position: 200% 0; }
+                100% { background-position: -200% 0; }
+              }
+
+              /* Toast animations */
+              @keyframes slideInRight {
+                from { opacity: 0; transform: translateX(100%); }
+                to { opacity: 1; transform: translateX(0); }
+              }
+              @keyframes toastProgress {
+                from { width: 100%; }
+                to { width: 0%; }
+              }
+
+              /* Keyboard shortcut badge */
+              .kbd {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 24px;
+                height: 22px;
+                padding: 0 6px;
+                font-size: 11px;
+                font-weight: 600;
+                font-family: 'Inter', monospace;
+                background: #f1f5f9;
+                border: 1px solid #e2e8f0;
+                border-radius: 4px;
+                box-shadow: 0 1px 0 #cbd5e1;
+                color: #475569;
+              }
+              .dark .kbd {
+                background: #334155;
+                border-color: #475569;
+                box-shadow: 0 1px 0 #1e293b;
+                color: #94a3b8;
+              }
             `,
           }}
         />
@@ -300,9 +359,51 @@ export const AdminLayout: FC<AdminLayoutProps> = ({ pageTitle, currentPath, chil
           </header>
 
           {/* ─── Content Area ─── */}
-          <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+          <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto admin-page-content">
             {children}
           </main>
+        </div>
+
+        {/* ═══ Session Timeout Overlay ═══ */}
+        <div id="session-timeout-overlay" class="fixed inset-0 z-[250] hidden" role="dialog" aria-modal="true">
+          <div class="fixed inset-0 bg-slate-950/90 backdrop-blur-sm"></div>
+          <div class="fixed inset-0 flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 w-full max-w-sm p-6 text-center">
+              <div class="w-14 h-14 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-7 h-7 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 class="text-lg font-heading font-bold text-content-primary dark:text-white mb-1">Session Expired</h3>
+              <p class="text-sm text-content-secondary dark:text-content-dark-muted mb-5">Your session has timed out due to inactivity. Your unsaved data is preserved.</p>
+              <button type="button" id="session-relogin-btn" class="w-full px-5 py-2.5 bg-brand-primary hover:bg-blue-700 text-white text-sm font-semibold rounded-btn transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary/60">
+                Log In Again
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* ═══ Keyboard Shortcuts Help Overlay ═══ */}
+        <div id="shortcuts-overlay" class="fixed inset-0 z-[150] hidden" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">
+          <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" id="shortcuts-backdrop"></div>
+          <div class="fixed inset-0 flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 w-full max-w-md p-6">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-base font-heading font-bold text-content-primary dark:text-white">Keyboard Shortcuts</h3>
+                <button type="button" id="shortcuts-close-btn" class="p-1.5 rounded-lg text-content-secondary hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+              </div>
+              <div class="space-y-3 text-sm">
+                <div class="flex items-center justify-between py-1"><span class="text-content-secondary dark:text-content-dark-muted">Search jobs</span><div class="flex items-center gap-1"><span class="kbd">Ctrl</span><span class="text-content-secondary">+</span><span class="kbd">K</span></div></div>
+                <div class="flex items-center justify-between py-1"><span class="text-content-secondary dark:text-content-dark-muted">Upload new job</span><div class="flex items-center gap-1"><span class="kbd">Ctrl</span><span class="text-content-secondary">+</span><span class="kbd">U</span></div></div>
+                <div class="flex items-center justify-between py-1"><span class="text-content-secondary dark:text-content-dark-muted">Save form</span><div class="flex items-center gap-1"><span class="kbd">Ctrl</span><span class="text-content-secondary">+</span><span class="kbd">S</span></div></div>
+                <div class="flex items-center justify-between py-1"><span class="text-content-secondary dark:text-content-dark-muted">Close modal / overlay</span><span class="kbd">Esc</span></div>
+                <div class="flex items-center justify-between py-1"><span class="text-content-secondary dark:text-content-dark-muted">Show this help</span><span class="kbd">?</span></div>
+              </div>
+              <p class="text-[10px] text-content-secondary dark:text-content-dark-muted mt-4 text-center">Use <span class="kbd" style="font-size:10px">Cmd</span> on Mac instead of <span class="kbd" style="font-size:10px">Ctrl</span></p>
+            </div>
+          </div>
         </div>
 
         {/* Admin sidebar nav icon paths — passed as data for JS to inject */}
@@ -311,6 +412,15 @@ export const AdminLayout: FC<AdminLayoutProps> = ({ pageTitle, currentPath, chil
           type="application/json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(iconPaths),
+          }}
+        />
+
+        {/* Pass current path for JS breadcrumb/page awareness */}
+        <script
+          id="admin-page-meta"
+          type="application/json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({ currentPath, pageTitle }),
           }}
         />
 
