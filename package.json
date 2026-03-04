@@ -1,25 +1,28 @@
 {
-  "name": "sarkarimatch",
+  "name": "sarkarimatch-backend",
+  "version": "1.0.0",
   "type": "module",
+  "description": "SarkariMatch Backend - Cloudflare Workers API for government job listings with D1 database",
   "scripts": {
-    "dev": "vite",
-    "dev:sandbox": "wrangler pages dev dist --ip 0.0.0.0 --port 3000",
-    "build": "vite build",
-    "preview": "wrangler pages dev dist",
-    "deploy": "npm run build && wrangler pages deploy dist",
-    "deploy:prod": "npm run build && wrangler pages deploy dist --project-name sarkarimatch",
-    "cf-typegen": "wrangler types --env-interface CloudflareBindings",
-    "clean-port": "fuser -k 3000/tcp 2>/dev/null || true"
+    "dev": "wrangler dev --ip 0.0.0.0 --port 3000",
+    "dev:sandbox": "wrangler dev --ip 0.0.0.0 --port 3000",
+    "deploy": "wrangler deploy",
+    "db:create": "wrangler d1 create sarkarimatch-db",
+    "db:schema": "wrangler d1 execute sarkarimatch-db --file=./schema.sql --remote",
+    "db:schema:local": "wrangler d1 execute sarkarimatch-db --file=./schema.sql --local",
+    "db:seed:local": "wrangler d1 execute sarkarimatch-db --local --command=\"INSERT INTO jobs (title, slug, department, sector, total_vacancies, status) VALUES ('Test Job', 'test-job', 'Test Dept', 'test', 10, 'active')\"",
+    "clean-port": "fuser -k 3000/tcp 2>/dev/null || true",
+    "cf-typegen": "wrangler types"
   },
   "dependencies": {
     "hono": "^4.12.3"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260305.0",
-    "@hono/vite-build": "^1.2.0",
-    "@hono/vite-dev-server": "^0.18.2",
     "typescript": "^5.9.3",
-    "vite": "^6.3.5",
     "wrangler": "^4.4.0"
-  }
+  },
+  "keywords": ["cloudflare", "workers", "hono", "d1", "sarkari", "government-jobs"],
+  "author": "",
+  "license": "ISC"
 }

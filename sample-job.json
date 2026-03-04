@@ -1,0 +1,81 @@
+{
+  "title": "RRB NTPC Graduate & Undergraduate Recruitment 2025",
+  "slug": "rrb-ntpc-recruitment-2025",
+  "department": "Railway Recruitment Boards (RRBs)",
+  "department_short": "RRB",
+  "sector": "railway",
+  "status": "active",
+  "total_vacancies": 11558,
+  "salary": "Rs. 19,900 - Rs. 63,200 (Level 2 to Level 5)",
+  "education_min": "graduate",
+  "age_min": 18,
+  "age_max": 33,
+  "content_summary": "Railway Recruitment Boards (RRBs) have released the CEN 05/2025 notification for Non-Technical Popular Categories (NTPC) posts including Station Master, Goods Guard, Junior Accounts Assistant, Senior Clerk, Typist and other graduate and undergraduate level posts across Indian Railways.",
+  "apply_end_date": "2025-08-15",
+  "apply_link": "https://www.rrbcdg.gov.in/",
+  "important_dates": [
+    { "event": "Notification Released", "date": "2025-06-15" },
+    { "event": "Online Application Start", "date": "2025-07-01" },
+    { "event": "Application End Date", "date": "2025-08-15" },
+    { "event": "Fee Payment Last Date", "date": "2025-08-20" },
+    { "event": "CBT Stage-1 Exam (Tentative)", "date": "2025-12-01" },
+    { "event": "CBT Stage-2 Exam (Tentative)", "date": "2026-03-15" }
+  ],
+  "posts": [
+    {
+      "name": "Station Master",
+      "vacancies": 2800,
+      "pay_level": "Level 5 (Rs. 29,200 - Rs. 63,200)",
+      "education": "Graduate from recognized university",
+      "age_limit": "18-33 years"
+    },
+    {
+      "name": "Goods Guard",
+      "vacancies": 1500,
+      "pay_level": "Level 5 (Rs. 29,200 - Rs. 63,200)",
+      "education": "Graduate from recognized university",
+      "age_limit": "18-33 years"
+    },
+    {
+      "name": "Junior Accounts Assistant cum Typist",
+      "vacancies": 1200,
+      "pay_level": "Level 4 (Rs. 25,500 - Rs. 63,200)",
+      "education": "Graduate with Typing proficiency (30 wpm English / 25 wpm Hindi)",
+      "age_limit": "18-33 years"
+    },
+    {
+      "name": "Senior Clerk cum Typist",
+      "vacancies": 1800,
+      "pay_level": "Level 4 (Rs. 25,500 - Rs. 63,200)",
+      "education": "Graduate with Typing proficiency",
+      "age_limit": "18-33 years"
+    },
+    {
+      "name": "Trains Clerk",
+      "vacancies": 800,
+      "pay_level": "Level 3 (Rs. 21,700 - Rs. 63,200)",
+      "education": "12th pass (10+2) from recognized board",
+      "age_limit": "18-33 years"
+    },
+    {
+      "name": "Commercial cum Ticket Clerk",
+      "vacancies": 3458,
+      "pay_level": "Level 2 (Rs. 19,900 - Rs. 63,200)",
+      "education": "12th pass (10+2) from recognized board",
+      "age_limit": "18-33 years"
+    }
+  ],
+  "age_relaxation": {
+    "SC/ST": "5 years",
+    "OBC-NCL": "3 years",
+    "PwBD": "10 years (General), 13 years (OBC), 15 years (SC/ST)",
+    "Ex-Servicemen": "As per rules",
+    "Departmental Candidates": "Up to 40 years (General), 45 years (SC/ST)"
+  },
+  "application_fee": {
+    "General/OBC": "Rs. 500",
+    "SC/ST/Ex-Servicemen/PwBD/Female/Transgender/Minorities/EBC": "Rs. 250",
+    "note": "Fee refundable (Rs. 400 for General, Rs. 250 for others) upon appearing in CBT Stage-1"
+  },
+  "official_website": "https://www.rrbcdg.gov.in/"
+}

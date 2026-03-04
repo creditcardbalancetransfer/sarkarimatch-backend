@@ -1,34 +1,34 @@
 # Dependencies
 node_modules/
 
+# Wrangler local state
+.wrangler/
+
 # Build output
 dist/
 
-# Cloudflare local state
-.wrangler/
-
-# Environment files
+# Environment variables
 .env
 .dev.vars
-
-# PM2
-.pm2/
-pids/
-logs/
-*.log
 
 # OS files
 .DS_Store
 Thumbs.db
 
-# IDE
+# IDE files
 .vscode/
 .idea/
 *.swp
 *.swo
 
+# Logs
+*.log
+logs/
+
+# PM2
+.pm2/
+pids/
+
 # Backup files
 *.backup
 *.bak
-*.tar.gz
-*.zip
