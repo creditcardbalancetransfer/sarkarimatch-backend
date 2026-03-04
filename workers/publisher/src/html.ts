@@ -499,7 +499,17 @@ export function publisherHTML(): string {
           body: JSON.stringify(validatedData),
         });
 
-        const result = await resp.json();
+        let result;
+        const contentType = resp.headers.get('content-type') || '';
+        const text = await resp.text();
+        try {
+          result = JSON.parse(text);
+        } catch (parseErr) {
+          showMsg('error', 'Server returned non-JSON (HTTP ' + resp.status + '): ' + esc(text.substring(0, 200)));
+          btn.disabled = false;
+          btn.textContent = mode === 'update' ? '\\u270F\\uFE0F Update' : '\\uD83D\\uDE80 Publish';
+          return;
+        }
 
         if (resp.ok && result.success) {
           const liveUrl = window.location.origin + result.url;
@@ -508,7 +518,7 @@ export function publisherHTML(): string {
             ' View it at: <a href="' + esc(liveUrl) + '" target="_blank" style="color:#38bdf8;text-decoration:underline;">' + esc(liveUrl) + '</a>'
           );
         } else {
-          showMsg('error', result.error || 'Unknown error occurred.');
+          showMsg('error', 'HTTP ' + resp.status + ': ' + (result.error || result.message || JSON.stringify(result)));
         }
       } catch (e) {
         showMsg('error', 'Network error: ' + e.message);
