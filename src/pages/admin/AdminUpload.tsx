@@ -49,25 +49,25 @@ export const AdminUploadPage: FC = () => {
     <AdminLayout pageTitle="Upload Job Notification PDF" currentPath="/admin/upload">
 
       {/* ═══ STEP INDICATOR ═══ */}
-      <div class="mb-8">
-        <div class="flex items-center justify-center gap-0">
+      <div class="mb-6 sm:mb-8">
+        <div class="flex items-center justify-center gap-0 px-2">
           {[
             { num: 1, label: 'Upload PDF' },
             { num: 2, label: 'Review AI Parse' },
             { num: 3, label: 'Edit & Publish' },
           ].map((step, i) => (
             <div class="flex items-center" key={step.num}>
-              <div class="flex items-center gap-2" data-step-indicator={step.num}>
-                <div class="step-circle w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500 bg-white dark:bg-slate-800 transition-all duration-300">
+              <div class="flex items-center gap-1.5 sm:gap-2" data-step-indicator={step.num}>
+                <div class="step-circle w-8 h-8 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500 bg-white dark:bg-slate-800 transition-all duration-300">
                   <span class="step-num">{step.num}</span>
                   <svg class="step-check hidden w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                   </svg>
                 </div>
-                <span class="step-label text-sm font-medium text-gray-400 dark:text-gray-500 hidden sm:inline transition-colors duration-300">{step.label}</span>
+                <span class="step-label text-xs sm:text-sm font-medium text-gray-400 dark:text-gray-500 hidden sm:inline transition-colors duration-300">{step.label}</span>
               </div>
               {i < 2 && (
-                <div class="step-line w-12 sm:w-20 h-0.5 mx-2 sm:mx-4 bg-gray-200 dark:bg-gray-700 transition-colors duration-500" data-step-line={i + 1}></div>
+                <div class="step-line w-8 sm:w-20 h-0.5 mx-1.5 sm:mx-4 bg-gray-200 dark:bg-gray-700 transition-colors duration-500" data-step-line={i + 1}></div>
               )}
             </div>
           ))}
@@ -82,25 +82,25 @@ export const AdminUploadPage: FC = () => {
         {/* Drop zone */}
         <div
           id="drop-zone"
-          class="relative border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-slate-900 p-8 text-center transition-all duration-200 cursor-pointer hover:border-blue-400 dark:hover:border-blue-500"
-          style="min-height: 300px"
+          class="relative border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl sm:rounded-xl bg-white dark:bg-slate-900 p-6 sm:p-8 text-center transition-all duration-200 cursor-pointer hover:border-blue-400 dark:hover:border-blue-500 active:scale-[0.99]"
+          style="min-height: 220px"
           role="button"
           tabindex="0"
           aria-label="Upload PDF file"
         >
           {/* Default state */}
-          <div id="drop-default" class="flex flex-col items-center justify-center h-full py-8">
-            <div class="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center mb-4">
-              <svg class="w-8 h-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <div id="drop-default" class="flex flex-col items-center justify-center h-full py-6 sm:py-8">
+            <div class="w-14 h-14 sm:w-16 sm:h-16 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center mb-3 sm:mb-4">
+              <svg class="w-7 h-7 sm:w-8 sm:h-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
               </svg>
             </div>
-            <p class="text-lg font-semibold text-content-primary dark:text-white mb-1">Drag & drop your PDF here</p>
-            <p class="text-sm text-content-secondary dark:text-content-dark-muted mb-4">or</p>
+            <p class="text-base sm:text-lg font-semibold text-content-primary dark:text-white mb-1">Drag & drop your PDF here</p>
+            <p class="text-sm text-content-secondary dark:text-content-dark-muted mb-3 sm:mb-4">or</p>
             <button
               type="button"
               id="browse-btn"
-              class="px-6 py-2.5 bg-brand-primary hover:bg-blue-700 text-white text-sm font-semibold rounded-btn transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary/60 focus:ring-offset-2 dark:focus:ring-offset-slate-900"
+              class="px-6 py-3 sm:py-2.5 bg-brand-primary hover:bg-blue-700 text-white text-sm font-semibold rounded-xl sm:rounded-btn transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary/60 focus:ring-offset-2 dark:focus:ring-offset-slate-900"
             >
               Browse Files
             </button>
@@ -119,8 +119,8 @@ export const AdminUploadPage: FC = () => {
         </div>
 
         {/* File preview card (hidden by default) */}
-        <div id="file-preview" class="hidden mt-4 bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-gray-800 p-4">
-          <div class="flex items-center gap-4">
+        <div id="file-preview" class="hidden mt-4 bg-white dark:bg-slate-900 rounded-2xl sm:rounded-xl border border-gray-200 dark:border-gray-800 p-4">
+          <div class="flex items-center gap-3 sm:gap-4">
             <div class="w-12 h-12 bg-red-50 dark:bg-red-900/20 rounded-xl flex items-center justify-center shrink-0">
               <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/>
@@ -149,7 +149,7 @@ export const AdminUploadPage: FC = () => {
           type="button"
           id="parse-btn"
           disabled
-          class="mt-4 w-full flex items-center justify-center gap-2 px-6 py-3 bg-brand-primary hover:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-gray-700 text-white disabled:text-gray-500 font-semibold text-sm rounded-btn transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand-primary/60 disabled:cursor-not-allowed"
+          class="mt-4 w-full flex items-center justify-center gap-2 px-6 py-3.5 sm:py-3 bg-brand-primary hover:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-gray-700 text-white disabled:text-gray-500 font-semibold text-sm rounded-xl sm:rounded-btn transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand-primary/60 disabled:cursor-not-allowed"
         >
           <span id="parse-btn-text">Parse with AI</span>
           <svg id="parse-spinner" class="hidden w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none">
@@ -159,13 +159,13 @@ export const AdminUploadPage: FC = () => {
         </button>
 
         {/* Progress panel (hidden by default) */}
-        <div id="parse-progress" class="hidden mt-4 bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5">
+        <div id="parse-progress" class="hidden mt-4 bg-white dark:bg-slate-900 rounded-2xl sm:rounded-xl border border-gray-200 dark:border-gray-800 p-4 sm:p-5">
           <h3 class="text-sm font-semibold text-content-primary dark:text-white mb-3">AI Parsing Progress</h3>
           <div id="parse-steps" class="space-y-2"></div>
         </div>
 
         {/* Info box */}
-        <div class="mt-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-xl p-4">
+        <div class="mt-4 sm:mt-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-2xl sm:rounded-xl p-4">
           <div class="flex items-start gap-3">
             <svg class="w-5 h-5 text-blue-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
@@ -182,7 +182,7 @@ export const AdminUploadPage: FC = () => {
            STEP 2: REVIEW AI PARSE
          ═══════════════════════════════════════════ */}
       <div id="step-2" class="step-content hidden">
-        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6">
 
           {/* LEFT: Extracted Data (60%) */}
           <div class="lg:col-span-3 space-y-4">
@@ -193,10 +193,10 @@ export const AdminUploadPage: FC = () => {
 
             {/* Action buttons */}
             <div class="flex flex-col sm:flex-row gap-3 pt-4">
-              <button type="button" id="edit-before-publish-btn" class="flex-1 px-5 py-3 bg-brand-primary hover:bg-blue-700 text-white font-semibold text-sm rounded-btn transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary/60">
+              <button type="button" id="edit-before-publish-btn" class="flex-1 px-5 py-3.5 sm:py-3 bg-brand-primary hover:bg-blue-700 text-white font-semibold text-sm rounded-xl sm:rounded-btn transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary/60">
                 Edit Before Publishing
               </button>
-              <button type="button" id="publish-now-btn" class="flex-1 px-5 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold text-sm rounded-btn transition-colors focus:outline-none focus:ring-2 focus:ring-green-500/60">
+              <button type="button" id="publish-now-btn" class="flex-1 px-5 py-3.5 sm:py-3 bg-green-600 hover:bg-green-700 text-white font-semibold text-sm rounded-xl sm:rounded-btn transition-colors focus:outline-none focus:ring-2 focus:ring-green-500/60">
                 Looks Good, Publish Now
               </button>
             </div>
@@ -411,15 +411,15 @@ export const AdminUploadPage: FC = () => {
         </form>
 
         {/* ── Sticky action bar ── */}
-        <div class="sticky bottom-0 z-10 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row items-center gap-3">
-          <button type="button" id="save-draft-btn" class="w-full sm:w-auto px-5 py-2.5 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-content-primary dark:text-white text-sm font-medium rounded-btn transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400/50">
+        <div class="sticky bottom-16 sm:bottom-0 z-10 -mx-3 sm:-mx-4 lg:-mx-8 px-3 sm:px-4 lg:px-8 py-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
+          <button type="button" id="save-draft-btn" class="w-full sm:w-auto px-5 py-3 sm:py-2.5 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-content-primary dark:text-white text-sm font-medium rounded-xl sm:rounded-btn transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400/50">
             Save as Draft
           </button>
           <div class="flex-1"></div>
-          <button type="button" id="preview-btn" class="w-full sm:w-auto px-5 py-2.5 border border-brand-primary dark:border-blue-500 text-brand-primary dark:text-blue-400 text-sm font-medium rounded-btn hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary/50">
+          <button type="button" id="preview-btn" class="w-full sm:w-auto px-5 py-3 sm:py-2.5 border border-brand-primary dark:border-blue-500 text-brand-primary dark:text-blue-400 text-sm font-medium rounded-xl sm:rounded-btn hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary/50">
             Preview
           </button>
-          <button type="button" id="publish-btn" class="w-full sm:w-auto px-6 py-2.5 bg-brand-primary hover:bg-blue-700 text-white text-sm font-semibold rounded-btn transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary/60">
+          <button type="button" id="publish-btn" class="w-full sm:w-auto px-6 py-3 sm:py-2.5 bg-brand-primary hover:bg-blue-700 text-white text-sm font-semibold rounded-xl sm:rounded-btn transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary/60">
             Publish
           </button>
         </div>

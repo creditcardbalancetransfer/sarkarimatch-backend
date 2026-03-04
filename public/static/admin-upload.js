@@ -536,7 +536,7 @@
   // ═══════════════════════════════════════════
   //  STEP 3: EDIT FORM
   // ═══════════════════════════════════════════
-  var inputCls = 'w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-btn bg-white dark:bg-slate-800 text-content-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-primary/50 transition-colors';
+  var inputCls = 'w-full px-3 py-2.5 sm:py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-xl sm:rounded-btn bg-white dark:bg-slate-800 text-content-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-primary/50 transition-colors';
   var smallBtnCls = 'p-1.5 rounded text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors focus:outline-none';
 
   function populateForm() {
@@ -886,20 +886,22 @@
   }, 30000);
 
   // ═══════════════════════════════════════════
-  //  TOAST
+  //  TOAST (use global admin toast)
   // ═══════════════════════════════════════════
   function showToast(message, type) {
+    if (window.showAdminToast) { window.showAdminToast(message, type); return; }
+    // Fallback
     var toast = $('toast');
+    if (!toast) return;
     var inner = $('toast-inner');
     var text = $('toast-text');
-    text.textContent = message;
-
+    if (text) text.textContent = message;
     var colors = {
       success: 'bg-green-50 dark:bg-green-900/30 border-green-200 dark:border-green-800 text-green-800 dark:text-green-300',
       error: 'bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-800 text-red-800 dark:text-red-300',
       info: 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-300',
     };
-    inner.className = 'flex items-center gap-3 px-5 py-3 rounded-xl shadow-xl border text-sm font-medium ' + (colors[type] || colors.info);
+    if (inner) inner.className = 'flex items-center gap-3 px-5 py-3 rounded-xl shadow-xl border text-sm font-medium ' + (colors[type] || colors.info);
     toast.classList.remove('hidden');
     setTimeout(function () { toast.classList.add('hidden'); }, 3000);
   }

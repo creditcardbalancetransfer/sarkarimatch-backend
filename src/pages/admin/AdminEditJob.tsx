@@ -92,24 +92,24 @@ export const AdminEditJobPage: FC<{ job: Job; jobId: string }> = ({ job, jobId }
       </nav>
 
       {/* ═══ PAGE HEADER ═══ */}
-      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 mb-6">
+      <div class="flex flex-col gap-3 mb-5 sm:mb-6">
         <div class="min-w-0">
-          <h2 class="text-xl font-heading font-bold text-content-primary dark:text-white truncate">{pageTitle}</h2>
+          <h2 class="text-lg sm:text-xl font-heading font-bold text-content-primary dark:text-white line-clamp-2">{pageTitle}</h2>
           <div class="flex flex-wrap items-center gap-3 mt-1.5">
             <span id="last-modified" class="text-xs text-content-secondary dark:text-content-dark-muted"></span>
             <span id="autosave-indicator" class="text-xs text-green-600 dark:text-green-400"></span>
           </div>
         </div>
-        <div class="flex flex-wrap items-center gap-2 shrink-0">
-          <a href={`/jobs/${job.slug}`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-content-secondary dark:text-content-dark-muted border border-gray-200 dark:border-gray-700 rounded-btn hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary/50">
+        <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-1 -mb-1">
+          <a href={`/jobs/${job.slug}`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-2.5 sm:py-2 text-xs font-medium text-content-secondary dark:text-content-dark-muted border border-gray-200 dark:border-gray-700 rounded-xl sm:rounded-btn hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary/50 whitespace-nowrap shrink-0">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
             View on Site
           </a>
-          <button type="button" id="unpublish-btn" class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800 rounded-btn hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500/50">
+          <button type="button" id="unpublish-btn" class="inline-flex items-center gap-1.5 px-3 py-2.5 sm:py-2 text-xs font-medium text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800 rounded-xl sm:rounded-btn hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500/50 whitespace-nowrap shrink-0">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" /></svg>
             Unpublish
           </button>
-          <button type="button" id="delete-job-btn" class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-btn hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500/50">
+          <button type="button" id="delete-job-btn" class="inline-flex items-center gap-1.5 px-3 py-2.5 sm:py-2 text-xs font-medium text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-xl sm:rounded-btn hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500/50 whitespace-nowrap shrink-0">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
             Delete
           </button>
@@ -294,24 +294,25 @@ export const AdminEditJobPage: FC<{ job: Job; jobId: string }> = ({ job, jobId }
       </form>
 
       {/* ── Sticky action bar ── */}
-      <div class="sticky bottom-0 z-10 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row items-center gap-3">
-        <button type="button" id="save-draft-btn" class="w-full sm:w-auto px-5 py-2.5 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-content-primary dark:text-white text-sm font-medium rounded-btn transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400/50">
+      <div class="sticky bottom-16 sm:bottom-0 z-10 -mx-3 sm:-mx-4 lg:-mx-8 px-3 sm:px-4 lg:px-8 py-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
+        <button type="button" id="save-draft-btn" class="w-full sm:w-auto px-5 py-3 sm:py-2.5 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-content-primary dark:text-white text-sm font-medium rounded-xl sm:rounded-btn transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400/50">
           Save as Draft
         </button>
         <div class="flex-1"></div>
-        <button type="button" id="preview-btn" class="w-full sm:w-auto px-5 py-2.5 border border-brand-primary dark:border-blue-500 text-brand-primary dark:text-blue-400 text-sm font-medium rounded-btn hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary/50">
+        <button type="button" id="preview-btn" class="w-full sm:w-auto px-5 py-3 sm:py-2.5 border border-brand-primary dark:border-blue-500 text-brand-primary dark:text-blue-400 text-sm font-medium rounded-xl sm:rounded-btn hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary/50">
           Preview
         </button>
-        <button type="button" id="publish-btn" class="w-full sm:w-auto px-6 py-2.5 bg-brand-primary hover:bg-blue-700 text-white text-sm font-semibold rounded-btn transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary/60">
+        <button type="button" id="publish-btn" class="w-full sm:w-auto px-6 py-3 sm:py-2.5 bg-brand-primary hover:bg-blue-700 text-white text-sm font-semibold rounded-xl sm:rounded-btn transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary/60">
           Save &amp; Publish
         </button>
       </div>
 
       {/* ═══ Delete confirmation modal ═══ */}
-      <div id="delete-modal" class="fixed inset-0 z-[100] hidden" role="dialog" aria-modal="true">
+      <div id="delete-modal" class="fixed inset-0 z-[100] hidden mobile-fullscreen-modal" role="dialog" aria-modal="true">
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" id="delete-modal-backdrop"></div>
         <div class="fixed inset-0 flex items-center justify-center p-4">
-          <div class="relative bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 w-full max-w-md p-6">
+          <div class="relative bg-white dark:bg-slate-900 rounded-t-2xl sm:rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 w-full sm:max-w-md p-6">
+            <div class="swipe-indicator sm:hidden"></div>
             <div class="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center mx-auto mb-4">
               <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
@@ -320,8 +321,8 @@ export const AdminEditJobPage: FC<{ job: Job; jobId: string }> = ({ job, jobId }
             <h3 class="text-base font-heading font-bold text-content-primary dark:text-white text-center mb-1">Delete This Job?</h3>
             <p class="text-sm text-content-secondary dark:text-content-dark-muted text-center mb-6">This action cannot be undone. The job will be permanently removed.</p>
             <div class="flex items-center gap-3">
-              <button type="button" id="delete-cancel-btn" class="flex-1 px-4 py-2.5 text-sm font-medium bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-content-primary dark:text-white rounded-btn transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400/50">Cancel</button>
-              <button type="button" id="delete-confirm-btn" class="flex-1 px-4 py-2.5 text-sm font-semibold bg-red-600 hover:bg-red-700 text-white rounded-btn transition-colors focus:outline-none focus:ring-2 focus:ring-red-500/50">Delete Permanently</button>
+              <button type="button" id="delete-cancel-btn" class="flex-1 px-4 py-3 sm:py-2.5 text-sm font-medium bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-content-primary dark:text-white rounded-xl sm:rounded-btn transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400/50">Cancel</button>
+              <button type="button" id="delete-confirm-btn" class="flex-1 px-4 py-3 sm:py-2.5 text-sm font-semibold bg-red-600 hover:bg-red-700 text-white rounded-xl sm:rounded-btn transition-colors focus:outline-none focus:ring-2 focus:ring-red-500/50">Delete Permanently</button>
             </div>
           </div>
         </div>
@@ -334,10 +335,11 @@ export const AdminEditJobPage: FC<{ job: Job; jobId: string }> = ({ job, jobId }
       <div id="confetti-container" class="fixed inset-0 pointer-events-none z-[90] hidden" aria-hidden="true"></div>
 
       {/* ═══ Preview modal ═══ */}
-      <div id="preview-modal" class="fixed inset-0 z-[100] hidden" role="dialog" aria-modal="true">
+      <div id="preview-modal" class="fixed inset-0 z-[100] hidden mobile-fullscreen-modal" role="dialog" aria-modal="true">
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" id="preview-modal-backdrop"></div>
-        <div class="fixed inset-0 flex items-center justify-center p-4">
-          <div class="relative bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 w-full max-w-3xl max-h-[80vh] overflow-y-auto p-6">
+        <div class="fixed inset-0 flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div class="relative bg-white dark:bg-slate-900 rounded-t-2xl sm:rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 w-full sm:max-w-3xl max-h-[90vh] sm:max-h-[80vh] overflow-y-auto p-5 sm:p-6">
+            <div class="swipe-indicator sm:hidden"></div>
             <div class="flex items-center justify-between mb-4 sticky top-0 bg-white dark:bg-slate-900 pb-3 border-b border-gray-200 dark:border-gray-800">
               <h3 class="text-lg font-heading font-bold text-content-primary dark:text-white">Job Preview</h3>
               <button type="button" id="preview-close-btn" class="p-2 rounded-lg text-content-secondary hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>

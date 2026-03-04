@@ -2,16 +2,13 @@
  * admin.js
  * Client-side logic for all admin pages wrapped by AdminLayout.
  *
- * Responsibilities:
- * 1. Auth gate — verify token, redirect to /admin/login if invalid
- * 2. Sidebar collapse/expand and mobile drawer
- * 3. Dark mode toggle
- * 4. Dashboard stat counter animation
- * 5. Inject SVG icon paths into sidebar nav items
- * 6. Bookmark count from localStorage
- * 7. Keyboard shortcuts (Ctrl+K, Ctrl+U, Ctrl+S, Escape, ?)
- * 8. Session timeout after 30 min inactivity
- * 9. Global toast helper (window.showAdminToast)
+ * MOBILE-FIRST OPTIMIZATIONS:
+ * - Bottom nav icon injection
+ * - Swipe gesture to open/close sidebar
+ * - Touch-friendly interactions
+ * - Mobile-optimized toast (bottom center)
+ * - Haptic feedback simulation
+ * - Smart viewport handling
  */
 (function () {
   'use strict';
@@ -22,10 +19,13 @@
   var ADMIN_HASH = 'e7fb06e08e53bd012d6ba2ca259c852c62c6707f44bc3f1d08434bfe117f6f16';
   var TOKEN_KEY = 'sarkarimatch_admin_token';
   var SESSION_TTL = 24 * 60 * 60 * 1000;
-  var INACTIVITY_TIMEOUT = 30 * 60 * 1000; // 30 minutes
+  var INACTIVITY_TIMEOUT = 30 * 60 * 1000;
   var SIDEBAR_KEY = 'sarkarimatch_admin_sidebar';
   var THEME_KEY = 'sarkarimatch_theme';
   var BOOKMARK_KEY = 'sarkarimatch_bookmarks';
+
+  var isMobile = function () { return window.innerWidth < 1024; };
+  var isSmallScreen = function () { return window.innerWidth < 640; };
 
   // ═══════════════════════════════════════════════
   //  1. AUTH GATE
@@ -43,44 +43,47 @@
 
   if (!isAuthenticated()) {
     window.location.replace('/admin/login');
-    return; // Stop executing rest of script
+    return;
   }
 
-  // Authenticated — hide gate
-  if (authGate) {
-    authGate.style.display = 'none';
-  }
+  if (authGate) authGate.style.display = 'none';
 
   // ═══════════════════════════════════════════════
-  //  2. INJECT SVG ICONS INTO SIDEBAR NAV
+  //  2. INJECT SVG ICONS (sidebar + bottom nav)
   // ═══════════════════════════════════════════════
   var iconDataEl = document.getElementById('admin-nav-icon-data');
   if (iconDataEl) {
     try {
       var iconPaths = JSON.parse(iconDataEl.textContent || '{}');
-      var navLinks = document.querySelectorAll('#admin-sidebar nav a');
       var iconKeys = ['grid', 'upload', 'briefcase', 'settings'];
+
+      // Sidebar icons
+      var navLinks = document.querySelectorAll('#admin-sidebar nav a');
       navLinks.forEach(function (link, idx) {
         if (idx < iconKeys.length) {
-          var key = iconKeys[idx];
           var svg = link.querySelector('svg');
-          if (svg && iconPaths[key]) {
-            svg.innerHTML = iconPaths[key];
-          }
+          if (svg && iconPaths[iconKeys[idx]]) svg.innerHTML = iconPaths[iconKeys[idx]];
         }
       });
-    } catch (e) {
-      // Silent fail
-    }
+
+      // Bottom nav icons
+      var bottomNavLinks = document.querySelectorAll('#mobile-bottom-nav a[data-nav-icon]');
+      bottomNavLinks.forEach(function (link) {
+        var key = link.getAttribute('data-nav-icon');
+        var svg = link.querySelector('svg');
+        if (svg && key && iconPaths[key]) svg.innerHTML = iconPaths[key];
+      });
+    } catch (e) { /* silent */ }
   }
 
   // ═══════════════════════════════════════════════
-  //  3. SIDEBAR LOGIC
+  //  3. SIDEBAR LOGIC + MOBILE DRAWER
   // ═══════════════════════════════════════════════
   var sidebar = document.getElementById('admin-sidebar');
   var mainWrapper = document.getElementById('admin-main-wrapper');
   var backdrop = document.getElementById('sidebar-backdrop');
   var mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  var sidebarCloseBtn = document.getElementById('sidebar-close-btn');
   var collapseBtn = document.getElementById('sidebar-collapse-btn');
   var collapseIcon = document.getElementById('collapse-icon');
   var logoutBtn = document.getElementById('admin-logout-btn');
@@ -93,28 +96,21 @@
       sidebar.classList.add('collapsed');
       sidebar.style.width = '64px';
       mainWrapper.style.marginLeft = '64px';
-      collapseIcon.style.transform = 'rotate(180deg)';
+      if (collapseIcon) collapseIcon.style.transform = 'rotate(180deg)';
     } else {
       sidebar.classList.remove('collapsed');
       sidebar.style.width = '260px';
       mainWrapper.style.marginLeft = '260px';
-      collapseIcon.style.transform = 'rotate(0deg)';
+      if (collapseIcon) collapseIcon.style.transform = 'rotate(0deg)';
     }
   }
 
-  // On desktop, apply saved state
-  function checkDesktop() {
-    return window.innerWidth >= 1024;
-  }
-
-  if (checkDesktop()) {
+  if (!isMobile()) {
     applySidebarState();
   } else {
-    // Mobile: sidebar hidden, main full width
     mainWrapper.style.marginLeft = '0';
   }
 
-  // Collapse toggle (desktop)
   if (collapseBtn) {
     collapseBtn.addEventListener('click', function () {
       isCollapsed = !isCollapsed;
@@ -123,12 +119,12 @@
     });
   }
 
-  // Mobile menu toggle
+  // Mobile menu open/close
   function openMobileMenu() {
     isMobileOpen = true;
     sidebar.classList.add('translate-x-0');
     sidebar.classList.remove('-translate-x-full');
-    sidebar.style.width = '260px';
+    sidebar.style.width = '280px';
     backdrop.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
   }
@@ -143,24 +139,60 @@
 
   if (mobileMenuBtn) {
     mobileMenuBtn.addEventListener('click', function () {
-      if (isMobileOpen) {
-        closeMobileMenu();
-      } else {
-        openMobileMenu();
-      }
+      if (isMobileOpen) closeMobileMenu(); else openMobileMenu();
     });
+  }
+
+  if (sidebarCloseBtn) {
+    sidebarCloseBtn.addEventListener('click', closeMobileMenu);
   }
 
   if (backdrop) {
     backdrop.addEventListener('click', closeMobileMenu);
   }
 
-  // Handle resize
+  // ═══════════════════════════════════════════════
+  //  3b. SWIPE GESTURE TO OPEN/CLOSE SIDEBAR
+  // ═══════════════════════════════════════════════
+  var touchStartX = 0;
+  var touchStartY = 0;
+  var touchMoveX = 0;
+  var swipeThreshold = 60;
+  var swipeEnabled = true;
+
+  document.addEventListener('touchstart', function (e) {
+    if (!isMobile()) return;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    touchMoveX = touchStartX;
+  }, { passive: true });
+
+  document.addEventListener('touchmove', function (e) {
+    if (!isMobile() || !swipeEnabled) return;
+    touchMoveX = e.touches[0].clientX;
+  }, { passive: true });
+
+  document.addEventListener('touchend', function () {
+    if (!isMobile() || !swipeEnabled) return;
+    var diffX = touchMoveX - touchStartX;
+    var diffY = Math.abs(touchMoveX - touchStartX);
+
+    // Swipe right from left edge to open
+    if (!isMobileOpen && touchStartX < 30 && diffX > swipeThreshold) {
+      openMobileMenu();
+    }
+    // Swipe left to close
+    if (isMobileOpen && diffX < -swipeThreshold) {
+      closeMobileMenu();
+    }
+  }, { passive: true });
+
+  // Resize handler
   var resizeTimer;
   window.addEventListener('resize', function () {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(function () {
-      if (checkDesktop()) {
+      if (!isMobile()) {
         closeMobileMenu();
         sidebar.classList.remove('-translate-x-full');
         sidebar.classList.add('translate-x-0');
@@ -195,9 +227,14 @@
       if (isDark) {
         document.documentElement.classList.remove('dark');
         localStorage.setItem(THEME_KEY, 'light');
+        // Update theme-color meta
+        var tc = document.querySelector('meta[name="theme-color"]');
+        if (tc) tc.setAttribute('content', '#FFFFFF');
       } else {
         document.documentElement.classList.add('dark');
         localStorage.setItem(THEME_KEY, 'dark');
+        var tc2 = document.querySelector('meta[name="theme-color"]');
+        if (tc2) tc2.setAttribute('content', '#0F172A');
       }
     });
   }
@@ -207,7 +244,6 @@
   // ═══════════════════════════════════════════════
   var statElements = document.querySelectorAll('[data-count-target]');
 
-  // Populate bookmark count from localStorage
   var bookmarkEl = document.querySelector('[data-stat-key="Total Bookmarks"]');
   if (bookmarkEl) {
     try {
@@ -221,51 +257,32 @@
 
   function animateCounter(el) {
     var target = parseInt(el.getAttribute('data-count-target'), 10);
-    if (isNaN(target) || target === 0) {
-      el.textContent = '0';
-      return;
-    }
-
-    var duration = 800; // ms
+    if (isNaN(target) || target === 0) { el.textContent = '0'; return; }
+    var duration = 800;
     var startTime = null;
-    var startVal = 0;
-
     function step(timestamp) {
       if (!startTime) startTime = timestamp;
       var progress = Math.min((timestamp - startTime) / duration, 1);
-      // Ease-out cubic
       var eased = 1 - Math.pow(1 - progress, 3);
-      var current = Math.round(startVal + (target - startVal) * eased);
-      el.textContent = current.toLocaleString();
-      if (progress < 1) {
-        requestAnimationFrame(step);
-      }
+      el.textContent = Math.round(target * eased).toLocaleString();
+      if (progress < 1) requestAnimationFrame(step);
     }
-
     requestAnimationFrame(step);
   }
 
-  // Start animations after a brief delay
-  setTimeout(function () {
-    statElements.forEach(animateCounter);
-  }, 300);
+  setTimeout(function () { statElements.forEach(animateCounter); }, 300);
 
   // ═══════════════════════════════════════════════
-  //  7. SIDEBAR TOOLTIP HOVER (collapsed mode)
+  //  7. SIDEBAR TOOLTIP HOVER (collapsed desktop)
   // ═══════════════════════════════════════════════
   var sidebarNavLinks = document.querySelectorAll('#admin-sidebar nav a');
   sidebarNavLinks.forEach(function (link) {
     var tooltip = link.querySelector('.nav-tooltip');
     if (!tooltip) return;
-
     link.addEventListener('mouseenter', function () {
-      if (sidebar.classList.contains('collapsed')) {
-        tooltip.style.display = 'block';
-      }
+      if (sidebar.classList.contains('collapsed')) tooltip.style.display = 'block';
     });
-    link.addEventListener('mouseleave', function () {
-      tooltip.style.display = '';
-    });
+    link.addEventListener('mouseleave', function () { tooltip.style.display = ''; });
   });
 
   // ═══════════════════════════════════════════════
@@ -278,14 +295,8 @@
   function isShortcutsOpen() {
     return shortcutsOverlay && !shortcutsOverlay.classList.contains('hidden');
   }
-
-  function openShortcuts() {
-    if (shortcutsOverlay) shortcutsOverlay.classList.remove('hidden');
-  }
-
-  function closeShortcuts() {
-    if (shortcutsOverlay) shortcutsOverlay.classList.add('hidden');
-  }
+  function openShortcuts() { if (shortcutsOverlay) shortcutsOverlay.classList.remove('hidden'); }
+  function closeShortcuts() { if (shortcutsOverlay) shortcutsOverlay.classList.add('hidden'); }
 
   if (shortcutsCloseBtn) shortcutsCloseBtn.addEventListener('click', closeShortcuts);
   if (shortcutsBackdrop) shortcutsBackdrop.addEventListener('click', closeShortcuts);
@@ -295,46 +306,35 @@
     var tag = (e.target.tagName || '').toLowerCase();
     var isInput = tag === 'input' || tag === 'textarea' || tag === 'select' || e.target.isContentEditable;
 
-    // Escape: close modals/overlays/mobile menu
     if (e.key === 'Escape') {
       if (isShortcutsOpen()) { closeShortcuts(); e.preventDefault(); return; }
       if (isMobileOpen) { closeMobileMenu(); e.preventDefault(); return; }
-      // Close any visible modal
       document.querySelectorAll('[role="dialog"]:not(.hidden)').forEach(function (m) {
         if (m.id !== 'session-timeout-overlay') m.classList.add('hidden');
       });
       return;
     }
 
-    // ? key (not in input): show shortcuts
     if (e.key === '?' && !isInput) {
       e.preventDefault();
-      if (isShortcutsOpen()) closeShortcuts();
-      else openShortcuts();
+      if (isShortcutsOpen()) closeShortcuts(); else openShortcuts();
       return;
     }
 
-    // Ctrl+K: focus job search
     if (isCtrl && e.key === 'k') {
       e.preventDefault();
       var searchEl = document.getElementById('jobs-search');
-      if (searchEl) {
-        searchEl.focus();
-        searchEl.select();
-      } else {
-        window.location.href = '/admin/jobs';
-      }
+      if (searchEl) { searchEl.focus(); searchEl.select(); }
+      else window.location.href = '/admin/jobs';
       return;
     }
 
-    // Ctrl+U: go to upload
     if (isCtrl && e.key === 'u') {
       e.preventDefault();
       window.location.href = '/admin/upload';
       return;
     }
 
-    // Ctrl+S: save form (trigger save-draft-btn or save-settings-btn)
     if (isCtrl && e.key === 's') {
       e.preventDefault();
       var saveBtn = document.getElementById('save-draft-btn') || document.getElementById('save-settings-btn');
@@ -360,11 +360,9 @@
     }, INACTIVITY_TIMEOUT);
   }
 
-  // Track activity
   ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll'].forEach(function (evt) {
     document.addEventListener(evt, resetSessionTimer, { passive: true });
   });
-
   resetSessionTimer();
 
   if (reloginBtn) {
@@ -374,20 +372,19 @@
   }
 
   // ═══════════════════════════════════════════════
-  //  10. GLOBAL TOAST HELPER
+  //  10. GLOBAL TOAST HELPER (mobile-optimized)
   // ═══════════════════════════════════════════════
-  // Exportable toast function for use by page-specific scripts
   window.showAdminToast = function (message, type) {
     type = type || 'info';
-    // Find or create toast container
-    var container = document.getElementById('toast');
+    var container = document.getElementById('admin-toast-container');
     if (!container) {
       container = document.createElement('div');
-      container.id = 'toast';
-      container.className = 'fixed top-6 right-6 z-[100] space-y-2';
+      container.id = 'admin-toast-container';
+      container.className = 'fixed top-4 right-4 z-[100] space-y-2 flex flex-col items-end';
       container.setAttribute('aria-live', 'polite');
       document.body.appendChild(container);
     }
+
     var colors = {
       success: 'bg-green-50 dark:bg-green-900/30 border-green-200 dark:border-green-800 text-green-800 dark:text-green-300',
       error: 'bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-800 text-red-800 dark:text-red-300',
@@ -402,19 +399,59 @@
     };
 
     var d = document.createElement('div');
-    d.className = 'flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl border text-sm font-medium min-w-[300px] relative overflow-hidden ' + (colors[type] || colors.info);
-    d.style.animation = 'slideInRight 0.3s ease-out forwards';
-    var escT = document.createElement('span');
-    escT.textContent = message;
+    d.className = 'flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl border text-sm font-medium relative overflow-hidden ' + (colors[type] || colors.info);
+    d.style.animation = isSmallScreen() ? 'slideInUp 0.3s ease-out forwards' : 'slideInRight 0.3s ease-out forwards';
+    d.style.minWidth = isSmallScreen() ? 'auto' : '300px';
+
+    var escSpan = document.createElement('span');
+    escSpan.textContent = message;
+
     d.innerHTML =
       '<svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">' + (icons[type] || icons.info) + '</svg>' +
       '<span class="flex-1"></span>' +
-      '<button type="button" class="toast-close-btn p-1 rounded hover:bg-black/10 dark:hover:bg-white/10 transition-colors"><svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>' +
+      '<button type="button" class="toast-close-btn p-1.5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-colors ml-2"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>' +
       '<div class="absolute bottom-0 left-0 h-0.5 bg-current opacity-30" style="animation: toastProgress 4s linear forwards"></div>';
     d.querySelector('.flex-1').textContent = message;
     container.appendChild(d);
     d.querySelector('.toast-close-btn').addEventListener('click', function () { d.remove(); });
     setTimeout(function () { if (d.parentNode) d.remove(); }, 4000);
+
+    // Haptic feedback
+    if (navigator.vibrate && type === 'error') navigator.vibrate(50);
   };
+
+  // ═══════════════════════════════════════════════
+  //  11. MOBILE: HIDE BOTTOM NAV ON SCROLL DOWN
+  // ═══════════════════════════════════════════════
+  var bottomNav = document.getElementById('mobile-bottom-nav');
+  var lastScrollY = 0;
+  var scrollTicking = false;
+
+  if (bottomNav && isMobile()) {
+    window.addEventListener('scroll', function () {
+      if (!scrollTicking) {
+        window.requestAnimationFrame(function () {
+          var currentScrollY = window.scrollY;
+          if (currentScrollY > lastScrollY && currentScrollY > 100) {
+            // Scrolling down — hide
+            bottomNav.style.transform = 'translateY(100%)';
+            bottomNav.style.transition = 'transform 0.3s ease';
+          } else {
+            // Scrolling up — show
+            bottomNav.style.transform = 'translateY(0)';
+            bottomNav.style.transition = 'transform 0.3s ease';
+          }
+          lastScrollY = currentScrollY;
+          scrollTicking = false;
+        });
+        scrollTicking = true;
+      }
+    }, { passive: true });
+  }
+
+  // ═══════════════════════════════════════════════
+  //  12. MOBILE: PREVENT BODY BOUNCE ON iOS
+  // ═══════════════════════════════════════════════
+  document.body.style.overscrollBehavior = 'none';
 
 })();

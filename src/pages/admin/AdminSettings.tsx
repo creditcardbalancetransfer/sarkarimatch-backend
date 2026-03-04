@@ -24,19 +24,19 @@ export const AdminSettingsPage: FC = () => {
       </nav>
 
       {/* ═══ PAGE HEADER ═══ */}
-      <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center justify-between mb-5 sm:mb-6">
         <div>
-          <h2 class="text-xl font-heading font-bold text-content-primary dark:text-white">Settings</h2>
-          <p class="text-sm text-content-secondary dark:text-content-dark-muted mt-0.5">Configure your SarkariMatch admin panel</p>
+          <h2 class="text-lg sm:text-xl font-heading font-bold text-content-primary dark:text-white">Settings</h2>
+          <p class="text-xs sm:text-sm text-content-secondary dark:text-content-dark-muted mt-0.5">Configure your SarkariMatch admin panel</p>
         </div>
       </div>
 
-      <div class="space-y-6 pb-24">
+      <div class="space-y-4 sm:space-y-6 pb-28 sm:pb-24">
 
         {/* ═══════════════════════════════════════════
              SECTION 1: SITE CONFIGURATION
            ═══════════════════════════════════════════ */}
-        <fieldset class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5">
+        <fieldset class="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-xl border border-gray-200 dark:border-gray-800 p-4 sm:p-5">
           <legend class="text-sm font-heading font-bold text-content-primary dark:text-white px-1 flex items-center gap-2">
             <svg class="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" /></svg>
             Site Configuration
@@ -74,7 +74,7 @@ export const AdminSettingsPage: FC = () => {
         {/* ═══════════════════════════════════════════
              SECTION 2: API KEYS
            ═══════════════════════════════════════════ */}
-        <fieldset class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5">
+        <fieldset class="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-xl border border-gray-200 dark:border-gray-800 p-4 sm:p-5">
           <legend class="text-sm font-heading font-bold text-content-primary dark:text-white px-1 flex items-center gap-2">
             <svg class="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" /></svg>
             API Keys
@@ -110,7 +110,7 @@ export const AdminSettingsPage: FC = () => {
         {/* ═══════════════════════════════════════════
              SECTION 3: NOTIFICATION CHANNELS
            ═══════════════════════════════════════════ */}
-        <fieldset class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5">
+        <fieldset class="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-xl border border-gray-200 dark:border-gray-800 p-4 sm:p-5">
           <legend class="text-sm font-heading font-bold text-content-primary dark:text-white px-1 flex items-center gap-2">
             <svg class="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
             Notification Channels
@@ -178,7 +178,7 @@ export const AdminSettingsPage: FC = () => {
         {/* ═══════════════════════════════════════════
              SECTION 4: DATA MANAGEMENT
            ═══════════════════════════════════════════ */}
-        <fieldset class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5">
+        <fieldset class="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-xl border border-gray-200 dark:border-gray-800 p-4 sm:p-5">
           <legend class="text-sm font-heading font-bold text-content-primary dark:text-white px-1 flex items-center gap-2">
             <svg class="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" /></svg>
             Data Management
@@ -241,9 +241,9 @@ export const AdminSettingsPage: FC = () => {
       </div>
 
       {/* ── Sticky Save bar ── */}
-      <div class="sticky bottom-0 z-10 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-gray-200 dark:border-gray-800 flex items-center justify-between gap-3">
-        <span id="settings-save-indicator" class="text-xs text-content-secondary dark:text-content-dark-muted"></span>
-        <button type="button" id="save-settings-btn" class="px-6 py-2.5 bg-brand-primary hover:bg-blue-700 text-white text-sm font-semibold rounded-btn transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary/60">
+      <div class="sticky bottom-16 sm:bottom-0 z-10 -mx-3 sm:-mx-4 lg:-mx-8 px-3 sm:px-4 lg:px-8 py-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-gray-200 dark:border-gray-800 flex items-center justify-between gap-3">
+        <span id="settings-save-indicator" class="text-xs text-content-secondary dark:text-content-dark-muted hidden sm:inline"></span>
+        <button type="button" id="save-settings-btn" class="w-full sm:w-auto px-6 py-3 sm:py-2.5 bg-brand-primary hover:bg-blue-700 text-white text-sm font-semibold rounded-xl sm:rounded-btn transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary/60">
           Save Settings
         </button>
       </div>
@@ -252,15 +252,16 @@ export const AdminSettingsPage: FC = () => {
       <div id="toast" class="fixed top-6 right-6 z-[100] space-y-2" aria-live="polite"></div>
 
       {/* ═══ Confirm modal ═══ */}
-      <div id="confirm-modal" class="fixed inset-0 z-[100] hidden" role="dialog" aria-modal="true">
+      <div id="confirm-modal" class="fixed inset-0 z-[100] hidden mobile-fullscreen-modal" role="dialog" aria-modal="true">
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" id="confirm-backdrop"></div>
-        <div class="fixed inset-0 flex items-center justify-center p-4">
-          <div class="relative bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 w-full max-w-sm p-6">
+        <div class="fixed inset-0 flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div class="relative bg-white dark:bg-slate-900 rounded-t-2xl sm:rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 w-full sm:max-w-sm p-6">
+            <div class="swipe-indicator sm:hidden"></div>
             <h3 id="confirm-title" class="text-base font-heading font-bold text-content-primary dark:text-white text-center mb-2"></h3>
             <p id="confirm-text" class="text-sm text-content-secondary dark:text-content-dark-muted text-center mb-6"></p>
             <div class="flex items-center gap-3">
-              <button type="button" id="confirm-cancel" class="flex-1 px-4 py-2.5 text-sm font-medium bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-content-primary dark:text-white rounded-btn transition-colors">Cancel</button>
-              <button type="button" id="confirm-ok" class="flex-1 px-4 py-2.5 text-sm font-semibold bg-red-600 hover:bg-red-700 text-white rounded-btn transition-colors">Confirm</button>
+              <button type="button" id="confirm-cancel" class="flex-1 px-4 py-3 sm:py-2.5 text-sm font-medium bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-content-primary dark:text-white rounded-xl sm:rounded-btn transition-colors">Cancel</button>
+              <button type="button" id="confirm-ok" class="flex-1 px-4 py-3 sm:py-2.5 text-sm font-semibold bg-red-600 hover:bg-red-700 text-white rounded-xl sm:rounded-btn transition-colors">Confirm</button>
             </div>
           </div>
         </div>
